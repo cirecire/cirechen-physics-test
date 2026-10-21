@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 3 · States of Matter</title>
+<style>
+:root{
+ --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
+ --accent:#0891b2; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1180px;margin:0 auto;padding:18px}
+header{background:linear-gradient(135deg,#0891b2,#7c3aed);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header h1{font-size:22px;margin-bottom:4px}
+header p{opacity:.92;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:14px}
+.nav-i{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-i:hover{background:#ecfeff}
+.nav-i.on{background:var(--accent);color:#fff}
+.nav-i .st{font-size:11px;opacity:.85}
+.nav-i .st.ok{color:var(--ok)}
+.nav-i .st.err{color:var(--err)}
+.nav-i.on .st.ok,.nav-i.on .st.err{color:#fff}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;min-height:80vh}
+h2{font-size:18px;margin-bottom:6px}
+.lesson-id{color:var(--muted);font-size:13px;margin-bottom:14px}
+.box{background:#f9fafb;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.box h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.box .cn{font-size:12px;color:var(--muted);font-style:italic}
+.step{padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;margin-bottom:14px;font-size:15px}
+.note{background:#fffbeb;border-left:3px solid var(--warn);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.note strong{color:var(--warn)}
+.vid{margin:14px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vid-h{padding:10px 14px;background:#ecfeff;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vid-h .meta{display:flex;gap:8px;align-items:center;font-size:11px}
+.tag{background:#e5e7eb;padding:2px 8px;border-radius:10px;font-size:11px}
+.tag.core{background:#dcfce7;color:#166534}
+.tag.ext{background:#fef3c7;color:#92400e}
+.vid-h .cn{font-size:12px;color:var(--muted);margin-right:auto}
+.vid-h .title{font-size:13px;font-weight:600}
+button{font-family:inherit;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:14px;background:var(--accent);color:#fff}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button:hover{opacity:.92}
+input[type=text],input[type=number]{padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;width:120px;font-family:inherit}
+input:focus{outline:none;border-color:var(--accent)}
+input.ok{border-color:var(--ok);background:#f0fdf4}
+input.err{border-color:var(--err);background:#fef2f2}
+input:disabled{background:#f3f4f6;cursor:not-allowed}
+.q{margin:12px 0;padding:14px;background:#f9fafb;border-radius:8px;border-left:3px solid var(--accent)}
+.q .q-text{font-size:15px;margin-bottom:8px}
+.q .q-cn{font-size:12px;color:var(--muted);margin-bottom:8px}
+.q .feedback{margin-top:8px;font-size:13px;padding:6px 10px;border-radius:6px;display:none}
+.q .feedback.show{display:block}
+.q .feedback.ok{background:#dcfce7;color:#166534}
+.q .feedback.err{background:#fee2e2;color:#991b1b}
+.q .feedback.warn{background:#fef3c7;color:#92400e}
+.hint{background:#fef3c7;border-left:3px solid var(--warn);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:13px;display:none}
+.hint.show{display:block}
+.diff{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.diff button{padding:4px 10px;font-size:12px}
+.diff button.on{background:var(--ok)}
+.controls{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
+.controls .info{margin-left:auto;font-size:13px;color:var(--muted)}
+.progress{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:var(--accent);transition:width .3s}
+svg{max-width:100%;display:block;margin:0 auto}
+.num{color:var(--accent);font-weight:600}
+svg circle{transition:r .2s,fill .2s}
+svg line,svg path{transition:stroke .3s,opacity .3s}
+
+.intro-h{font-size:21px;font-weight:700;margin:0 0 4px}
+.intro-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
+.kp-c{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f9fafb}
+.kp-c .n{font-size:12px;color:var(--accent);font-weight:700}
+.kp-c .t{font-size:15px;font-weight:600;margin:2px 0 5px;line-height:1.4}
+.kp-c .d{font-size:12px;color:var(--muted);line-height:1.55}
+.why{background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px;line-height:1.85}
+.why b{color:var(--accent)}
+.how{font-size:14px;line-height:2.1;margin:8px 0 2px}
+.how b{color:var(--accent)}
+.big-start{margin-top:20px;text-align:center}
+.big-start button{font-size:16px;padding:13px 30px;border-radius:10px}
+.trytip{font-size:12px;color:var(--muted);margin:10px 0 2px}
+.cn-tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:1px 6px;margin-left:6px}
+
+.zh{display:none}
+body.lang-en .zh{display:none}
+body.lang-mix .zh{display:inline;font-size:.82em;margin-left:6px;font-weight:400}
+body.lang-zh .en{display:inline;font-size:.78em;margin-left:6px;font-weight:400}
+body.lang-zh .zh{display:inline}
+header, header h1, header p, header .en, header .zh, header .src, header .sub, header .t, header .no{ color:#fff; }
+header p, header .en, header .zh{ opacity:1; }
+
+.langbar{position:fixed;top:8px;right:10px;z-index:300;display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.langseg{display:inline-flex}
+.langseg button{background:transparent;color:#374151;border:none;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:999px;white-space:nowrap}
+.langseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.langbar{top:6px;right:6px}.langseg button{padding:5px 8px;font-size:11px}}
+
+body.lang-mix h1 .en, body.lang-mix h1 .zh,
+body.lang-mix h2 .en, body.lang-mix h2 .zh,
+body.lang-mix h3 .en, body.lang-mix h3 .zh,
+body.lang-mix h4 .en, body.lang-mix h4 .zh,
+body.lang-mix p .en,  body.lang-mix p .zh,
+body.lang-mix li .en, body.lang-mix li .zh,
+body.lang-mix summary .en, body.lang-mix summary .zh,
+body.lang-mix .step .en, body.lang-mix .step .zh,
+body.lang-mix header .en, body.lang-mix header .zh,
+body.lang-mix .ch .en, body.lang-mix .ch .zh,
+body.lang-mix .ch .top .en, body.lang-mix .ch .top .zh,
+body.lang-mix .note .en, body.lang-mix .note .zh { display: block; }
+body.lang-mix h1 .zh, body.lang-mix h2 .zh, body.lang-mix h3 .zh, body.lang-mix h4 .zh,
+body.lang-mix p .zh, body.lang-mix li .zh, body.lang-mix summary .zh,
+body.lang-mix .step .zh, body.lang-mix header .zh,
+body.lang-mix .ch .zh, body.lang-mix .ch .top .zh,
+body.lang-mix .note .zh { font-size: inherit; }
+
+:root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+  --accent:#22d3ee;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ }
+}
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+ --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+ --accent:#22d3ee;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] main{background:var(--card);color:var(--text)}
+html[data-theme="dark"] nav{background:var(--card)}
+html[data-theme="dark"] .langbar,
+html[data-theme="dark"] .chip:not(.on),
+html[data-theme="dark"] .kp,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] .vid-item,
+html[data-theme="dark"] .proof,
+html[data-theme="dark"] .q{background:var(--card)}
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .kp-c,
+html[data-theme="dark"] .badge:not(.ok):not(.warn):not(.lock),
+html[data-theme="dark"] .pbar,
+html[data-theme="dark"] .ltsw button{background:var(--card2)}
+html[data-theme="dark"] .opt{background:var(--card);color:var(--text)}
+html[data-theme="dark"] .opt:hover:not(:disabled),
+html[data-theme="dark"] button.choice:hover{background:var(--card2);border-color:var(--accent)}
+html[data-theme="dark"] .opt.sel-ok{background:#14532d;color:#bbf7d0;border-color:var(--ok)}
+html[data-theme="dark"] .opt.sel-bad{background:#7f1d1d;color:#fecaca;border-color:var(--err)}
+html[data-theme="dark"] button{color:#0f172a!important}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .langseg button,
+html[data-theme="dark"] .themseg button{color:var(--text)!important}
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary{background:var(--card2)!important}
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .sel .num{color:#0f172a!important}
+html[data-theme="dark"] .langseg button.on,
+html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
+html[data-theme="dark"] .nav-i.on .st.ok,
+html[data-theme="dark"] .nav-i.on .st.err{color:#0f172a!important}
+html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
+html[data-theme="dark"] .step{color:#062a30!important}
+html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
+html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
+html[data-theme="dark"] .fig *{color:#1f2937!important}
+html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
+html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
+html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
+html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+ background:var(--card2);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder{color:var(--muted)}
+html[data-theme="dark"] table th{color:var(--muted)}
+.themebar{position:fixed;top:44px;right:12px;z-index:300;display:inline-flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.themseg{display:inline-flex}
+.themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
+.themseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+</style>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
+</head>
+<body>
+<div style="background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 16px;font-size:13px;display:flex;gap:18px;align-items:center;position:sticky;top:0;z-index:99">
+ <a href="index.html" style="color:#0891b2;text-decoration:none;font-weight:600"><span class="zh">← 主页</span><span class="en">← Home</span></a> <a href="home.html" style="color:#0891b2;text-decoration:none;font-weight:600"><span class="en">← Overview</span><span class="zh">← 总览</span></a>
+ <a href="unittests.html" style="color:#0891b2;text-decoration:none;font-weight:600"><span class="en">Unit tests</span><span class="zh">单元测试</span></a>
+ <span style="font-size:11px;color:#5b6472"><span class="en">Content from Khan Academy · CC BY-NC-SA</span><span class="zh">内容来自 Khan Academy · CC BY-NC-SA</span></span>
+</div>
+
+<div class="langbar" title="显示语言 · Language display — 随时可改 · change anytime">
+ <span class="langseg">
+  <button data-lang="en" onclick="setLang('en')">English</button>
+  <button data-lang="mix" onclick="setLang('mix')">English + 中文</button>
+  <button data-lang="zh" onclick="setLang('zh')">中文 + English</button>
+ </span>
+</div>
+<div class="themebar" title="日间 / 夜间 / 自动 · Day / Night / Auto">
+ <span class="themseg">
+  <button data-theme="light" onclick="setTheme('light')" title="日间 · Day">☀️</button>
+  <button data-theme="dark" onclick="setTheme('dark')" title="夜间 · Night">🌙</button>
+  <button data-theme="auto" onclick="setTheme('auto')" title="自动跟随系统 · Auto">⚙️</button>
+ </span>
+</div>
+
+<div class="wrap">
+<header>
+ <h1><span class="en">Chapter 3 · States of Matter</span><span class="zh">第 3 章 · 物态变化</span></h1>
+ <p><span class="en">Grade 8 · 4 class periods · the third chapter</span><span class="zh">八年级 · 4 课时 · 第三章</span></p>
+ </header>
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+const KEY='phys8_ch03_state';
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const LESSONS=[
+ {id:'intro',t:'Intro',cn:'Start here · What this chapter covers',n:'🏠'},
+ {id:'k1',t:'Temperature',cn:'Temperature',n:'3.1'},
+ {id:'k2',t:'Melting & Freezing',cn:'Melting and freezing',n:'3.2'},
+ {id:'k3',t:'Vaporisation & Liquefaction',cn:'Vaporisation and liquefaction',n:'3.3'},
+ {id:'k4',t:'Sublimation & Deposition',cn:'Sublimation and deposition',n:'3.4'},
+ {id:'test',t:'Chapter check',cn:'Chapter check',n:''}
+];
+let cur='intro';
+function st(id){return S[id]||(S[id]={diag:null,prac:{ok:0,tot:0},vid:{},done:false});}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[ri(0,a.length-1)];}
+function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==null?a:b)+'</span>'; }
+
+/* ===== Video list (Khan Academy · embedded via YouTube; verified 11-char IDs) ===== */
+const VIDEOS={
+k1:[
+ {f:'',yt:'kdOzQf1ZRtk',t:'Measuring temperature',c:'core'},
+ {f:'',yt:'K0nXYm9DiEo',t:'Temperature and Celsius',c:'core'},
+ {f:'',yt:'7jAPitc0bkY',t:'Heat transfer and thermal equilibrium',c:'ext'},
+],
+k2:[
+ {f:'',yt:'Aeddl02frBE',t:'Phase changes',c:'core'},
+ {f:'',yt:'pKvo0XWZtjo',t:'States of matter',c:'core'},
+ {f:'',yt:'WU7TfO-iaK8',t:'Specific heat and latent heat of fusion and vaporization',c:'ext'},
+],
+k3:[
+ {f:'',yt:'RtzzCrfZAL8',t:'Evaporation and its cooling effect',c:'core'},
+ {f:'',yt:'wjBz-Nk6wZk',t:'Condensation',c:'core'},
+ {f:'',yt:'-R411S98xX4',t:'Why Water Vapor Exists Without Boiling: Evaporation vs Boiling',c:'ext'},
+],
+k4:[
+ {f:'',yt:'We7Kd4D0S90',t:'States of matter',c:'core'},
+ {f:'',yt:'4ozp8SuNabY',t:'States of Matter (Part 1)',c:'ext'}
+]
+};
+const VTZ={
+ 'Measuring temperature':'测量温度',
+ 'Temperature and Celsius':'温度与摄氏度',
+ 'Heat transfer and thermal equilibrium':'热传递与热平衡',
+ 'Phase changes':'物态变化',
+ 'States of matter':'物质的三态',
+ 'Specific heat and latent heat of fusion and vaporization':'比热容与熔化、汽化潜热',
+ 'Evaporation and its cooling effect':'蒸发及其致冷作用',
+ 'Condensation':'液化（凝结）',
+ 'Why Water Vapor Exists Without Boiling: Evaporation vs Boiling':'水不沸腾也有水蒸气：蒸发与沸腾',
+ 'States of Matter (Part 1)':'物质的三态（第一部分）'
+};
+
+/* ============ Lesson K1: temperature ============ */
+function microK1(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">How do we tell "hot" from "cold"?</span><span class="zh">我们怎么区分「热」和「冷」？</span></div>
+  <div class="box">
+   <h3><span class="en">Temperature measures hotness</span><span class="zh">温度表示冷热程度</span></h3>
+   <p><span class="en">Temperature tells how hot or cold something is. On the tiny scale it is the average speed of the particles: faster, jiggling particles feel hotter. We read it with a thermometer.</span><span class="zh">温度表示物体的冷热程度。从微观看，它对应粒子的平均运动快慢：动得越快的粒子，摸起来越热。我们用温度计来读数。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">The Celsius scale (°C)</span><span class="zh">摄氏度温标（°C）</span></h3>
+   <p><span class="en">On the Celsius scale, water freezes at <b class="num">0 °C</b> and boils at <b class="num">100 °C</b>. Handy numbers: a cold day ≈ 0 °C, a room ≈ 20–25 °C, the human body ≈ 37 °C, boiling water ≈ 100 °C.</span><span class="zh">摄氏温标下，水结冰是 <b class="num">0 °C</b>，沸腾是 <b class="num">100 °C</b>。常用参考：寒冬 ≈ 0 °C、室内 ≈ 20–25 °C、人体 ≈ 37 °C、沸水 ≈ 100 °C。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Thermal equilibrium</span><span class="zh">热平衡</span></h3>
+   <p><span class="en">Put a hot cup and a cold cup side by side and they meet in the middle — they end up at the same temperature. That shared temperature is thermal equilibrium.</span><span class="zh">把一杯热的和一杯冷的放在一起，最后会停在中间某个温度——两者温度变得相同。这个共同温度就是热平衡。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K2: melting & freezing ============ */
+function microK2(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why does ice turn to water, but not in a straight line?</span><span class="zh">为什么冰会变成水，而且过程不是「升温直线」？</span></div>
+  <div class="box">
+   <h3><span class="en">Three states of matter</span><span class="zh">物质的三态</span></h3>
+   <p><span class="en">A solid keeps its own shape (ice). A liquid takes the shape of its container (water). A gas spreads out to fill the whole space (steam).</span><span class="zh">固体有固定形状（冰）；液体随容器改变形状（水）；气体会充满整个空间（水蒸气）。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Melting — solid to liquid</span><span class="zh">熔化——固变液</span></h3>
+   <p><span class="en">Heat ice and at <b class="num">0 °C</b> it turns to water. The temperature where a solid becomes a liquid is its melting point. For water that is 0 °C.</span><span class="zh">加热冰，到 <b class="num">0 °C</b> 时变成水。固体变成液体的那个温度叫熔点；水的熔点是 0 °C。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Freezing — liquid to solid</span><span class="zh">凝固——液变固</span></h3>
+   <p><span class="en">Cool water below 0 °C and it turns back to ice. That is freezing, at the same temperature (the freezing point). While it melts or freezes, the temperature stays put — it does not rise or fall.</span><span class="zh">把水降到 0 °C 以下，它变回冰，这叫凝固，温度同样是 0 °C（凝固点）。熔化或凝固时，温度保持不变，不升也不降。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K3: vaporisation & liquefaction ============ */
+function microK3(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Where does the water go when a puddle dries?</span><span class="zh">水洼干了，水去哪儿了？</span></div>
+  <div class="box">
+   <h3><span class="en">Vaporisation — liquid to gas</span><span class="zh">汽化——液变气</span></h3>
+   <p><span class="en">There are two ways. Evaporation happens at any temperature, only at the surface (a puddle dries). Boiling happens at one fixed temperature, throughout the liquid. Water boils at <b class="num">100 °C</b>.</span><span class="zh">汽化有两条路。蒸发在任何温度都能发生，只在表面（水洼变干）；沸腾只在一个固定温度发生，且在整个液体内部进行。水沸腾是 <b class="num">100 °C</b>。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Evaporation cools</span><span class="zh">蒸发致冷</span></h3>
+   <p><span class="en">When sweat evaporates, the fastest particles leave your skin and it feels cooler. That is why we sweat when hot.</span><span class="zh">出汗蒸发时，跑掉的是皮肤表面最快的粒子，于是感觉凉快。这就是热了会出汗的原因。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Liquefaction (condensation) — gas to liquid</span><span class="zh">液化（凝结）——气变液</span></h3>
+   <p><span class="en">When water vapour in the air cools, it turns back to liquid: dew on grass, fog over a lake, drops on a cold drink. That is condensation.</span><span class="zh">空气中的水蒸气遇冷变回液体：草叶上的露珠、湖面的雾、冷饮杯壁的水珠，都是液化。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K4: sublimation & deposition ============ */
+function microK4(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Some solids skip the liquid step entirely.</span><span class="zh">有些固体直接跳过液态。</span></div>
+  <div class="box">
+   <h3><span class="en">Sublimation — solid straight to gas</span><span class="zh">升华——固变气</span></h3>
+   <p><span class="en">A few solids go straight to gas without becoming a liquid. Dry ice (solid CO₂) vanishes into the air; iodine and mothballs do the same. That is sublimation.</span><span class="zh">少数固体直接变成气体，不经过液态。干冰（固态 CO₂）在空气中消失不见；碘、樟脑丸也一样。这叫升华。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Deposition — gas straight to solid</span><span class="zh">凝华——气变固</span></h3>
+   <p><span class="en">The reverse: a gas turning straight into a solid. Frost on a window and rime on a cold night form this way. That is deposition.</span><span class="zh">反过来，气体直接变成固体。窗上的霜、寒夜的雾凇就是这样形成的。这叫凝华。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">The full map</span><span class="zh">六条变化一览</span></h3>
+   <p><span class="en">solid ⇄ liquid (melting / freezing) · liquid ⇄ gas (boiling & evaporation / condensation) · solid ⇄ gas (sublimation / deposition). Six changes in all.</span><span class="zh">固 ⇄ 液（熔化 / 凝固）· 液 ⇄ 气（沸腾·蒸发 / 液化）· 固 ⇄ 气（升华 / 凝华）。一共六条变化。</span></p>
+  </div>`;
+}
+
+/* ============ Quick check ============ */
+function diag(el,lessonId,generator){
+ el.innerHTML=`<div class="step"><span class="en">Quick check</span><span class="zh">小测一下</span></div><div class="box"><p style="font-size:14px;color:var(--muted)">3 questions, just to see where you stand. Pass 3/3 to skip the lesson; otherwise the lesson comes next.</p><div id="diagQ"></div></div>`;
+ const qEl=el.querySelector('#diagQ');
+ let ok=0;
+ const qs=Array.from({length:3},()=>generator('diag'));
+ let i=0;
+ const show=()=>{
+  if(i>=3){
+   st(lessonId).diag=ok;
+   if(ok===3){
+    qEl.innerHTML=`<div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong>3/3:</strong> you already have this — skip the lesson and go to practice.</div><div style="margin-top:14px"><button id="skipMicro"><span class="en">Skip the lesson, go to practice →</span><span class="zh">跳过微课，去做练习 →</span></button></div>`;
+    qEl.querySelector('#skipMicro').onclick=()=>{cur=`prac-${lessonId}`;render();};
+   } else {
+    qEl.innerHTML=`<div class="note" style="background:#fef3c7;border-color:var(--warn)"><strong>${ok}/3:</strong> work through the lesson below to fill the gap.</div><div style="margin-top:14px"><button id="goMicro"><span class="en">Go to lesson →</span><span class="zh">去看微课 →</span></button></div>`;
+    qEl.querySelector('#goMicro').onclick=()=>{cur=`micro-${lessonId}`;render();};
+   }
+   save();renderNav();
+   return;
+  }
+  const q=qs[i];
+  qEl.innerHTML=`
+   <div class="q">
+    <div class="q-text">${i+1}. ${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="da" autocomplete="off" placeholder="?"> <button id="sub"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ht"></div>
+    <div class="feedback" id="fb"></div>
+   </div>`;
+  const input=qEl.querySelector('#da'),fb=qEl.querySelector('#fb'),ht=qEl.querySelector('#ht');
+  input.focus();
+  qEl.querySelector('#sub').onclick=check;
+  input.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const ans=input.value.trim();
+   const correct=q.check(ans);
+   if(correct===true){ok++;fb.className='feedback show ok';fb.innerHTML=L('✓ Correct · correct','✓ 正确 · 对了');input.disabled=true;setTimeout(()=>{i++;show();},700);}
+   else if(correct==='hint'){ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');}
+   else{fb.className='feedback show err';fb.innerHTML=L('✗ Not right, try again.','✗ 不对，再试一次。');}
+  }
+ };
+ show();
+}
+
+/* ============ Practice generators (by topic) ============ */
+const generators={
+k1:()=>{ // temperature
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Water freezes (and melts) at ___ °C.`,
+   zhq:`水的凝固点（也是熔点）是___ °C。`,
+   check:a=>parseInt(a)===0,ans:'0',hint:'Celsius lower fixed point: ice ⇄ water.',zhh:'摄氏下固定点：冰⇄水。'};
+ } else if(type===2){
+  return {q:`Water boils at ___ °C at normal pressure.`,
+   zhq:`标准大气压下水的沸点是___ °C。`,
+   check:a=>parseInt(a)===100,ans:'100',hint:'Celsius upper fixed point.',zhh:'摄氏上固定点。'};
+ } else if(type===3){
+  return {q:`Normal human body temperature is about ___ °C (type: 37 / 100)`,
+   zhq:`人的正常体温约为___ °C（填 37 / 100）`,
+   check:a=>a.trim()==='37',ans:'37',choice:true,
+   hint:'A fever is around 38–39 °C.',zhh:'发烧大约 38–39 °C。'};
+ } else if(type===4){
+  const a=ri(10,30);
+  return {q:`The temperature rises from ${a} °C to ${a+5} °C. By how many °C did it rise?`,
+   zhq:`温度从 ${a} °C 升到 ${a+5} °C，升高了多少 °C？`,
+   check:b=>parseInt(b)===5,ans:'5',hint:'rise = final − start',zhh:'升高 = 末温 − 初温'};
+ } else {
+  const hi=ri(50,90);
+  return {q:`Which is hotter: ${hi} °C or 100 °C? (type: ${hi} / 100)`,
+   zhq:`哪个更热：${hi} °C 还是 100 °C？（填 ${hi} / 100）`,
+   check:a=>a.trim()==='100',ans:'100',choice:true,
+   hint:'a bigger number means hotter.',zhh:'数字越大越热。'};
+ }
+},
+k2:()=>{ // melting & freezing
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`The change from solid to liquid is called ___ (type: melting / freezing)`,
+   zhq:`物质从固态变成液态叫___（填 melting / freezing）`,
+   check:a=>a.trim().toLowerCase()==='melting',ans:'melting',choice:true,
+   hint:'solid → liquid.',zhh:'固态→液态。'};
+ } else if(type===2){
+  return {q:`The change from liquid to solid is called ___ (type: freezing / boiling)`,
+   zhq:`从液态变成固态叫___（填 freezing / boiling）`,
+   check:a=>a.trim().toLowerCase()==='freezing',ans:'freezing',choice:true,
+   hint:'liquid → solid.',zhh:'液态→固态。'};
+ } else if(type===3){
+  return {q:`During melting, the temperature ___ (type: stays the same / keeps rising)`,
+   zhq:`熔化过程中，温度___（填 stays the same / keeps rising）`,
+   check:a=>a.trim().toLowerCase()==='stays the same',ans:'stays the same',choice:true,
+   hint:'the heat goes into the change of state, not into raising the temperature.',zhh:'热量用于物态变化，不用来升温。'};
+ } else if(type===4){
+  return {q:`A substance with its own fixed shape is a ___ (type: solid / gas)`,
+   zhq:`有固定形状的物质是___（填 solid / gas）`,
+   check:a=>a.trim().toLowerCase()==='solid',ans:'solid',choice:true,
+   hint:'solids keep their shape.',zhh:'固体保持形状。'};
+ } else {
+  return {q:`The melting point of ice is ___ °C.`,
+   zhq:`冰的熔点是___ °C。`,
+   check:a=>parseInt(a)===0,ans:'0',hint:'same number as the freezing point.',zhh:'与凝固点相同。'};
+ }
+},
+k3:()=>{ // vaporisation & liquefaction
+ const type=ri(1,6);
+ if(type===1){
+  return {q:`The change from liquid to gas is called ___ (type: vaporisation / condensation)`,
+   zhq:`从液态变成气态叫___（填 vaporisation / condensation）`,
+   check:a=>a.trim().toLowerCase()==='vaporisation',ans:'vaporisation',choice:true,
+   hint:'liquid → gas.',zhh:'液态→气态。'};
+ } else if(type===2){
+  return {q:`Boiling happens at one fixed temperature called the ___ (type: boiling point / melting point)`,
+   zhq:`沸腾发生在某个固定温度，叫___（填 boiling point / melting point）`,
+   check:a=>a.trim().toLowerCase()==='boiling point',ans:'boiling point',choice:true,
+   hint:'boiling happens throughout the liquid at one temperature.',zhh:'沸腾在固定温度、液体内部发生。'};
+ } else if(type===3){
+  return {q:`Evaporation makes a surface feel ___ (type: cooler / warmer)`,
+   zhq:`蒸发让表面感觉___（填 cooler / warmer）`,
+   check:a=>a.trim().toLowerCase()==='cooler',ans:'cooler',choice:true,
+   hint:'fast particles leave, taking energy with them.',zhh:'跑掉的是最快的粒子，带走能量。'};
+ } else if(type===4){
+  return {q:`The change from gas to liquid is called ___ (type: condensation / sublimation)`,
+   zhq:`从气态变成液态叫___（填 condensation / sublimation）`,
+   check:a=>a.trim().toLowerCase()==='condensation',ans:'condensation',choice:true,
+   hint:'gas → liquid.',zhh:'气态→液态。'};
+ } else if(type===5){
+  return {q:`Water's boiling point is ___ °C.`,
+   zhq:`水的沸点是___ °C。`,
+   check:a=>parseInt(a)===100,ans:'100',hint:'same as the Celsius upper fixed point.',zhh:'即摄氏上固定点。'};
+ } else {
+  return {q:`Boiling happens throughout the liquid, but evaporation happens only at the ___ (type: surface / bottom)`,
+   zhq:`沸腾在液体内部各处发生，蒸发只发生在___（填 surface / bottom）`,
+   check:a=>a.trim().toLowerCase()==='surface',ans:'surface',choice:true,
+   hint:'evaporation is a surface effect.',zhh:'蒸发是表面现象。'};
+ }
+},
+k4:()=>{ // sublimation & deposition
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Dry ice turning straight from solid to gas is ___ (type: sublimation / deposition)`,
+   zhq:`干冰直接从固态变成气态是___（填 sublimation / deposition）`,
+   check:a=>a.trim().toLowerCase()==='sublimation',ans:'sublimation',choice:true,
+   hint:'solid → gas, no liquid step.',zhh:'固态→气态，不经液态。'};
+ } else if(type===2){
+  return {q:`Frost forming directly from water vapour is ___ (type: deposition / sublimation)`,
+   zhq:`霜由水蒸气直接变成固态是___（填 deposition / sublimation）`,
+   check:a=>a.trim().toLowerCase()==='deposition',ans:'deposition',choice:true,
+   hint:'gas → solid directly.',zhh:'气态→固态，直接。'};
+ } else if(type===3){
+  return {q:`Solid to gas directly is called ___ (type: sublimation / condensation)`,
+   zhq:`固态直接变气态叫___（填 sublimation / condensation）`,
+   check:a=>a.trim().toLowerCase()==='sublimation',ans:'sublimation',choice:true,
+   hint:'skip the liquid.',zhh:'跳过液态。'};
+ } else if(type===4){
+  return {q:`Gas to solid directly is called ___ (type: deposition / evaporation)`,
+   zhq:`气态直接变固态叫___（填 deposition / evaporation）`,
+   check:a=>a.trim().toLowerCase()==='deposition',ans:'deposition',choice:true,
+   hint:'reverse of sublimation.',zhh:'升华的逆过程。'};
+ } else {
+  return {q:`An example of sublimation is ___ (type: dry ice / water boiling)`,
+   zhq:`下列属于升华的例子是___（填 dry ice / water boiling）`,
+   check:a=>a.trim().toLowerCase()==='dry ice',ans:'dry ice',choice:true,
+   hint:'dry ice (solid CO₂) goes straight to gas.',zhh:'干冰（固态 CO₂）直接变气体。'};
+ }
+},
+};
+
+/* ============ Videos module (YouTube embed) ============ */
+function videos(el,lessonId){
+ const list=VIDEOS[lessonId]||[];
+ if(!list.length){el.innerHTML='<div class="note">No videos for this section.</div>';return;}
+ let html=`<div class="step"><span class="en">Videos</span><span class="zh">视频</span> · ${LESSONS.find(l=>l.id===lessonId).t}</div>`;
+ html+=`<div class="box"><p style="font-size:13px;color:var(--muted)"><span class="tag core">Watch first</span> watch first; <span class="tag ext">Optional</span> if you have time.</p></div>`;
+ list.forEach((v,i)=>{
+  const watched=st(lessonId).vid[i];
+  const yt=v.yt&&v.yt.indexOf('TODO')!==0?v.yt:'';
+  html+=`<div class="vid">
+   <div class="vid-h">
+    <span class="title">${L(v.t,(typeof VTZ!=='undefined'&&VTZ[v.t])||v.t)}</span>
+    <span class="meta">
+     <span class="tag ${v.c}"><span class="en">${v.c==='core'?'Core':'Extra'}</span><span class="zh">${v.c==='core'?'核心':'拓展'}</span></span>
+     <span class="st ${watched?'ok':''}">${watched?'✓ watched':'Unwatched'}</span>
+     <button data-i="${i}">${watched?'<span class="en">▶ Replay</span><span class="zh">▶ 重播</span>':'<span class="en">▶ Play</span><span class="zh">▶ 播放</span>'}</button>
+    </span>
+   </div>
+   <div id="vc${i}" style="display:${watched?'block':'none'};position:relative;padding-top:56.25%">
+    ${yt?`<iframe src="https://www.youtube.com/embed/${yt}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"></iframe>`:'<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;background:#f3f4f6">video id pending Khan mapping</div>'}
+   </div>
+  </div>`;
+ });
+ el.innerHTML=html;
+ el.querySelectorAll('[data-i]').forEach(b=>{
+  b.onclick=()=>{
+   const i=parseInt(b.dataset.i);
+   const slot=el.querySelector('#vc'+i);
+   slot.style.display = slot.style.display==='none'?'block':'none';
+   st(lessonId).vid[i]=true;save();renderNav();
+   b.parentElement.querySelector('.st').className='st ok';
+   b.parentElement.querySelector('.st').textContent='✓ watched';
+  };
+ });
+}
+
+/* ============ Practice module ============ */
+function practice(el,lessonId){
+ const gen=generators[lessonId];
+ if(!gen){el.innerHTML='<div class="note">No practice for this.</div>';return;}
+ const s=st(lessonId);
+ let streak=0,need=5,q=null,tries=0,diff=1;
+ function newQ(){q=gen(diff);tries=0;}
+ const update=()=>{
+  el.innerHTML=`
+   <div class="step"><span class="en">Practice</span><span class="zh">练习</span> (${streak}/${need})</div>
+   <div class="diff">
+    Difficulty: 
+    <button class="secondary ${diff===1?'on':''}" data-d="1">Easy</button>
+    <button class="secondary ${diff===2?'on':''}" data-d="2">Medium</button>
+    <button class="secondary ${diff===3?'on':''}" data-d="3">Hard</button>
+    <span class="info">Correct: ${s.prac.ok}/${s.prac.tot} (streak ${streak})<button class="secondary" id="rs" style="margin-left:8px"><span class="en">Reset</span><span class="zh">重置</span></button></span>
+   </div>
+   <div class="progress"><div style="width:${(streak/need)*100}%"></div></div>
+   <div class="q">
+    <div class="q-text">${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="pi" autocomplete="off" placeholder="?"> <button id="ps"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ph"></div>
+    <div class="feedback" id="pf"></div>
+   </div>`;
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{diff=parseInt(b.dataset.d);update();});
+  el.querySelector('#rs').onclick=()=>{s.prac={ok:0,tot:0};streak=0;diff=1;save();update();renderNav();};
+  const syncTop=()=>{
+   const stp=el.querySelector('.step'); if(stp) stp.innerHTML='<span class="en">Practice</span><span class="zh">练习</span> ('+streak+'/'+need+')';
+   const pg=el.querySelector('.progress'); if(pg&&pg.firstElementChild) pg.firstElementChild.style.width=(streak/need)*100+'%';
+   const inf=el.querySelector('.info'); if(inf){const rb=inf.querySelector('#rs');inf.textContent='Correct: '+s.prac.ok+'/'+s.prac.tot+' (streak '+streak+') ';if(rb)inf.appendChild(rb);}
+  };
+  const inp=el.querySelector('#pi'),fb=el.querySelector('#pf'),ht=el.querySelector('#ph');
+  inp.focus();
+  el.querySelector('#ps').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const a=inp.value.trim();
+   const r=q.check(a);
+   if(r===true){
+    streak++;s.prac.ok++;s.prac.tot++;
+    fb.className='feedback show ok';fb.innerHTML=L('✓ correct!','✓ 对了！');
+    inp.disabled=true;syncTop();
+    if(streak>=need){s.done=true;fb.innerHTML+='<br><strong>'+L('Section cleared ✓','本节过关 ✓')+'</strong>';save();renderNav();}
+    else if(streak>=3&&diff<3){diff++;}
+    setTimeout(()=>{newQ();update();},900);
+   } else {
+    tries++;
+    if(tries===1){
+     ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');
+     fb.className='feedback show err';fb.innerHTML=L('✗ Try again. ','✗ 再试一次。');
+    } else if(tries===2){
+     fb.className='feedback show err';
+     fb.innerHTML=L('✗ Not quite. '+(q.sol?('Method: '+q.sol):(q.hint?('Hint: '+q.hint):'Work through it once more.')), '✗ 不太对。'+(q.zhs?('方法：'+q.zhs):(q.zhh?('提示：'+q.zhh):'再算一遍。')));
+    } else {
+     streak=0;s.prac.tot++;syncTop();
+     if(diff>1)diff--;
+     fb.className='feedback show err';
+     fb.innerHTML=L('The answer is <b>'+q.ans+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+q.ans+'</b>'+(q.zhs?('。'+q.zhs):'。'));
+     inp.disabled=true;save();renderNav();
+     setTimeout(()=>{q=gen();tries=0;update();},2400);
+    }
+   }
+   save();
+  }
+ };
+ newQ();update();
+}
+
+/* ============ Chapter check ============ */
+function chTest(el){
+ el.innerHTML=`<div class="step"><span class="en">Chapter check</span><span class="zh">章末自己测</span></div><div class="box"><p style="font-size:13px;color:var(--muted)">8 questions covering every topic in this chapter. Not timed, not scored.</p><div id="tq"></div></div>`;
+ const tq=el.querySelector('#tq');
+ const qs=[];
+ for(let i=0;i<2;i++)qs.push(generators.k1(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k2(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k3(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k4(i+1));
+ let i=0,ok=0;
+ const show=()=>{
+  if(i>=qs.length){
+   tq.innerHTML=`<div class="note" style="background:${ok>=6?'#dcfce7':'#fef3c7'};border-color:${ok>=6?'var(--ok)':'var(--warn)'}"><strong>${ok}/${qs.length}</strong> ${ok>=6?'Chapter passed! Move on to the next chapter':'Go back and review what you missed'}</div>`;
+   S.test={ok,tot:qs.length};save();renderNav();return;
+  }
+  const q=qs[i];
+  tq.innerHTML=`<div class="q"><div class="q-text">${i+1}/${qs.length}. ${L(q.q,q.zhq)}</div><div style="display:flex;gap:8px"><input id="ti" autocomplete="off"><button id="ts"><span class="en">Submit</span><span class="zh">提交</span></button></div><div class="hint" id="th"></div><div class="feedback" id="tf"></div></div>`;
+  const inp=tq.querySelector('#ti'),fb=tq.querySelector('#tf'),ht=tq.querySelector('#th');
+  inp.focus();tq.querySelector('#ts').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const r=q.check(inp.value.trim());
+   if(r===true){ok++;fb.className='feedback show ok';fb.textContent='✓';inp.disabled=true;setTimeout(()=>{i++;show();},600);}
+   else if(r==='hint'){ht.className='hint show';ht.textContent=q.hint;}
+   else{fb.className='feedback show err';fb.textContent='✗';setTimeout(()=>{i++;show();},900);}
+  }
+ };
+ show();
+}
+
+/* ============ Render ============ */
+const GLOSS={k1:"温度",k2:"熔化和凝固",k3:"汽化和液化",k4:"升华和凝华",test:""};
+const USE_MICRO=true;
+const INTRO={why:"Matter keeps changing shape around you — ice in a drink, steam from a kettle, frost on a window. Knowing the six changes (melting, freezing, vaporisation, condensation, sublimation, deposition) lets you explain the weather, the kitchen, and the planet's water cycle. These ideas sit behind cooking, climate, and every cold drink on a hot day.",whyZh:"你身边到处是物质在变样——杯里的冰、水壶的蒸汽、窗上的霜。弄清六条变化（熔化、凝固、汽化、液化、升华、凝华），就能解释天气、厨房和地球的水循环。这些道理藏在烹饪、气候和每一杯夏日冷饮背后。",desc:{k1:"What temperature is, thermometers, and the Celsius scale (0–100 °C)",k2:"Solid, liquid, gas; melting and freezing at a fixed temperature",k3:"Vaporisation (evaporation and boiling) and liquefaction (condensation)",k4:"Sublimation (solid to gas) and deposition (gas to solid)"}};
+function goLesson(id){cur=USE_MICRO?('micro-'+id):id;render();}
+function introRender(main){
+  const pts=LESSONS.filter(l=>l.id!=='test'&&l.id!=='intro');
+  let h='<div class="intro-h"><span class="en">What this chapter covers</span><span class="zh">本章学什么</span></div>'
+    +'<div class="intro-sub"><span class="en">Here is what this chapter walks you through, in order. Read it first, then start the first lesson below.</span><span class="zh">下面是这一章要走的全部内容，按顺序排好。先看一遍，再点下面开始第一小节。</span></div><div class="kp">';
+  pts.forEach(l=>{
+    const s=st(l.id);
+    const badge=s.done?' <span class="st ok">✓ done</span>':(s.prac.tot>0?' <span class="st">'+s.prac.ok+'/'+s.prac.tot+'</span>':'');
+    h+='<div class="kp-c"><div class="n">'+l.n+'</div><div class="t">'+l.t+(GLOSS[l.id]?' <span class="cn-tag">'+GLOSS[l.id]+'</span>':'')+'</div><div class="d">'+((INTRO.desc&&INTRO.desc[l.id])||'')+'</div>'+badge+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="why"><b><span class="en">Where this shows up in real life</span><span class="zh">在真实生活里哪里会用到</span></b><br>'+L(INTRO.why,INTRO.whyZh)+'</div>';
+  h+='<div class="box"><b><span class="en">How this chapter works</span><span class="zh">本章怎么学</span></b><div class="how">'
+    +'① <b><span class="en">Watch the lesson</span><span class="zh">看微课</span></b>: <span class="en">a few minutes to get what the section is about</span><span class="zh">花几分钟了解本节内容</span><br>'
+    +'② <b><span class="en">Practice</span><span class="zh">练一练</span></b>: <span class="en">5 correct in a row clears it; if you get stuck, hints walk you through</span><span class="zh">连对 5 题就算过关；卡住了就看提示</span><br>'
+    +'③ <b><span class="en">Next section</span><span class="zh">下一节</span></b>: <span class="en">on the left, </span><span class="zh">在左侧，</span>'+pts[0].n+', '+pts[1].n+'… open whichever you want, in any order'
+    +'</div></div>';
+  h+='<div class="big-start"><button id="startBtn">'+pts[0].n+' <span class="en">'+pts[0].t+'</span><span class="zh">开始 · '+NAVZH[pts[0].id]+'</span> →</button></div>';
+  main.innerHTML=h;
+  main.querySelector('#startBtn').onclick=()=>{goLesson(pts[0].id);};
+}
+const NAVZH={"intro":"概览","k1":"温度","k2":"熔化和凝固","k3":"汽化和液化","k4":"升华和凝华","test":"章末自己测"};
+const LKEY='phys8_lang';
+function getLang(){return localStorage.getItem(LKEY)||'en';}
+function setLang(l){localStorage.setItem(LKEY,l);applyLang();}
+function applyLang(){const l=getLang();document.body.className=(' '+document.body.className+' ').replace(/\s+lang-(en|mix|zh)\b/g,' ').trim();if(l==='mix'||l==='zh')document.body.classList.add('lang-'+l);document.querySelectorAll('.langseg button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===l);});}
+applyLang();
+
+function renderNav(){
+ const nav=document.getElementById('nav');
+ nav.innerHTML=LESSONS.map(l=>{
+  const s=st(l.id);
+  let stxt='';
+  if(s.done)stxt='<span class="st ok">✓</span>';
+  else if(s.prac.tot>0)stxt=`<span class="st ${s.prac.ok/s.prac.tot>0.6?'ok':'err'}">${s.prac.ok}/${s.prac.tot}</span>`;
+  return `<div class="nav-i ${l.id===cur||cur===`micro-${l.id}`||cur===`diag-${l.id}`||cur===`prac-${l.id}`?'on':''}" data-go="${l.id}">
+   <span><b>${l.n}</b> <span class="en">${l.t}</span><span class="zh">${NAVZH[l.id]||l.t}</span></span>${stxt}</div>`;
+ }).join('');
+ nav.querySelectorAll('[data-go]').forEach(n=>n.onclick=()=>{
+  const id=n.dataset.go;
+  cur = id==='test' ? 'test' : `micro-${id}`;
+  render();
+ });
+}
+
+function render(){
+ const main=document.getElementById('main');
+ renderNav();
+ if(cur==='intro'||cur==='micro-intro'){introRender(main);return;}
+ if(cur==='test'){chTest(main);return;}
+ const m=cur.match(/^(diag|micro|prac)-(\w+)$/);
+ if(m){
+  const phase=m[1],id=m[2];
+  const lesson=LESSONS.find(l=>l.id===id);
+  if(!lesson){main.innerHTML='<div class="note">Unknown lesson</div>';return;}
+  const titles={k1:'Temperature',k2:'Melting & Freezing',k3:'Vaporisation & Liquefaction',k4:'Sublimation & Deposition'};
+  main.innerHTML=`<div class="lesson-id">${lesson.n} · <span class="en">${titles[id]} · ${lesson.cn}</span><span class="zh">${NAVZH[id]||titles[id]}</span></div>`;
+  const c=document.createElement('div');main.appendChild(c);
+  if(phase==='diag'){
+   if(st(id).diag===3){cur=`micro-${id}`;render();return;}
+   diag(c,id,generators[id]);
+  } else if(phase==='micro'){
+   if(id==='k1')microK1(c);
+   else if(id==='k2')microK2(c);
+   else if(id==='k3')microK3(c);
+   else if(id==='k4')microK4(c);
+   const after=document.createElement('div');main.appendChild(after);
+   videos(after,id);
+   const btn=document.createElement('div');btn.style.marginTop='14px';
+   btn.innerHTML=`<button id="toPrac">Go to practice</button>`;
+   main.appendChild(btn);
+   btn.querySelector('#toPrac').onclick=()=>{cur=`prac-${id}`;render();};
+  } else if(phase==='prac'){
+   practice(c,id);
+  }
+ } else {
+  introRender(main);
+ }
+}
+render();
+</script>
+<script>
+(function(){try{if(new URLSearchParams(location.search).get('go')==='test'){cur='test';render();}}catch(e){}})();
+</script>
+<script>
+var TKEY='phys8_theme';
+function getTheme(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}}
+function setTheme(t){try{localStorage.setItem(TKEY,t);}catch(e){}applyTheme();}
+function applyTheme(){
+ var t=getTheme();
+ document.documentElement.setAttribute('data-theme',t);
+ var bs=document.querySelectorAll('.themseg button');
+ for(var i=0;i<bs.length;i++){
+  var on=(bs[i].getAttribute('data-theme')===t);
+  if(on){bs[i].classList.add('on');}else{bs[i].classList.remove('on');}
+ }
+}
+applyTheme();
+try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
+</script>
+</body></body>
+</html>

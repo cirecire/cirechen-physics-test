@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>公立宝转轨 · 转去主页</title>
+<script>
+/* This repo's root is not the entry point — the shared parent portal lives in the
+   math repo (cirechen / cirechen-test). Redirect there so there is ONE home page. */
+function portalUrl(){
+ if(location.protocol==='file:') return '../site/index.html';
+ var seg=(location.pathname.split('/')[1]||'');
+ var mapped=seg.replace(/^cirechen-physics(-test)?$/,function(m,p){return 'cirechen'+(p||'');});
+ return location.origin+'/'+mapped+'/index.html';
+}
+location.replace(portalUrl());
+</script>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;text-align:center;padding-top:90px;color:#5b6472;background:#fafafa">
+<p style="font-size:15px">正在转到主页…</p>
+<p style="margin-top:10px;font-size:14px"><a id="a" href="#" style="color:#7c3aed">如果没自动跳转，点这里去主页 →</a></p>
+<script>document.getElementById('a').href=portalUrl();</script>
+</body>
+</html>

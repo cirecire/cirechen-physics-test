@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 4 · Light</title>
+<style>
+:root{
+ --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
+ --accent:#ea580c; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1180px;margin:0 auto;padding:18px}
+header{background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header h1{font-size:22px;margin-bottom:4px}
+header p{opacity:.92;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:14px}
+.nav-i{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-i:hover{background:#fff7ed}
+.nav-i.on{background:var(--accent);color:#fff}
+.nav-i .st{font-size:11px;opacity:.85}
+.nav-i .st.ok{color:var(--ok)}
+.nav-i .st.err{color:var(--err)}
+.nav-i.on .st.ok,.nav-i.on .st.err{color:#fff}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;min-height:80vh}
+h2{font-size:18px;margin-bottom:6px}
+.lesson-id{color:var(--muted);font-size:13px;margin-bottom:14px}
+.box{background:#f9fafb;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.box h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.box .cn{font-size:12px;color:var(--muted);font-style:italic}
+.step{padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;margin-bottom:14px;font-size:15px}
+.note{background:#fffbeb;border-left:3px solid var(--warn);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.note strong{color:var(--warn)}
+.vid{margin:14px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vid-h{padding:10px 14px;background:#fff7ed;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vid-h .meta{display:flex;gap:8px;align-items:center;font-size:11px}
+.tag{background:#e5e7eb;padding:2px 8px;border-radius:10px;font-size:11px}
+.tag.core{background:#dcfce7;color:#166534}
+.tag.ext{background:#fef3c7;color:#92400e}
+.vid-h .cn{font-size:12px;color:var(--muted);margin-right:auto}
+.vid-h .title{font-size:13px;font-weight:600}
+button{font-family:inherit;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:14px;background:var(--accent);color:#fff}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button:hover{opacity:.92}
+input[type=text],input[type=number]{padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;width:120px;font-family:inherit}
+input:focus{outline:none;border-color:var(--accent)}
+input.ok{border-color:var(--ok);background:#f0fdf4}
+input.err{border-color:var(--err);background:#fef2f2}
+input:disabled{background:#f3f4f6;cursor:not-allowed}
+.q{margin:12px 0;padding:14px;background:#f9fafb;border-radius:8px;border-left:3px solid var(--accent)}
+.q .q-text{font-size:15px;margin-bottom:8px}
+.q .q-cn{font-size:12px;color:var(--muted);margin-bottom:8px}
+.q .feedback{margin-top:8px;font-size:13px;padding:6px 10px;border-radius:6px;display:none}
+.q .feedback.show{display:block}
+.q .feedback.ok{background:#dcfce7;color:#166534}
+.q .feedback.err{background:#fee2e2;color:#991b1b}
+.q .feedback.warn{background:#fef3c7;color:#92400e}
+.hint{background:#fef3c7;border-left:3px solid var(--warn);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:13px;display:none}
+.hint.show{display:block}
+.diff{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.diff button{padding:4px 10px;font-size:12px}
+.diff button.on{background:var(--ok)}
+.controls{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
+.controls .info{margin-left:auto;font-size:13px;color:var(--muted)}
+.progress{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:var(--accent);transition:width .3s}
+svg{max-width:100%;display:block;margin:0 auto}
+.num{color:var(--accent);font-weight:600}
+svg circle{transition:r .2s,fill .2s}
+svg line,svg path{transition:stroke .3s,opacity .3s}
+
+.intro-h{font-size:21px;font-weight:700;margin:0 0 4px}
+.intro-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
+.kp-c{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f9fafb}
+.kp-c .n{font-size:12px;color:var(--accent);font-weight:700}
+.kp-c .t{font-size:15px;font-weight:600;margin:2px 0 5px;line-height:1.4}
+.kp-c .d{font-size:12px;color:var(--muted);line-height:1.55}
+.why{background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px;line-height:1.85}
+.why b{color:var(--accent)}
+.how{font-size:14px;line-height:2.1;margin:8px 0 2px}
+.how b{color:var(--accent)}
+.big-start{margin-top:20px;text-align:center}
+.big-start button{font-size:16px;padding:13px 30px;border-radius:10px}
+.trytip{font-size:12px;color:var(--muted);margin:10px 0 2px}
+.cn-tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:1px 6px;margin-left:6px}
+
+.zh{display:none}
+body.lang-en .zh{display:none}
+body.lang-mix .zh{display:inline;font-size:.82em;margin-left:6px;font-weight:400}
+body.lang-zh .en{display:inline;font-size:.78em;margin-left:6px;font-weight:400}
+body.lang-zh .zh{display:inline}
+header, header h1, header p, header .en, header .zh, header .src, header .sub, header .t, header .no{ color:#fff; }
+header p, header .en, header .zh{ opacity:1; }
+
+.langbar{position:fixed;top:8px;right:10px;z-index:300;display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.langseg{display:inline-flex}
+.langseg button{background:transparent;color:#374151;border:none;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:999px;white-space:nowrap}
+.langseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.langbar{top:6px;right:6px}.langseg button{padding:5px 8px;font-size:11px}}
+
+body.lang-mix h1 .en, body.lang-mix h1 .zh,
+body.lang-mix h2 .en, body.lang-mix h2 .zh,
+body.lang-mix h3 .en, body.lang-mix h3 .zh,
+body.lang-mix h4 .en, body.lang-mix h4 .zh,
+body.lang-mix p .en,  body.lang-mix p .zh,
+body.lang-mix li .en, body.lang-mix li .zh,
+body.lang-mix summary .en, body.lang-mix summary .zh,
+body.lang-mix .step .en, body.lang-mix .step .zh,
+body.lang-mix header .en, body.lang-mix header .zh,
+body.lang-mix .ch .en, body.lang-mix .ch .zh,
+body.lang-mix .ch .top .en, body.lang-mix .ch .top .zh,
+body.lang-mix .note .en, body.lang-mix .note .zh { display: block; }
+body.lang-mix h1 .zh, body.lang-mix h2 .zh, body.lang-mix h3 .zh, body.lang-mix h4 .zh,
+body.lang-mix p .zh, body.lang-mix li .zh, body.lang-mix summary .zh,
+body.lang-mix .step .zh, body.lang-mix header .zh,
+body.lang-mix .ch .zh, body.lang-mix .ch .top .zh,
+body.lang-mix .note .zh { font-size: inherit; }
+
+:root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+  --accent:#fb923c;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ }
+}
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+ --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+ --accent:#fb923c;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] main{background:var(--card);color:var(--text)}
+html[data-theme="dark"] nav{background:var(--card)}
+html[data-theme="dark"] .langbar,
+html[data-theme="dark"] .chip:not(.on),
+html[data-theme="dark"] .kp,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] .vid-item,
+html[data-theme="dark"] .proof,
+html[data-theme="dark"] .q{background:var(--card)}
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .kp-c,
+html[data-theme="dark"] .badge:not(.ok):not(.warn):not(.lock),
+html[data-theme="dark"] .pbar,
+html[data-theme="dark"] .ltsw button{background:var(--card2)}
+html[data-theme="dark"] .opt{background:var(--card);color:var(--text)}
+html[data-theme="dark"] .opt:hover:not(:disabled),
+html[data-theme="dark"] button.choice:hover{background:var(--card2);border-color:var(--accent)}
+html[data-theme="dark"] .opt.sel-ok{background:#14532d;color:#bbf7d0;border-color:var(--ok)}
+html[data-theme="dark"] .opt.sel-bad{background:#7f1d1d;color:#fecaca;border-color:var(--err)}
+html[data-theme="dark"] button{color:#0f172a!important}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .langseg button,
+html[data-theme="dark"] .themseg button{color:var(--text)!important}
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary{background:var(--card2)!important}
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .sel .num{color:#0f172a!important}
+html[data-theme="dark"] .langseg button.on,
+html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
+html[data-theme="dark"] .nav-i.on .st.ok,
+html[data-theme="dark"] .nav-i.on .st.err{color:#0f172a!important}
+html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
+html[data-theme="dark"] .step{color:#3a1900!important}
+html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
+html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
+html[data-theme="dark"] .fig *{color:#1f2937!important}
+html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
+html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
+html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
+html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+ background:var(--card2);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder{color:var(--muted)}
+html[data-theme="dark"] table th{color:var(--muted)}
+.themebar{position:fixed;top:44px;right:12px;z-index:300;display:inline-flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.themseg{display:inline-flex}
+.themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
+.themseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+</style>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
+</head>
+<body>
+<div style="background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 16px;font-size:13px;display:flex;gap:18px;align-items:center;position:sticky;top:0;z-index:99">
+ <a href="index.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="zh">← 主页</span><span class="en">← Home</span></a> <a href="home.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="en">← Overview</span><span class="zh">← 总览</span></a>
+ <a href="unittests.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="en">Unit tests</span><span class="zh">单元测试</span></a>
+ <span style="font-size:11px;color:#5b6472"><span class="en">Content from Khan Academy · CC BY-NC-SA</span><span class="zh">内容来自 Khan Academy · CC BY-NC-SA</span></span>
+</div>
+
+<div class="langbar" title="显示语言 · Language display — 随时可改 · change anytime">
+ <span class="langseg">
+  <button data-lang="en" onclick="setLang('en')">English</button>
+  <button data-lang="mix" onclick="setLang('mix')">English + 中文</button>
+  <button data-lang="zh" onclick="setLang('zh')">中文 + English</button>
+ </span>
+</div>
+<div class="themebar" title="日间 / 夜间 / 自动 · Day / Night / Auto">
+ <span class="themseg">
+  <button data-theme="light" onclick="setTheme('light')" title="日间 · Day">☀️</button>
+  <button data-theme="dark" onclick="setTheme('dark')" title="夜间 · Night">🌙</button>
+  <button data-theme="auto" onclick="setTheme('auto')" title="自动跟随系统 · Auto">⚙️</button>
+ </span>
+</div>
+
+<div class="wrap">
+<header>
+ <h1><span class="en">Chapter 4 · Light</span><span class="zh">第 4 章 · 光现象</span></h1>
+ <p><span class="en">Grade 8 · 5 class periods · the fourth chapter</span><span class="zh">八年级 · 5 课时 · 第四章</span></p>
+ </header>
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+const KEY='phys8_ch04_state';
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const LESSONS=[
+ {id:'intro',t:'Intro',cn:'Start here · What this chapter covers',n:'🏠'},
+ {id:'k1',t:'Straight-line travel',cn:'Straight-line travel',n:'4.1'},
+ {id:'k2',t:'Reflection',cn:'Reflection',n:'4.2'},
+ {id:'k3',t:'Plane-mirror images',cn:'Plane-mirror images',n:'4.3'},
+ {id:'k4',t:'Refraction',cn:'Refraction',n:'4.4'},
+ {id:'k5',t:'Dispersion',cn:'Dispersion',n:'4.5'},
+ {id:'test',t:'Chapter check',cn:'Chapter check',n:''}
+];
+let cur='intro';
+function st(id){return S[id]||(S[id]={diag:null,prac:{ok:0,tot:0},vid:{},done:false});}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[ri(0,a.length-1)];}
+function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==null?a:b)+'</span>'; }
+
+/* ===== Video list (Khan Academy · embedded via YouTube; verified 11-char IDs) ===== */
+const VIDEOS={
+k1:[
+ {f:'',yt:'EasN5Z8kElg',t:'Light travels in a straight line',c:'core'},
+ {f:'',yt:'sH0WZgjp_zQ',t:'Pinhole Camera: Light and Shadows',c:'ext'},
+],
+k2:[
+ {f:'',yt:'sd0BOnN6aNY',t:'Specular and diffuse reflection',c:'core'},
+ {f:'',yt:'XR52dXLyz-M',t:'Specular and diffuse reflection 2',c:'ext'},
+],
+k3:[
+ {f:'',yt:'nrOg85VPQgw',t:'Virtual image',c:'core'},
+ {f:'',yt:'8X1AS9qD5AQ',t:'Parabolic mirrors and real images',c:'ext'},
+],
+k4:[
+ {f:'',yt:'LKI1UmFbfaA',t:'Refraction of light',c:'core'},
+ {f:'',yt:'y55tzg_jW9I',t:'Refraction and Snell\'s law',c:'ext'},
+],
+k5:[
+ {f:'',yt:'fywXvl38Va0',t:'Dispersion (& rainbows)',c:'core'},
+ {f:'',yt:'HRuLhY0NAMI',t:'Dispersion',c:'ext'}
+]
+};
+const VTZ={
+ 'Light travels in a straight line':'光沿直线传播',
+ 'Pinhole Camera: Light and Shadows':'小孔成像与影子',
+ 'Specular and diffuse reflection':'镜面反射与漫反射',
+ 'Specular and diffuse reflection 2':'镜面反射与漫反射（二）',
+ 'Virtual image':'虚像',
+ 'Parabolic mirrors and real images':'抛物面镜与实像',
+ 'Refraction of light':'光的折射',
+ 'Refraction and Snell\'s law':'折射与斯涅尔定律',
+ 'Dispersion (& rainbows)':'光的色散与彩虹',
+ 'Dispersion':'光的色散'
+};
+
+/* ============ Lesson K1: straight-line travel ============ */
+function microK1(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why does a shadow have a sharp edge?</span><span class="zh">影子为什么有清晰的边？</span></div>
+  <div class="box">
+   <h3><span class="en">Light travels in straight lines</span><span class="zh">光沿直线传播</span></h3>
+   <p><span class="en">In one material, light goes straight ahead. That is why a shadow follows the shape of the thing blocking the light, and why a small hole makes a clear (if upside-down) picture on a screen behind it.</span><span class="zh">在同一种物质里，光一直向前走直线。所以影子会跟着挡光物体的形状走，小孔也会在后面的屏上投出清晰（但上下颠倒）的像。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">The pinhole camera</span><span class="zh">小孔成像</span></h3>
+   <p><span class="en">Light from the top of an object passes through the tiny hole and lands at the <b class="num">bottom</b> of the screen; light from the bottom lands at the top. So the image is flipped upside down — a real image, made without a lens.</span><span class="zh">物体顶部的光穿过小孔落在屏的<b class="num">下方</b>，底部的光落在屏的上方。于是像被上下颠倒——这是不用透镜做出的实像。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Shadows and eclipses</span><span class="zh">影子与日食、月食</span></h3>
+   <p><span class="en">A solar eclipse happens when the Moon blocks the Sun; a lunar eclipse when Earth's shadow falls on the Moon. Both are possible only because light goes in straight lines.</span><span class="zh">日食是月球挡住了太阳，月食是地球的影子落在了月球上。这两件事之所以发生，都是因为光沿直线传播。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K2: reflection ============ */
+function microK2(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why does a mirror show you, but a wall does not?</span><span class="zh">为什么镜子能照出你，墙却不能？</span></div>
+  <div class="box">
+   <h3><span class="en">The law of reflection</span><span class="zh">反射定律</span></h3>
+   <p><span class="en">The angle of incidence equals the angle of reflection. Both angles are measured from the <b class="num">normal</b> — the line at 90° to the surface, not from the surface itself.</span><span class="zh">入射角等于反射角。两个角都从<b class="num">法线</b>算起——法线是垂直表面的那条线，不是从表面本身算。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Specular vs diffuse reflection</span><span class="zh">镜面反射与漫反射</span></h3>
+   <p><span class="en">A smooth surface (a mirror) sends all reflected rays in one direction — specular reflection, so you see a clear image. A rough surface (paper) scatters the rays every which way — diffuse reflection, so you see the surface but no image.</span><span class="zh">光滑表面（镜子）把反射光朝一个方向送出去——这是镜面反射，所以你能看到清晰的像。粗糙表面（纸）把光散射到四面八方——这是漫反射，所以你看到的是表面本身，没有像。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Left and right flip</span><span class="zh">左右颠倒</span></h3>
+   <p><span class="en">A plane mirror reverses left and right: raise your right hand and the image raises the hand on its left. Up-down stays the same.</span><span class="zh">平面镜把左右颠倒：你举右手，像举的是它左边的手。上下不变。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K3: plane-mirror images ============ */
+function microK3(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Where does the "you" in the mirror actually sit?</span><span class="zh">镜子里的「你」到底坐在哪？</span></div>
+  <div class="box">
+   <h3><span class="en">The image is virtual</span><span class="zh">像是虚像</span></h3>
+   <p><span class="en">The person in the mirror is not really behind the glass — the light never goes there. That is a <b class="num">virtual</b> image: you can see it, but you cannot put a screen there to catch it.</span><span class="zh">镜子里的人并不真在玻璃后面——光从没到过那里。这是<b class="num">虚像</b>：你能看见，却没法用屏接住它。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Three things stay equal</span><span class="zh">三点不变</span></h3>
+   <p><span class="en">The image is upright, the <b class="num">same size</b> as you, and the same distance <b class="num">behind</b> the mirror as you are in front of it.</span><span class="zh">像正立、和你<b class="num">一样大</b>，并且离镜面的距离，正好等于你站在镜前<b class="num">同样远</b>。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Where it is used</span><span class="zh">用在哪里</span></h3>
+   <p><span class="en">Mirrors let you check your face, and two mirrors at an angle make a periscope that sees over a wall. The equal-distance rule is what makes the periscope work.</span><span class="zh">镜子能照脸；两面成角的镜子做成潜望镜，可以越过墙看过去。正是「等距」这条规则让潜望镜能工作。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K4: refraction ============ */
+function microK4(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why does a straw look broken in a glass of water?</span><span class="zh">吸管插进水里为什么像断成两截？</span></div>
+  <div class="box">
+   <h3><span class="en">Light bends at a boundary</span><span class="zh">光在界面处弯折</span></h3>
+   <p><span class="en">When light moves from one material to another (air → water, or water → air) it <b class="num">changes speed</b> and bends. That bend is refraction.</span><span class="zh">光从一种物质进入另一种（空气→水，或水→空气）时，<b class="num">速度改变</b>，于是发生弯折。这个弯折就是折射。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Apparent depth</span><span class="zh">视深</span></h3>
+   <p><span class="en">Because of the bend, a straw in water looks broken, and a pool looks <b class="num">shallower</b> than it really is. The apparent depth is less than the real depth.</span><span class="zh">因为弯折，水里的吸管看着像断了，水池也显得比实际<b class="num">更浅</b>。视深小于实深。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">A real danger</span><span class="zh">真实的危险</span></h3>
+   <p><span class="en">A swimming pool that "looks waist-deep" can be much deeper. Always check the real depth before you jump.</span><span class="zh">看着「只到腰」的泳池，实际可能深得多。跳水前一定要确认真实深度。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K5: dispersion ============ */
+function microK5(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why does a prism paint a rainbow?</span><span class="zh">棱镜为什么画出一道彩虹？</span></div>
+  <div class="box">
+   <h3><span class="en">White light is many colours</span><span class="zh">白光由多种颜色组成</span></h3>
+   <p><span class="en">White light is not one colour. A prism splits it into a <b class="num">spectrum</b>: red, orange, yellow, green, blue, indigo, violet (seven colours, ROYGBIV).</span><span class="zh">白光不是单一颜色。棱镜把它分成一道<b class="num">光谱</b>：红橙黄绿蓝靛紫（七色，ROYGBIV）。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Colours bend by different amounts</span><span class="zh">不同颜色弯折程度不同</span></h3>
+   <p><span class="en">Each colour travels at a slightly different speed in glass, so each bends a little differently. Violet bends most, red bends least.</span><span class="zh">每种颜色在玻璃里速度略有不同，于是弯折程度也略有不同。紫光弯得最多，红光弯得最少。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Rainbows</span><span class="zh">彩虹</span></h3>
+   <p><span class="en">A rainbow is dispersion plus reflection: light enters a raindrop, splits into colours, reflects once inside, and leaves as a fan of colour toward your eye.</span><span class="zh">彩虹是色散加反射：光进入水滴、分成颜色、在水滴里反射一次，再以扇形射向你的眼睛。</span></p>
+  </div>`;
+}
+
+/* ============ Quick check ============ */
+function diag(el,lessonId,generator){
+ el.innerHTML=`<div class="step"><span class="en">Quick check</span><span class="zh">小测一下</span></div><div class="box"><p style="font-size:14px;color:var(--muted)">3 questions, just to see where you stand. Pass 3/3 to skip the lesson; otherwise the lesson comes next.</p><div id="diagQ"></div></div>`;
+ const qEl=el.querySelector('#diagQ');
+ let ok=0;
+ const qs=Array.from({length:3},()=>generator('diag'));
+ let i=0;
+ const show=()=>{
+  if(i>=3){
+   st(lessonId).diag=ok;
+   if(ok===3){
+    qEl.innerHTML=`<div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong>3/3:</strong> you already have this — skip the lesson and go to practice.</div><div style="margin-top:14px"><button id="skipMicro"><span class="en">Skip the lesson, go to practice →</span><span class="zh">跳过微课，去做练习 →</span></button></div>`;
+    qEl.querySelector('#skipMicro').onclick=()=>{cur=`prac-${lessonId}`;render();};
+   } else {
+    qEl.innerHTML=`<div class="note" style="background:#fef3c7;border-color:var(--warn)"><strong>${ok}/3:</strong> work through the lesson below to fill the gap.</div><div style="margin-top:14px"><button id="goMicro"><span class="en">Go to lesson →</span><span class="zh">去看微课 →</span></button></div>`;
+    qEl.querySelector('#goMicro').onclick=()=>{cur=`micro-${lessonId}`;render();};
+   }
+   save();renderNav();
+   return;
+  }
+  const q=qs[i];
+  qEl.innerHTML=`
+   <div class="q">
+    <div class="q-text">${i+1}. ${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="da" autocomplete="off" placeholder="?"> <button id="sub"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ht"></div>
+    <div class="feedback" id="fb"></div>
+   </div>`;
+  const input=qEl.querySelector('#da'),fb=qEl.querySelector('#fb'),ht=qEl.querySelector('#ht');
+  input.focus();
+  qEl.querySelector('#sub').onclick=check;
+  input.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const ans=input.value.trim();
+   const correct=q.check(ans);
+   if(correct===true){ok++;fb.className='feedback show ok';fb.innerHTML=L('✓ Correct · correct','✓ 正确 · 对了');input.disabled=true;setTimeout(()=>{i++;show();},700);}
+   else if(correct==='hint'){ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');}
+   else{fb.className='feedback show err';fb.innerHTML=L('✗ Not right, try again.','✗ 不对，再试一次。');}
+  }
+ };
+ show();
+}
+
+/* ============ Practice generators (by topic) ============ */
+const generators={
+k1:()=>{ // straight-line travel
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Light travels in ___ lines. (type: straight / curved)`,
+   zhq:`光沿___线传播。（填 straight / curved）`,
+   check:a=>a.trim().toLowerCase()==='straight',ans:'straight',choice:true,
+   hint:'in one material, light goes straight ahead.',zhh:'在同一种物质里，光一直向前。'};
+ } else if(type===2){
+  return {q:`A pinhole camera makes an image that is ___ (type: upside down / right side up)`,
+   zhq:`小孔成像得到的像是___（填 upside down / right side up）`,
+   check:a=>a.trim().toLowerCase()==='upside down',ans:'upside down',choice:true,
+   hint:'light from the top lands at the bottom of the screen.',zhh:'顶部的光落在屏的下方。'};
+ } else if(type===3){
+  return {q:`In a pinhole camera, light from the top of the object lands at the ___ of the screen. (type: top / bottom)`,
+   zhq:`小孔成像里，物体顶部的光落在屏的___（填 top / bottom）`,
+   check:a=>a.trim().toLowerCase()==='bottom',ans:'bottom',choice:true,
+   hint:'the path crosses at the tiny hole.',zhh:'光线在小孔处交叉。'};
+ } else if(type===4){
+  return {q:`Light's speed in empty space is about ___ km/s (type: 300000 / 340 / 1500)`,
+   zhq:`真空中光速约为___ km/s（填 300000 / 340 / 1500）`,
+   check:a=>parseInt(a)===300000,ans:'300000',choice:true,
+   hint:'it is the fastest speed there is: 3 hundred thousand km each second.',zhh:'它是宇宙最快：每秒 30 万公里。'};
+ } else {
+  return {q:`A solar eclipse happens when the ___ blocks the Sun. (type: Moon / Earth / Cloud)`,
+   zhq:`日食是___挡住了太阳（填 Moon / Earth / Cloud）`,
+   check:a=>a.trim().toLowerCase()==='moon',ans:'Moon',choice:true,
+   hint:'the Moon sits between the Sun and us.',zhh:'月球处在太阳和我们之间。'};
+ }
+},
+k2:()=>{ // reflection
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`The law of reflection says the angle of incidence ___ the angle of reflection. (type: equals / is double)`,
+   zhq:`反射定律说入射角___反射角（填 equals / is double）`,
+   check:a=>a.trim().toLowerCase()==='equals',ans:'equals',choice:true,
+   hint:'they are the same number of degrees.',zhh:'两者度数相同。'};
+ } else if(type===2){
+  return {q:`In the law of reflection, the angle is measured from the ___ (type: normal / surface)`,
+   zhq:`反射定律里，角是相对___量的（填 normal / surface）`,
+   check:a=>a.trim().toLowerCase()==='normal',ans:'normal',choice:true,
+   hint:'the normal is the line at 90° to the surface.',zhh:'法线是垂直表面的那条线。'};
+ } else if(type===3){
+  return {q:`A smooth mirror gives ___ reflection. (type: specular / diffuse)`,
+   zhq:`光滑镜子发生___反射（填 specular / diffuse）`,
+   check:a=>a.trim().toLowerCase()==='specular',ans:'specular',choice:true,
+   hint:'all rays go in one direction.',zhh:'反射光朝一个方向。'};
+ } else if(type===4){
+  return {q:`A rough surface like paper gives ___ reflection. (type: diffuse / specular)`,
+   zhq:`纸这类粗糙表面发生___反射（填 diffuse / specular）`,
+   check:a=>a.trim().toLowerCase()==='diffuse',ans:'diffuse',choice:true,
+   hint:'rays scatter in all directions.',zhh:'光线向四面八方散射。'};
+ } else {
+  return {q:`A plane mirror reverses left and ___ . (type: right / up)`,
+   zhq:`平面镜把左右颠倒，具体是左和___（填 right / up）`,
+   check:a=>a.trim().toLowerCase()==='right',ans:'right',choice:true,
+   hint:'raise your right hand, the image raises its left.',zhh:'你举右手，像举左手。'};
+ }
+},
+k3:()=>{ // plane-mirror images
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`The image in a plane mirror is ___ (type: virtual / real)`,
+   zhq:`平面镜里的像是___（填 virtual / real）`,
+   check:a=>a.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
+   hint:'light never actually goes behind the glass.',zhh:'光从没真到玻璃后面。'};
+ } else if(type===2){
+  return {q:`The image in a plane mirror is the ___ size as the object. (type: same / half)`,
+   zhq:`平面镜里的像和物体___大（填 same / half）`,
+   check:a=>a.trim().toLowerCase()==='same',ans:'same',choice:true,
+   hint:'not bigger, not smaller.',zhh:'不放大也不缩小。'};
+ } else if(type===3){
+  return {q:`The image sits as far behind the mirror as the object is ___ it. (type: in front of / above)`,
+   zhq:`像离镜面的距离，等于物体___镜面的距离（填 in front of / above）`,
+   check:a=>a.trim().toLowerCase()==='in front of',ans:'in front of',choice:true,
+   hint:'equal distance, opposite sides.',zhh:'距离相等，分居两侧。'};
+ } else if(type===4){
+  return {q:`The image in a plane mirror is ___ (type: upright / upside down)`,
+   zhq:`平面镜里的像是___的（填 upright / upside down）`,
+   check:a=>a.trim().toLowerCase()==='upright',ans:'upright',choice:true,
+   hint:'up-down is not flipped, only left-right.',zhh:'上下不颠倒，只左右反。'};
+ } else {
+  return {q:`A plane mirror flips left and ___ . (type: right / down)`,
+   zhq:`平面镜把左右颠倒，具体是左和___（填 right / down）`,
+   check:a=>a.trim().toLowerCase()==='right',ans:'right',choice:true,
+   hint:'the image raises the hand on its left.',zhh:'像举的是它左边的手。'};
+ }
+},
+k4:()=>{ // refraction
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`When light goes from air into water, it ___ (type: bends / disappears)`,
+   zhq:`光从空气进入水中时会___（填 bends / disappears）`,
+   check:a=>a.trim().toLowerCase()==='bends',ans:'bends',choice:true,
+   hint:'its speed changes at the boundary.',zhh:'在界面处速度改变。'};
+ } else if(type===2){
+  return {q:`A straw in water looks ___ (type: bent / straight)`,
+   zhq:`水里的吸管看着___（填 bent / straight）`,
+   check:a=>a.trim().toLowerCase()==='bent',ans:'bent',choice:true,
+   hint:'refraction makes it look broken.',zhh:'折射让它像断了一样。'};
+ } else if(type===3){
+  return {q:`Because of refraction, a pool looks ___ than it really is. (type: shallower / deeper)`,
+   zhq:`由于折射，水池看着比实际___（填 shallower / deeper）`,
+   check:a=>a.trim().toLowerCase()==='shallower',ans:'shallower',choice:true,
+   hint:'the apparent depth is less than the real depth.',zhh:'视深小于实深。'};
+ } else if(type===4){
+  return {q:`Light bends at a boundary because it changes ___ (type: speed / colour)`,
+   zhq:`光在界面处弯折，是因为它改变了___（填 speed / colour）`,
+   check:a=>a.trim().toLowerCase()==='speed',ans:'speed',choice:true,
+   hint:'different materials, different speeds.',zhh:'不同物质里速度不同。'};
+ } else {
+  return {q:`The apparent depth of a pool is ___ than its real depth. (type: less / more)`,
+   zhq:`水池的视深比实深___（填 less / more）`,
+   check:a=>a.trim().toLowerCase()==='less',ans:'less',choice:true,
+   hint:'it looks shallower.',zhh:'看着更浅。'};
+ }
+},
+k5:()=>{ // dispersion
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`A prism splits white light into a ___ (type: spectrum / single colour)`,
+   zhq:`棱镜把白光分成一道___（填 spectrum / single colour）`,
+   check:a=>a.trim().toLowerCase()==='spectrum',ans:'spectrum',choice:true,
+   hint:'red through violet, seven colours.',zhh:'红到紫，七种颜色。'};
+ } else if(type===2){
+  return {q:`White light contains ___ colours (type: seven / one)`,
+   zhq:`白光由___种颜色组成（填 seven / one）`,
+   check:a=>a.trim().toLowerCase()==='seven',ans:'seven',choice:true,
+   hint:'ROYGBIV — red, orange, yellow, green, blue, indigo, violet.',zhh:'ROYGBIV：红橙黄绿蓝靛紫。'};
+ } else if(type===3){
+  return {q:`Of the spectrum colours, red bends ___ than violet. (type: less / more)`,
+   zhq:`在光谱各色里，红光比紫光弯得___（填 less / more）`,
+   check:a=>a.trim().toLowerCase()==='less',ans:'less',choice:true,
+   hint:'violet bends the most.',zhh:'紫光弯得最多。'};
+ } else if(type===4){
+  return {q:`A rainbow forms when raindrops ___ the light. (type: disperse / block)`,
+   zhq:`彩虹是水滴把光___而形成的（填 disperse / block）`,
+   check:a=>a.trim().toLowerCase()==='disperse',ans:'disperse',choice:true,
+   hint:'split into colours, then reflect once inside.',zhh:'先分成颜色，再在内部反射一次。'};
+ } else {
+  return {q:`Different colours bend by different ___ (type: amounts / speeds here)`,
+   zhq:`不同颜色弯折的___不同（填 amounts / speeds here）`,
+   check:a=>a.trim().toLowerCase()==='amounts',ans:'amounts',choice:true,
+   hint:'each colour refracts a little differently.',zhh:'每种颜色折射程度略不同。'};
+ }
+},
+};
+
+/* ============ Videos module (YouTube embed) ============ */
+function videos(el,lessonId){
+ const list=VIDEOS[lessonId]||[];
+ if(!list.length){el.innerHTML='<div class="note">No videos for this section.</div>';return;}
+ let html=`<div class="step"><span class="en">Videos</span><span class="zh">视频</span> · ${LESSONS.find(l=>l.id===lessonId).t}</div>`;
+ html+=`<div class="box"><p style="font-size:13px;color:var(--muted)"><span class="tag core">Watch first</span> watch first; <span class="tag ext">Optional</span> if you have time.</p></div>`;
+ list.forEach((v,i)=>{
+  const watched=st(lessonId).vid[i];
+  const yt=v.yt&&v.yt.indexOf('TODO')!==0?v.yt:'';
+  html+=`<div class="vid">
+   <div class="vid-h">
+    <span class="title">${L(v.t,(typeof VTZ!=='undefined'&&VTZ[v.t])||v.t)}</span>
+    <span class="meta">
+     <span class="tag ${v.c}"><span class="en">${v.c==='core'?'Core':'Extra'}</span><span class="zh">${v.c==='core'?'核心':'拓展'}</span></span>
+     <span class="st ${watched?'ok':''}">${watched?'✓ watched':'Unwatched'}</span>
+     <button data-i="${i}">${watched?'<span class="en">▶ Replay</span><span class="zh">▶ 重播</span>':'<span class="en">▶ Play</span><span class="zh">▶ 播放</span>'}</button>
+    </span>
+   </div>
+   <div id="vc${i}" style="display:${watched?'block':'none'};position:relative;padding-top:56.25%">
+    ${yt?`<iframe src="https://www.youtube.com/embed/${yt}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"></iframe>`:'<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;background:#f3f4f6">video id pending Khan mapping</div>'}
+   </div>
+  </div>`;
+ });
+ el.innerHTML=html;
+ el.querySelectorAll('[data-i]').forEach(b=>{
+  b.onclick=()=>{
+   const i=parseInt(b.dataset.i);
+   const slot=el.querySelector('#vc'+i);
+   slot.style.display = slot.style.display==='none'?'block':'none';
+   st(lessonId).vid[i]=true;save();renderNav();
+   b.parentElement.querySelector('.st').className='st ok';
+   b.parentElement.querySelector('.st').textContent='✓ watched';
+  };
+ });
+}
+
+/* ============ Practice module ============ */
+function practice(el,lessonId){
+ const gen=generators[lessonId];
+ if(!gen){el.innerHTML='<div class="note">No practice for this.</div>';return;}
+ const s=st(lessonId);
+ let streak=0,need=5,q=null,tries=0,diff=1;
+ function newQ(){q=gen(diff);tries=0;}
+ const update=()=>{
+  el.innerHTML=`
+   <div class="step"><span class="en">Practice</span><span class="zh">练习</span> (${streak}/${need})</div>
+   <div class="diff">
+    Difficulty: 
+    <button class="secondary ${diff===1?'on':''}" data-d="1">Easy</button>
+    <button class="secondary ${diff===2?'on':''}" data-d="2">Medium</button>
+    <button class="secondary ${diff===3?'on':''}" data-d="3">Hard</button>
+    <span class="info">Correct: ${s.prac.ok}/${s.prac.tot} (streak ${streak})<button class="secondary" id="rs" style="margin-left:8px"><span class="en">Reset</span><span class="zh">重置</span></button></span>
+   </div>
+   <div class="progress"><div style="width:${(streak/need)*100}%"></div></div>
+   <div class="q">
+    <div class="q-text">${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="pi" autocomplete="off" placeholder="?"> <button id="ps"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ph"></div>
+    <div class="feedback" id="pf"></div>
+   </div>`;
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{diff=parseInt(b.dataset.d);update();});
+  el.querySelector('#rs').onclick=()=>{s.prac={ok:0,tot:0};streak=0;diff=1;save();update();renderNav();};
+  const syncTop=()=>{
+   const stp=el.querySelector('.step'); if(stp) stp.innerHTML='<span class="en">Practice</span><span class="zh">练习</span> ('+streak+'/'+need+')';
+   const pg=el.querySelector('.progress'); if(pg&&pg.firstElementChild) pg.firstElementChild.style.width=(streak/need)*100+'%';
+   const inf=el.querySelector('.info'); if(inf){const rb=inf.querySelector('#rs');inf.textContent='Correct: '+s.prac.ok+'/'+s.prac.tot+' (streak '+streak+') ';if(rb)inf.appendChild(rb);}
+  };
+  const inp=el.querySelector('#pi'),fb=el.querySelector('#pf'),ht=el.querySelector('#ph');
+  inp.focus();
+  el.querySelector('#ps').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const a=inp.value.trim();
+   const r=q.check(a);
+   if(r===true){
+    streak++;s.prac.ok++;s.prac.tot++;
+    fb.className='feedback show ok';fb.innerHTML=L('✓ correct!','✓ 对了！');
+    inp.disabled=true;syncTop();
+    if(streak>=need){s.done=true;fb.innerHTML+='<br><strong>'+L('Section cleared ✓','本节过关 ✓')+'</strong>';save();renderNav();}
+    else if(streak>=3&&diff<3){diff++;}
+    setTimeout(()=>{newQ();update();},900);
+   } else {
+    tries++;
+    if(tries===1){
+     ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');
+     fb.className='feedback show err';fb.innerHTML=L('✗ Try again. ','✗ 再试一次。');
+    } else if(tries===2){
+     fb.className='feedback show err';
+     fb.innerHTML=L('✗ Not quite. '+(q.sol?('Method: '+q.sol):(q.hint?('Hint: '+q.hint):'Work through it once more.')), '✗ 不太对。'+(q.zhs?('方法：'+q.zhs):(q.zhh?('提示：'+q.zhh):'再算一遍。')));
+    } else {
+     streak=0;s.prac.tot++;syncTop();
+     if(diff>1)diff--;
+     fb.className='feedback show err';
+     fb.innerHTML=L('The answer is <b>'+q.ans+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+q.ans+'</b>'+(q.zhs?('。'+q.zhs):'。'));
+     inp.disabled=true;save();renderNav();
+     setTimeout(()=>{q=gen();tries=0;update();},2400);
+    }
+   }
+   save();
+  }
+ };
+ newQ();update();
+}
+
+/* ============ Chapter check ============ */
+function chTest(el){
+ const N=10;
+ el.innerHTML=`<div class="step"><span class="en">Chapter check</span><span class="zh">章末自己测</span></div><div class="box"><p style="font-size:13px;color:var(--muted)">${N} questions covering every topic in this chapter. Not timed, not scored.</p><div id="tq"></div></div>`;
+ const tq=el.querySelector('#tq');
+ const qs=[];
+ for(let i=0;i<2;i++)qs.push(generators.k1(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k2(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k3(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k4(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k5(i+1));
+ let i=0,ok=0;
+ const show=()=>{
+  if(i>=qs.length){
+   const pass=ok>=Math.ceil(qs.length*0.7);
+   tq.innerHTML=`<div class="note" style="background:${pass?'#dcfce7':'#fef3c7'};border-color:${pass?'var(--ok)':'var(--warn)'}"><strong>${ok}/${qs.length}</strong> ${pass?'Chapter passed! Move on to the next chapter':'Go back and review what you missed'}</div>`;
+   S.test={ok,tot:qs.length};save();renderNav();return;
+  }
+  const q=qs[i];
+  tq.innerHTML=`<div class="q"><div class="q-text">${i+1}/${qs.length}. ${L(q.q,q.zhq)}</div><div style="display:flex;gap:8px"><input id="ti" autocomplete="off"><button id="ts"><span class="en">Submit</span><span class="zh">提交</span></button></div><div class="hint" id="th"></div><div class="feedback" id="tf"></div></div>`;
+  const inp=tq.querySelector('#ti'),fb=tq.querySelector('#tf'),ht=tq.querySelector('#th');
+  inp.focus();tq.querySelector('#ts').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const r=q.check(inp.value.trim());
+   if(r===true){ok++;fb.className='feedback show ok';fb.textContent='✓';inp.disabled=true;setTimeout(()=>{i++;show();},600);}
+   else if(r==='hint'){ht.className='hint show';ht.textContent=q.hint;}
+   else{fb.className='feedback show err';fb.textContent='✗';setTimeout(()=>{i++;show();},900);}
+  }
+ };
+ show();
+}
+
+/* ============ Render ============ */
+const GLOSS={k1:"光的直线传播",k2:"光的反射",k3:"平面镜成像",k4:"光的折射",k5:"光的色散",test:""};
+const USE_MICRO=true;
+const INTRO={why:"Light is the fastest thing there is, and it explains almost everything you see — why shadows have edges, why a mirror flips you left-to-right, why a straw looks broken in a glass of water, and why the sky shows a rainbow after rain. These ideas sit behind cameras, glasses, fibre internet, and every screen you look at.",whyZh:"光是宇宙里跑得最快的东西，你看到的一切几乎都跟它有关——影子为什么有边界、镜子为什么把你左右颠倒、吸管插进水里为什么像断成两截、雨后天空为什么挂出彩虹。这些道理藏在相机、眼镜、光纤上网和每一块屏幕背后。",desc:{k1:"Light goes in straight lines — shadows, pinhole cameras, eclipses",k2:"The law of reflection; why a mirror gives an image but paper does not",k3:"How a plane mirror makes a virtual image, and where it sits",k4:"Why a straw looks bent in water, and why a pool looks shallow",k5:"Why a prism splits white light into a rainbow of colours"}};
+function goLesson(id){cur=USE_MICRO?('micro-'+id):id;render();}
+function introRender(main){
+  const pts=LESSONS.filter(l=>l.id!=='test'&&l.id!=='intro');
+  let h='<div class="intro-h"><span class="en">What this chapter covers</span><span class="zh">本章学什么</span></div>'
+    +'<div class="intro-sub"><span class="en">Here is what this chapter walks you through, in order. Read it first, then start the first lesson below.</span><span class="zh">下面是这一章要走的全部内容，按顺序排好。先看一遍，再点下面开始第一小节。</span></div><div class="kp">';
+  pts.forEach(l=>{
+    const s=st(l.id);
+    const badge=s.done?' <span class="st ok">✓ done</span>':(s.prac.tot>0?' <span class="st">'+s.prac.ok+'/'+s.prac.tot+'</span>':'');
+    h+='<div class="kp-c"><div class="n">'+l.n+'</div><div class="t">'+l.t+(GLOSS[l.id]?' <span class="cn-tag">'+GLOSS[l.id]+'</span>':'')+'</div><div class="d">'+((INTRO.desc&&INTRO.desc[l.id])||'')+'</div>'+badge+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="why"><b><span class="en">Where this shows up in real life</span><span class="zh">在真实生活里哪里会用到</span></b><br>'+L(INTRO.why,INTRO.whyZh)+'</div>';
+  h+='<div class="box"><b><span class="en">How this chapter works</span><span class="zh">本章怎么学</span></b><div class="how">'
+    +'① <b><span class="en">Watch the lesson</span><span class="zh">看微课</span></b>: <span class="en">a few minutes to get what the section is about</span><span class="zh">花几分钟了解本节内容</span><br>'
+    +'② <b><span class="en">Practice</span><span class="zh">练一练</span></b>: <span class="en">5 correct in a row clears it; if you get stuck, hints walk you through</span><span class="zh">连对 5 题就算过关；卡住了就看提示</span><br>'
+    +'③ <b><span class="en">Next section</span><span class="zh">下一节</span></b>: <span class="en">on the left, </span><span class="zh">在左侧，</span>'+pts[0].n+', '+pts[1].n+'… open whichever you want, in any order'
+    +'</div></div>';
+  h+='<div class="big-start"><button id="startBtn">'+pts[0].n+' <span class="en">'+pts[0].t+'</span><span class="zh">开始 · '+NAVZH[pts[0].id]+'</span> →</button></div>';
+  main.innerHTML=h;
+  main.querySelector('#startBtn').onclick=()=>{goLesson(pts[0].id);};
+}
+const NAVZH={"intro":"概览","k1":"光的直线传播","k2":"光的反射","k3":"平面镜成像","k4":"光的折射","k5":"光的色散","test":"章末自己测"};
+const LKEY='phys8_lang';
+function getLang(){return localStorage.getItem(LKEY)||'en';}
+function setLang(l){localStorage.setItem(LKEY,l);applyLang();}
+function applyLang(){const l=getLang();document.body.className=(' '+document.body.className+' ').replace(/\s+lang-(en|mix|zh)\b/g,' ').trim();if(l==='mix'||l==='zh')document.body.classList.add('lang-'+l);document.querySelectorAll('.langseg button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===l);});}
+applyLang();
+
+function renderNav(){
+ const nav=document.getElementById('nav');
+ nav.innerHTML=LESSONS.map(l=>{
+  const s=st(l.id);
+  let stxt='';
+  if(s.done)stxt='<span class="st ok">✓</span>';
+  else if(s.prac.tot>0)stxt=`<span class="st ${s.prac.ok/s.prac.tot>0.6?'ok':'err'}">${s.prac.ok}/${s.prac.tot}</span>`;
+  return `<div class="nav-i ${l.id===cur||cur===`micro-${l.id}`||cur===`diag-${l.id}`||cur===`prac-${l.id}`?'on':''}" data-go="${l.id}">
+   <span><b>${l.n}</b> <span class="en">${l.t}</span><span class="zh">${NAVZH[l.id]||l.t}</span></span>${stxt}</div>`;
+ }).join('');
+ nav.querySelectorAll('[data-go]').forEach(n=>n.onclick=()=>{
+  const id=n.dataset.go;
+  cur = id==='test' ? 'test' : `micro-${id}`;
+  render();
+ });
+}
+
+function render(){
+ const main=document.getElementById('main');
+ renderNav();
+ if(cur==='intro'||cur==='micro-intro'){introRender(main);return;}
+ if(cur==='test'){chTest(main);return;}
+ const m=cur.match(/^(diag|micro|prac)-(\w+)$/);
+ if(m){
+  const phase=m[1],id=m[2];
+  const lesson=LESSONS.find(l=>l.id===id);
+  if(!lesson){main.innerHTML='<div class="note">Unknown lesson</div>';return;}
+  const titles={k1:'Straight-line travel',k2:'Reflection',k3:'Plane-mirror images',k4:'Refraction',k5:'Dispersion'};
+  main.innerHTML=`<div class="lesson-id">${lesson.n} · <span class="en">${titles[id]} · ${lesson.cn}</span><span class="zh">${NAVZH[id]||titles[id]}</span></div>`;
+  const c=document.createElement('div');main.appendChild(c);
+  if(phase==='diag'){
+   if(st(id).diag===3){cur=`micro-${id}`;render();return;}
+   diag(c,id,generators[id]);
+  } else if(phase==='micro'){
+   if(id==='k1')microK1(c);
+   else if(id==='k2')microK2(c);
+   else if(id==='k3')microK3(c);
+   else if(id==='k4')microK4(c);
+   else if(id==='k5')microK5(c);
+   const after=document.createElement('div');main.appendChild(after);
+   videos(after,id);
+   const btn=document.createElement('div');btn.style.marginTop='14px';
+   btn.innerHTML=`<button id="toPrac">Go to practice</button>`;
+   main.appendChild(btn);
+   btn.querySelector('#toPrac').onclick=()=>{cur=`prac-${id}`;render();};
+  } else if(phase==='prac'){
+   practice(c,id);
+  }
+ } else {
+  introRender(main);
+ }
+}
+render();
+</script>
+<script>
+(function(){try{if(new URLSearchParams(location.search).get('go')==='test'){cur='test';render();}}catch(e){}})();
+</script>
+<script>
+var TKEY='phys8_theme';
+function getTheme(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}}
+function setTheme(t){try{localStorage.setItem(TKEY,t);}catch(e){}applyTheme();}
+function applyTheme(){
+ var t=getTheme();
+ document.documentElement.setAttribute('data-theme',t);
+ var bs=document.querySelectorAll('.themseg button');
+ for(var i=0;i<bs.length;i++){
+  var on=(bs[i].getAttribute('data-theme')===t);
+  if(on){bs[i].classList.add('on');}else{bs[i].classList.remove('on');}
+ }
+}
+applyTheme();
+try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
+</script>
+</body></body>
+</html>

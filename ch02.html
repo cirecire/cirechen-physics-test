@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 2 · Sound &amp; Hearing</title>
+<style>
+:root{
+ --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
+ --accent:#0891b2; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1180px;margin:0 auto;padding:18px}
+header{background:linear-gradient(135deg,#7c3aed,#0891b2);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header h1{font-size:22px;margin-bottom:4px}
+header p{opacity:.92;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:14px}
+.nav-i{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-i:hover{background:#ecfeff}
+.nav-i.on{background:var(--accent);color:#fff}
+.nav-i .st{font-size:11px;opacity:.85}
+.nav-i .st.ok{color:var(--ok)}
+.nav-i .st.err{color:var(--err)}
+.nav-i.on .st.ok,.nav-i.on .st.err{color:#fff}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;min-height:80vh}
+h2{font-size:18px;margin-bottom:6px}
+.lesson-id{color:var(--muted);font-size:13px;margin-bottom:14px}
+.box{background:#f9fafb;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.box h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.box .cn{font-size:12px;color:var(--muted);font-style:italic}
+.step{padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;margin-bottom:14px;font-size:15px}
+.note{background:#fffbeb;border-left:3px solid var(--warn);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.note strong{color:var(--warn)}
+.vid{margin:14px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vid-h{padding:10px 14px;background:#ecfeff;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vid-h .meta{display:flex;gap:8px;align-items:center;font-size:11px}
+.tag{background:#e5e7eb;padding:2px 8px;border-radius:10px;font-size:11px}
+.tag.core{background:#dcfce7;color:#166534}
+.tag.ext{background:#fef3c7;color:#92400e}
+.vid-h .cn{font-size:12px;color:var(--muted);margin-right:auto}
+.vid-h .title{font-size:13px;font-weight:600}
+button{font-family:inherit;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:14px;background:var(--accent);color:#fff}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button:hover{opacity:.92}
+input[type=text],input[type=number]{padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;width:120px;font-family:inherit}
+input:focus{outline:none;border-color:var(--accent)}
+input.ok{border-color:var(--ok);background:#f0fdf4}
+input.err{border-color:var(--err);background:#fef2f2}
+input:disabled{background:#f3f4f6;cursor:not-allowed}
+.q{margin:12px 0;padding:14px;background:#f9fafb;border-radius:8px;border-left:3px solid var(--accent)}
+.q .q-text{font-size:15px;margin-bottom:8px}
+.q .q-cn{font-size:12px;color:var(--muted);margin-bottom:8px}
+.q .feedback{margin-top:8px;font-size:13px;padding:6px 10px;border-radius:6px;display:none}
+.q .feedback.show{display:block}
+.q .feedback.ok{background:#dcfce7;color:#166534}
+.q .feedback.err{background:#fee2e2;color:#991b1b}
+.q .feedback.warn{background:#fef3c7;color:#92400e}
+.hint{background:#fef3c7;border-left:3px solid var(--warn);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:13px;display:none}
+.hint.show{display:block}
+.diff{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.diff button{padding:4px 10px;font-size:12px}
+.diff button.on{background:var(--ok)}
+.controls{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
+.controls .info{margin-left:auto;font-size:13px;color:var(--muted)}
+.progress{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:var(--accent);transition:width .3s}
+svg{max-width:100%;display:block;margin:0 auto}
+.num{color:var(--accent);font-weight:600}
+svg circle{transition:r .2s,fill .2s}
+svg line,svg path{transition:stroke .3s,opacity .3s}
+
+.intro-h{font-size:21px;font-weight:700;margin:0 0 4px}
+.intro-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
+.kp-c{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f9fafb}
+.kp-c .n{font-size:12px;color:var(--accent);font-weight:700}
+.kp-c .t{font-size:15px;font-weight:600;margin:2px 0 5px;line-height:1.4}
+.kp-c .d{font-size:12px;color:var(--muted);line-height:1.55}
+.why{background:#ecfeff;border:1px solid #a5f3fc;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px;line-height:1.85}
+.why b{color:var(--accent)}
+.how{font-size:14px;line-height:2.1;margin:8px 0 2px}
+.how b{color:var(--accent)}
+.big-start{margin-top:20px;text-align:center}
+.big-start button{font-size:16px;padding:13px 30px;border-radius:10px}
+.trytip{font-size:12px;color:var(--muted);margin:10px 0 2px}
+.cn-tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:1px 6px;margin-left:6px}
+
+.zh{display:none}
+body.lang-en .zh{display:none}
+body.lang-mix .zh{display:inline;font-size:.82em;margin-left:6px;font-weight:400}
+body.lang-zh .en{display:inline;font-size:.78em;margin-left:6px;font-weight:400}
+body.lang-zh .zh{display:inline}
+header, header h1, header p, header .en, header .zh, header .src, header .sub, header .t, header .no{ color:#fff; }
+header p, header .en, header .zh{ opacity:1; }
+
+.langbar{position:fixed;top:8px;right:10px;z-index:300;display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.langseg{display:inline-flex}
+.langseg button{background:transparent;color:#374151;border:none;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:999px;white-space:nowrap}
+.langseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.langbar{top:6px;right:6px}.langseg button{padding:5px 8px;font-size:11px}}
+
+body.lang-mix h1 .en, body.lang-mix h1 .zh,
+body.lang-mix h2 .en, body.lang-mix h2 .zh,
+body.lang-mix h3 .en, body.lang-mix h3 .zh,
+body.lang-mix h4 .en, body.lang-mix h4 .zh,
+body.lang-mix p .en,  body.lang-mix p .zh,
+body.lang-mix li .en, body.lang-mix li .zh,
+body.lang-mix summary .en, body.lang-mix summary .zh,
+body.lang-mix .step .en, body.lang-mix .step .zh,
+body.lang-mix header .en, body.lang-mix header .zh,
+body.lang-mix .ch .en, body.lang-mix .ch .zh,
+body.lang-mix .ch .top .en, body.lang-mix .ch .top .zh,
+body.lang-mix .note .en, body.lang-mix .note .zh { display: block; }
+body.lang-mix h1 .zh, body.lang-mix h2 .zh, body.lang-mix h3 .zh, body.lang-mix h4 .zh,
+body.lang-mix p .zh, body.lang-mix li .zh, body.lang-mix summary .zh,
+body.lang-mix .step .zh, body.lang-mix header .zh,
+body.lang-mix .ch .zh, body.lang-mix .ch .top .zh,
+body.lang-mix .note .zh { font-size: inherit; }
+
+:root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+  --accent:#22d3ee;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ }
+}
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+ --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+ --accent:#22d3ee;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] main{background:var(--card);color:var(--text)}
+html[data-theme="dark"] nav{background:var(--card)}
+html[data-theme="dark"] .langbar,
+html[data-theme="dark"] .chip:not(.on),
+html[data-theme="dark"] .kp,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] .vid-item,
+html[data-theme="dark"] .proof,
+html[data-theme="dark"] .q{background:var(--card)}
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .kp-c,
+html[data-theme="dark"] .badge:not(.ok):not(.warn):not(.lock),
+html[data-theme="dark"] .pbar,
+html[data-theme="dark"] .nav-i:hover,
+html[data-theme="dark"] input:disabled,
+html[data-theme="dark"] .bars,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .ltsw button{background:var(--card2)}
+html[data-theme="dark"] .opt{background:var(--card);color:var(--text)}
+html[data-theme="dark"] .opt:hover:not(:disabled),
+html[data-theme="dark"] button.choice:hover{background:var(--card2);border-color:var(--accent)}
+html[data-theme="dark"] .opt.sel-ok{background:#14532d;color:#bbf7d0;border-color:var(--ok)}
+html[data-theme="dark"] .opt.sel-bad{background:#7f1d1d;color:#fecaca;border-color:var(--err)}
+html[data-theme="dark"] button{color:#0f172a!important}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .langseg button,
+html[data-theme="dark"] .themseg button{color:var(--text)!important}
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary{background:var(--card2)!important}
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .sel .num{color:#0f172a!important}
+html[data-theme="dark"] .langseg button.on,
+html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
+html[data-theme="dark"] .nav-i.on .st.ok,
+html[data-theme="dark"] .nav-i.on .st.err{color:#0f172a!important}
+html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
+html[data-theme="dark"] .step{color:#062a30!important}
+html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
+html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
+html[data-theme="dark"] .fig *{color:#1f2937!important}
+html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
+html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
+html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
+html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+ background:var(--card2);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder{color:var(--muted)}
+html[data-theme="dark"] table th{color:var(--muted)}
+.themebar{position:fixed;top:44px;right:12px;z-index:300;display:inline-flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.themseg{display:inline-flex}
+.themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
+.themseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+</style>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
+</head>
+<body>
+<div style="background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 16px;font-size:13px;display:flex;gap:18px;align-items:center;position:sticky;top:0;z-index:99">
+ <a href="index.html" style="color:#0891b2;text-decoration:none;font-weight:600"><span class="zh">← 主页</span><span class="en">← Home</span></a> <a href="home.html" style="color:#0891b2;text-decoration:none;font-weight:600"><span class="en">← Overview</span><span class="zh">← 总览</span></a>
+ <a href="unittests.html" style="color:#0891b2;text-decoration:none;font-weight:600"><span class="en">Unit tests</span><span class="zh">单元测试</span></a>
+ <span style="font-size:11px;color:#5b6472"><span class="en">Content from Khan Academy · CC BY-NC-SA</span><span class="zh">内容来自 Khan Academy · CC BY-NC-SA</span></span>
+</div>
+
+<div class="langbar" title="显示语言 · Language display — 随时可改 · change anytime">
+ <span class="langseg">
+  <button data-lang="en" onclick="setLang('en')">English</button>
+  <button data-lang="mix" onclick="setLang('mix')">English + 中文</button>
+  <button data-lang="zh" onclick="setLang('zh')">中文 + English</button>
+ </span>
+</div>
+<div class="themebar" title="日间 / 夜间 / 自动 · Day / Night / Auto">
+ <span class="themseg">
+  <button data-theme="light" onclick="setTheme('light')" title="日间 · Day">☀️</button>
+  <button data-theme="dark" onclick="setTheme('dark')" title="夜间 · Night">🌙</button>
+  <button data-theme="auto" onclick="setTheme('auto')" title="自动跟随系统 · Auto">⚙️</button>
+ </span>
+</div>
+
+<div class="wrap">
+<header>
+ <h1><span class="en">Chapter 2 · Sound &amp; Hearing</span><span class="zh">第 2 章 · 声现象</span></h1>
+ <p><span class="en">Grade 8 · 5 class periods · the second chapter</span><span class="zh">八年级 · 5 课时 · 第二章</span></p>
+ </header>
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+const KEY='phys8_ch02_state';
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const LESSONS=[
+ {id:'intro',t:'Intro',cn:'Start here · What this chapter covers',n:'🏠'},
+ {id:'k1',t:'Production & Propagation',cn:'Sound production and propagation',n:'2.1'},
+ {id:'k2',t:'Characteristics',cn:'Characteristics of sound',n:'2.2'},
+ {id:'k3',t:'Uses of Sound',cn:'Uses of sound',n:'2.3'},
+ {id:'k4',t:'Noise & Control',cn:'Noise and its control',n:'2.4'},
+ {id:'test',t:'Chapter check',cn:'Chapter check',n:''}
+];
+let cur='intro';
+function st(id){return S[id]||(S[id]={diag:null,prac:{ok:0,tot:0},vid:{},done:false});}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[ri(0,a.length-1)];}
+function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==null?a:b)+'</span>'; }
+
+/* ===== Video list (Khan Academy · embedded via YouTube; yt filled in mapping pass) ===== */
+const VIDEOS={
+k1:[
+ {f:'',yt:'nGKffdaI4Pg',t:'Production of sound',c:'core'},
+ {f:'',yt:'UgE2GIQwUCw',t:'Speed of Sound',c:'core'},
+ {f:'',yt:'yF4cvbAYjwI',t:'Relative speed of sound in solids, liquids, and gases',c:'ext'},
+],
+k2:[
+ {f:'',yt:'-_xZZt99MzY',t:'Sound Properties (Amplitude, Period, Frequency, Wavelength)',c:'core'},
+ {f:'',yt:'46V8qqVRirk',t:'Why do sounds get softer?',c:'core'},
+ {f:'',yt:'tJW_a6JeXD8',t:'Amplitude, period, frequency and wavelength of periodic waves',c:'ext'},
+],
+k3:[
+ {f:'',yt:'sTcqtljxLOk',t:'Ultrasound medical imaging',c:'core'},
+ {f:'',yt:'9u1PjsBfrmg',t:'Sound waves',c:'ext'},
+],
+k4:[
+ {f:'',yt:'peSLM4XObBE',t:'Auditory processing',c:'ext'}
+]
+};
+const VTZ={
+ 'Production of sound':'声音的产生',
+ 'Speed of Sound':'声音的速度',
+ 'Relative speed of sound in solids, liquids, and gases':'固体、液体、气体中的声速比较',
+ 'Sound Properties (Amplitude, Period, Frequency, Wavelength)':'声音的性质（振幅·周期·频率·波长）',
+ 'Why do sounds get softer?':'声音为什么会变弱？',
+ 'Amplitude, period, frequency and wavelength of periodic waves':'周期波的振幅、周期、频率与波长',
+ 'Ultrasound medical imaging':'超声波医学成像',
+ 'Sound waves':'声波',
+ 'Auditory processing':'听觉加工'
+};
+
+/* ============ Lesson K1: production & propagation ============ */
+function microK1(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Where does a sound start, and how does it travel?</span><span class="zh">声音从哪里开始，又是怎么传开的？</span></div>
+  <div class="box">
+   <h3><span class="en">Vibration makes sound</span><span class="zh">振动产生声音</span></h3>
+   <p><span class="en">Every sounding object vibrates — a guitar string, a speaker cone, your vocal cords. Stop the vibration and the sound stops too.</span><span class="zh">一切发声的物体都在振动——琴弦、喇叭纸盆、声带都是。振动一停，声音也就停了。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Sound needs a medium</span><span class="zh">声音需要介质</span></h3>
+   <p><span class="en">Sound travels by making particles bump into each other: air, water, or a solid. In empty space (a vacuum) there is nothing to bump, so sound cannot travel.</span><span class="zh">声音靠粒子互相碰撞传播：空气、水或者固体都行。真空里没有粒子可撞，所以声音传不过去。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">How fast?</span><span class="zh">速度有多快</span></h3>
+   <p><span class="en">In air at room temperature sound travels about <b class="num">340 m/s</b>. It moves faster through liquids and fastest through solids: solid &gt; liquid &gt; gas.</span><span class="zh">常温下空气中声速约为 <b class="num">340 m/s</b>。在液体里更快，在固体里最快：固体 &gt; 液体 &gt; 气体。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K2: characteristics ============ */
+function microK2(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why do two notes sound different?</span><span class="zh">为什么两个音听起来不一样？</span></div>
+  <div class="box">
+   <h3><span class="en">Pitch = frequency</span><span class="zh">音调 = 频率</span></h3>
+   <p><span class="en">Pitch is set by frequency (measured in hertz, Hz). More vibrations per second means a higher pitch.</span><span class="zh">音调由频率决定（单位是赫兹 Hz）。每秒振动次数越多，音调越高。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Loudness = amplitude</span><span class="zh">响度 = 振幅</span></h3>
+   <p><span class="en">Loudness is set by amplitude — how far the particles swing. A bigger swing makes a louder sound.</span><span class="zh">响度由振幅决定——粒子摆动多大。摆得越大，声音越响。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Timbre = waveform</span><span class="zh">音色 = 波形</span></h3>
+   <p><span class="en">Timbre comes from the shape of the wave. That is why a flute and a violin playing the same pitch at the same loudness still sound different.</span><span class="zh">音色来自波的形状。所以长笛和小提琴即使音高、响度相同，听起来也不一样。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K3: uses of sound ============ */
+function microK3(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Sound can carry information and energy.</span><span class="zh">声音既能传递信息，也能传递能量。</span></div>
+  <div class="box">
+   <h3><span class="en">Sound as information</span><span class="zh">声音传递信息</span></h3>
+   <p><span class="en">Bats and ships send out sound and listen for the echo — that is echolocation and sonar. Doctors use ultrasound to make pictures inside the body (B-mode scan).</span><span class="zh">蝙蝠和船只发出声音、再听回声——这就是回声定位和声纳。医生用超声波给身体内部成像（B 超）。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Sound as energy</span><span class="zh">声音传递能量</span></h3>
+   <p><span class="en">Focused ultrasound can clean delicate parts or break up kidney stones — it uses the energy carried by the wave, not just the information.</span><span class="zh">聚焦的超声波能清洗精密零件、击碎肾结石——用的是波携带的能量，而不只是信息。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Ultrasound and infrasound</span><span class="zh">超声与次声</span></h3>
+   <p><span class="en">Sound above <b class="num">20 000 Hz</b> is ultrasound (beyond human hearing); below <b class="num">20 Hz</b> is infrasound.</span><span class="zh">频率高于 <b class="num">20 000 Hz</b> 是超声波（人耳听不到）；低于 <b class="num">20 Hz</b> 是次声波。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K4: noise & control ============ */
+function microK4(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Not every sound is welcome.</span><span class="zh">不是所有声音都受欢迎。</span></div>
+  <div class="box">
+   <h3><span class="en">What is noise?</span><span class="zh">什么是噪声</span></h3>
+   <p><span class="en">Noise is sound that gets in the way of rest, study, or work. On a waveform it looks irregular and harsh, unlike a clean musical tone.</span><span class="zh">噪声是妨碍休息、学习或工作的声音。从波形看，它杂乱刺耳，不像乐音那样规整。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Measured in decibels</span><span class="zh">用分贝衡量</span></h3>
+   <p><span class="en">Loudness level is measured in decibels (dB). 0 dB is the quietest a young ear can hear. Long exposure above <b class="num">90 dB</b> can harm hearing.</span><span class="zh">响度等级用分贝（dB）衡量。0 dB 是人耳刚能听见的最弱声。长期处在 <b class="num">90 dB</b> 以上会损伤听力。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Three ways to control it</span><span class="zh">三条控制途径</span></h3>
+   <p><span class="en">① At the source — stop it being made. ② In transit — block or absorb it with walls and barriers. ③ At the ear — earplugs or ear defenders.</span><span class="zh">① 声源处——不让它发出；② 传播过程中——用墙和屏障阻隔或吸收；③ 人耳处——戴耳塞或护耳器。</span></p>
+  </div>`;
+}
+
+/* ============ Quick check ============ */
+function diag(el,lessonId,generator){
+ el.innerHTML=`<div class="step"><span class="en">Quick check</span><span class="zh">小测一下</span></div><div class="box"><p style="font-size:14px;color:var(--muted)">3 questions, just to see where you stand. Pass 3/3 to skip the lesson; otherwise the lesson comes next.</p><div id="diagQ"></div></div>`;
+ const qEl=el.querySelector('#diagQ');
+ let ok=0;
+ const qs=Array.from({length:3},()=>generator('diag'));
+ let i=0;
+ const show=()=>{
+  if(i>=3){
+   st(lessonId).diag=ok;
+   if(ok===3){
+    qEl.innerHTML=`<div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong>3/3:</strong> you already have this — skip the lesson and go to practice.</div><div style="margin-top:14px"><button id="skipMicro"><span class="en">Skip the lesson, go to practice →</span><span class="zh">跳过微课，去做练习 →</span></button></div>`;
+    qEl.querySelector('#skipMicro').onclick=()=>{cur=`prac-${lessonId}`;render();};
+   } else {
+    qEl.innerHTML=`<div class="note" style="background:#fef3c7;border-color:var(--warn)"><strong>${ok}/3:</strong> work through the lesson below to fill the gap.</div><div style="margin-top:14px"><button id="goMicro"><span class="en">Go to lesson →</span><span class="zh">去看微课 →</span></button></div>`;
+    qEl.querySelector('#goMicro').onclick=()=>{cur=`micro-${lessonId}`;render();};
+   }
+   save();renderNav();
+   return;
+  }
+  const q=qs[i];
+  qEl.innerHTML=`
+   <div class="q">
+    <div class="q-text">${i+1}. ${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="da" autocomplete="off" placeholder="?"> <button id="sub"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ht"></div>
+    <div class="feedback" id="fb"></div>
+   </div>`;
+  const input=qEl.querySelector('#da'),fb=qEl.querySelector('#fb'),ht=qEl.querySelector('#ht');
+  input.focus();
+  qEl.querySelector('#sub').onclick=check;
+  input.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const ans=input.value.trim();
+   const correct=q.check(ans);
+   if(correct===true){ok++;fb.className='feedback show ok';fb.innerHTML=L('✓ Correct · correct','✓ 正确 · 对了');input.disabled=true;setTimeout(()=>{i++;show();},700);}
+   else if(correct==='hint'){ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');}
+   else{fb.className='feedback show err';fb.innerHTML=L('✗ Not right, try again.','✗ 不对，再试一次。');}
+  }
+ };
+ show();
+}
+
+/* ============ Practice generators (by topic) ============ */
+const generators={
+k1:()=>{ // production & propagation
+ const type=ri(1,3);
+ if(type===1){
+  const t=ri(2,8);
+  return {q:`Lightning is seen and thunder is heard ${t} s later. How far away is the storm (m)? (use v = 340 m/s)`,
+   zhq:`闪电后 ${t} 秒听到雷声，风暴离你多远（米）？（声速 340 m/s）`,
+   check:a=>parseInt(a)===340*t,ans:String(340*t),hint:'distance = speed × time',zhh:'距离 = 速度 × 时间',
+   sol:`d = 340 × ${t} = ${340*t} m`,zhs:`d = 340 × ${t} = ${340*t} 米`};
+ } else if(type===2){
+  const t=ri(2,6);
+  return {q:`You shout and hear the echo after ${t} s. How far is the cliff (m)? (sound travels to the cliff and back; v = 340 m/s)`,
+   zhq:`你喊一声，${t} 秒后听到回声。悬崖有多远（米）？（声音往返；声速 340 m/s）`,
+   check:a=>parseInt(a)===170*t,ans:String(170*t),hint:'the sound goes there and back, so d = v×t/2',zhh:'声音往返，故 d = v·t/2',
+   sol:`d = 340 × ${t} / 2 = ${170*t} m`,zhs:`d = 340 × ${t} / 2 = ${170*t} 米`};
+ } else {
+  return {q:`In which material does sound travel fastest: air, water, or steel? (type: air / water / steel)`,
+   zhq:`声音在哪种物质里传得最快：空气、水，还是钢？（填 air / water / steel）`,
+   check:a=>a.trim().toLowerCase()==='steel',ans:'steel',choice:true,
+   hint:'solids carry sound faster than liquids, liquids faster than gases.',zhh:'固体传声比液体快，液体比气体快。'};
+ }
+},
+k2:()=>{ // characteristics
+ const type=ri(1,4);
+ if(type===1){
+  return {q:`A higher pitch means a higher ___ (type: frequency / amplitude)`,
+   zhq:`音调越高，说明___越大（填 frequency / amplitude）`,
+   check:a=>a.trim().toLowerCase()==='frequency',ans:'frequency',choice:true,
+   hint:'pitch is set by frequency.',zhh:'音调由频率决定。'};
+ } else if(type===2){
+  return {q:`A louder sound has a larger ___ (type: amplitude / frequency)`,
+   zhq:`声音越响，___越大（填 amplitude / frequency）`,
+   check:a=>a.trim().toLowerCase()==='amplitude',ans:'amplitude',choice:true,
+   hint:'loudness is set by amplitude.',zhh:'响度由振幅决定。'};
+ } else if(type===3){
+  return {q:`Two instruments play the same note but sound different — that is because of their ___ (type: timbre / wavelength)`,
+   zhq:`两种乐器演奏同一音高却听起来不同，是因为它们的___（填 timbre / wavelength）`,
+   check:a=>a.trim().toLowerCase()==='timbre',ans:'timbre',choice:true,
+   hint:'timbre comes from the waveform shape.',zhh:'音色来自波形形状。'};
+ } else {
+  const f1=ri(200,900),f2=f1+ri(100,500);
+  return {q:`A sound at ${f2} Hz sounds ___ pitched than one at ${f1} Hz (type: higher / lower)`,
+   zhq:`${f2} Hz 的声音比 ${f1} Hz 的声音音调更___（填 higher / lower）`,
+   check:a=>a.trim().toLowerCase()==='higher',ans:'higher',choice:true,
+   hint:'more Hz means a higher pitch.',zhh:'频率越高，音调越高。'};
+ }
+},
+k3:()=>{ // uses of sound
+ const type=ri(1,3);
+ if(type===1){
+  return {q:`Sound with a frequency above ___ Hz is called ultrasound.`,
+   zhq:`频率高于___ Hz 的声波称为超声波。`,
+   check:a=>parseInt(a)===20000,ans:'20000',
+   hint:'ultrasound sits above the human hearing range (20 000 Hz).',zhh:'超声在人类听觉上限 20000 Hz 之上。'};
+ } else if(type===2){
+  return {q:`Sound below 20 Hz is called ___ (type: infrasound / ultrasound)`,
+   zhq:`频率低于 20 Hz 的声波称为___（填 infrasound / ultrasound）`,
+   check:a=>a.trim().toLowerCase()==='infrasound',ans:'infrasound',choice:true,
+   hint:'infra means below.',zhh:'infra 表示「低于」。'};
+ } else {
+  return {q:`B-ultrasound is used for ___ (type: medical imaging / room lighting)`,
+   zhq:`B 超用于___（填 medical imaging / room lighting）`,
+   check:a=>a.trim().toLowerCase()==='medical imaging',ans:'medical imaging',choice:true,
+   hint:'ultrasound makes pictures inside the body.',zhh:'超声波能给身体内部成像。'};
+ }
+},
+k4:()=>{ // noise & control
+ const type=ri(1,3);
+ if(type===1){
+  return {q:`Repeated exposure above ___ dB can damage your hearing.`,
+   zhq:`长期暴露在___ dB 以上会损伤听力。`,
+   check:a=>parseInt(a)===90,ans:'90',
+   hint:'90 dB is a common damage threshold.',zhh:'90 dB 是常见的损伤阈值。'};
+ } else if(type===2){
+  return {q:`To cut noise at the source you would ___ (type: turn off the machine / wear earplugs)`,
+   zhq:`要在声源处减小噪声，你会___（填 turn off the machine / wear earplugs）`,
+   check:a=>a.trim().toLowerCase()==='turn off the machine',ans:'turn off the machine',choice:true,
+   hint:'at the source means stop it being made.',zhh:'声源处就是不让它发出。'};
+ } else {
+  return {q:`Wearing ear defenders reduces noise at the ___ (type: ear / source)`,
+   zhq:`戴护耳器是在___处减小噪声（填 ear / source）`,
+   check:a=>a.trim().toLowerCase()==='ear',ans:'ear',choice:true,
+   hint:'ear defenders act on the listener.',zhh:'护耳器作用在听者身上。'};
+ }
+},
+};
+
+/* ============ Videos module (YouTube embed) ============ */
+function videos(el,lessonId){
+ const list=VIDEOS[lessonId]||[];
+ if(!list.length){el.innerHTML='<div class="note">No videos for this section.</div>';return;}
+ let html=`<div class="step"><span class="en">Videos</span><span class="zh">视频</span> · ${LESSONS.find(l=>l.id===lessonId).t}</div>`;
+ html+=`<div class="box"><p style="font-size:13px;color:var(--muted)"><span class="tag core">Watch first</span> watch first; <span class="tag ext">Optional</span> if you have time.</p></div>`;
+ list.forEach((v,i)=>{
+  const watched=st(lessonId).vid[i];
+  const yt=v.yt&&v.yt.indexOf('TODO')!==0?v.yt:'';
+  html+=`<div class="vid">
+   <div class="vid-h">
+    <span class="title">${L(v.t,(typeof VTZ!=='undefined'&&VTZ[v.t])||v.t)}</span>
+    <span class="meta">
+     <span class="tag ${v.c}"><span class="en">${v.c==='core'?'Core':'Extra'}</span><span class="zh">${v.c==='core'?'核心':'拓展'}</span></span>
+     <span class="st ${watched?'ok':''}">${watched?'✓ watched':'Unwatched'}</span>
+     <button data-i="${i}">${watched?'<span class="en">▶ Replay</span><span class="zh">▶ 重播</span>':'<span class="en">▶ Play</span><span class="zh">▶ 播放</span>'}</button>
+    </span>
+   </div>
+   <div id="vc${i}" style="display:${watched?'block':'none'};position:relative;padding-top:56.25%">
+    ${yt?`<iframe src="https://www.youtube.com/embed/${yt}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"></iframe>`:'<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;background:#f3f4f6">video id pending Khan mapping</div>'}
+   </div>
+  </div>`;
+ });
+ el.innerHTML=html;
+ el.querySelectorAll('[data-i]').forEach(b=>{
+  b.onclick=()=>{
+   const i=parseInt(b.dataset.i);
+   const slot=el.querySelector('#vc'+i);
+   slot.style.display = slot.style.display==='none'?'block':'none';
+   st(lessonId).vid[i]=true;save();renderNav();
+   b.parentElement.querySelector('.st').className='st ok';
+   b.parentElement.querySelector('.st').textContent='✓ watched';
+  };
+ });
+}
+
+/* ============ Practice module ============ */
+function practice(el,lessonId){
+ const gen=generators[lessonId];
+ if(!gen){el.innerHTML='<div class="note">No practice for this.</div>';return;}
+ const s=st(lessonId);
+ let streak=0,need=5,q=null,tries=0,diff=1;
+ function newQ(){q=gen(diff);tries=0;}
+ const update=()=>{
+  el.innerHTML=`
+   <div class="step"><span class="en">Practice</span><span class="zh">练习</span> (${streak}/${need})</div>
+   <div class="diff">
+    Difficulty: 
+    <button class="secondary ${diff===1?'on':''}" data-d="1">Easy</button>
+    <button class="secondary ${diff===2?'on':''}" data-d="2">Medium</button>
+    <button class="secondary ${diff===3?'on':''}" data-d="3">Hard</button>
+    <span class="info">Correct: ${s.prac.ok}/${s.prac.tot} (streak ${streak})<button class="secondary" id="rs" style="margin-left:8px"><span class="en">Reset</span><span class="zh">重置</span></button></span>
+   </div>
+   <div class="progress"><div style="width:${(streak/need)*100}%"></div></div>
+   <div class="q">
+    <div class="q-text">${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="pi" autocomplete="off" placeholder="?"> <button id="ps"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ph"></div>
+    <div class="feedback" id="pf"></div>
+   </div>`;
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{diff=parseInt(b.dataset.d);update();});
+  el.querySelector('#rs').onclick=()=>{s.prac={ok:0,tot:0};streak=0;diff=1;save();update();renderNav();};
+  const syncTop=()=>{
+   const stp=el.querySelector('.step'); if(stp) stp.innerHTML='<span class="en">Practice</span><span class="zh">练习</span> ('+streak+'/'+need+')';
+   const pg=el.querySelector('.progress'); if(pg&&pg.firstElementChild) pg.firstElementChild.style.width=(streak/need)*100+'%';
+   const inf=el.querySelector('.info'); if(inf){const rb=inf.querySelector('#rs');inf.textContent='Correct: '+s.prac.ok+'/'+s.prac.tot+' (streak '+streak+') ';if(rb)inf.appendChild(rb);}
+  };
+  const inp=el.querySelector('#pi'),fb=el.querySelector('#pf'),ht=el.querySelector('#ph');
+  inp.focus();
+  el.querySelector('#ps').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const a=inp.value.trim();
+   const r=q.check(a);
+   if(r===true){
+    streak++;s.prac.ok++;s.prac.tot++;
+    fb.className='feedback show ok';fb.innerHTML=L('✓ correct!','✓ 对了！');
+    inp.disabled=true;syncTop();
+    if(streak>=need){s.done=true;fb.innerHTML+='<br><strong>'+L('Section cleared ✓','本节过关 ✓')+'</strong>';save();renderNav();}
+    else if(streak>=3&&diff<3){diff++;}
+    setTimeout(()=>{newQ();update();},900);
+   } else {
+    tries++;
+    if(tries===1){
+     ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');
+     fb.className='feedback show err';fb.innerHTML=L('✗ Try again. ','✗ 再试一次。');
+    } else if(tries===2){
+     fb.className='feedback show err';
+     fb.innerHTML=L('✗ Not quite. '+(q.sol?('Method: '+q.sol):(q.hint?('Hint: '+q.hint):'Work through it once more.')), '✗ 不太对。'+(q.zhs?('方法：'+q.zhs):(q.zhh?('提示：'+q.zhh):'再算一遍。')));
+    } else {
+     streak=0;s.prac.tot++;syncTop();
+     if(diff>1)diff--;
+     fb.className='feedback show err';
+     fb.innerHTML=L('The answer is <b>'+q.ans+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+q.ans+'</b>'+(q.zhs?('。'+q.zhs):'。'));
+     inp.disabled=true;save();renderNav();
+     setTimeout(()=>{q=gen();tries=0;update();},2400);
+    }
+   }
+   save();
+  }
+ };
+ newQ();update();
+}
+
+/* ============ Chapter check ============ */
+function chTest(el){
+ el.innerHTML=`<div class="step"><span class="en">Chapter check</span><span class="zh">章末自己测</span></div><div class="box"><p style="font-size:13px;color:var(--muted)">8 questions covering every topic in this chapter. Not timed, not scored.</p><div id="tq"></div></div>`;
+ const tq=el.querySelector('#tq');
+ const qs=[];
+ for(let i=0;i<2;i++)qs.push(generators.k1(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k2(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k3(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k4(i+1));
+ let i=0,ok=0;
+ const show=()=>{
+  if(i>=qs.length){
+   tq.innerHTML=`<div class="note" style="background:${ok>=6?'#dcfce7':'#fef3c7'};border-color:${ok>=6?'var(--ok)':'var(--warn)'}"><strong>${ok}/${qs.length}</strong> ${ok>=6?'Chapter passed! Move on to the next chapter':'Go back and review what you missed'}</div>`;
+   S.test={ok,tot:qs.length};save();renderNav();return;
+  }
+  const q=qs[i];
+  tq.innerHTML=`<div class="q"><div class="q-text">${i+1}/${qs.length}. ${L(q.q,q.zhq)}</div><div style="display:flex;gap:8px"><input id="ti" autocomplete="off"><button id="ts"><span class="en">Submit</span><span class="zh">提交</span></button></div><div class="hint" id="th"></div><div class="feedback" id="tf"></div></div>`;
+  const inp=tq.querySelector('#ti'),fb=tq.querySelector('#tf'),ht=tq.querySelector('#th');
+  inp.focus();tq.querySelector('#ts').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const r=q.check(inp.value.trim());
+   if(r===true){ok++;fb.className='feedback show ok';fb.textContent='✓';inp.disabled=true;setTimeout(()=>{i++;show();},600);}
+   else if(r==='hint'){ht.className='hint show';ht.textContent=q.hint;}
+   else{fb.className='feedback show err';fb.textContent='✗';setTimeout(()=>{i++;show();},900);}
+  }
+ };
+ show();
+}
+
+/* ============ Render ============ */
+const GLOSS={k1:"产生与传播",k2:"声音的特性",k3:"声的利用",k4:"噪声与控制",test:""};
+const USE_MICRO=true;
+const INTRO={why:"Sound is everywhere — a knock, a song, a warning siren. Pitch, loudness, and timbre let us tell those sounds apart; ultrasound and sonar let doctors and ships 'see' with sound; and too much noise hurts. These ideas sit behind music, medicine, and every quiet library.",whyZh:"声音无处不在——敲门声、歌声、警报声。音调、响度和音色让我们能区分它们；超声波和声纳让医生和船只「用声音看世界」；而噪声过大会伤害听力。这些道理藏在音乐、医学和每一间安静的图书馆背后。",desc:{k1:"How sound is made by vibration, needs a medium, and how fast it travels",k2:"Pitch, loudness, and timbre — what makes sounds different",k3:"Ultrasound, sonar, and B-mode imaging — sound that carries information",k4:"What noise is, how it is measured in decibels, and how to control it"}};
+function goLesson(id){cur=USE_MICRO?('micro-'+id):id;render();}
+function introRender(main){
+  const pts=LESSONS.filter(l=>l.id!=='test'&&l.id!=='intro');
+  let h='<div class="intro-h"><span class="en">What this chapter covers</span><span class="zh">本章学什么</span></div>'
+    +'<div class="intro-sub"><span class="en">Here is what this chapter walks you through, in order. Read it first, then start the first lesson below.</span><span class="zh">下面是这一章要走的全部内容，按顺序排好。先看一遍，再点下面开始第一小节。</span></div><div class="kp">';
+  pts.forEach(l=>{
+    const s=st(l.id);
+    const badge=s.done?' <span class="st ok">✓ done</span>':(s.prac.tot>0?' <span class="st">'+s.prac.ok+'/'+s.prac.tot+'</span>':'');
+    h+='<div class="kp-c"><div class="n">'+l.n+'</div><div class="t">'+l.t+(GLOSS[l.id]?' <span class="cn-tag">'+GLOSS[l.id]+'</span>':'')+'</div><div class="d">'+((INTRO.desc&&INTRO.desc[l.id])||'')+'</div>'+badge+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="why"><b><span class="en">Where this shows up in real life</span><span class="zh">在真实生活里哪里会用到</span></b><br>'+L(INTRO.why,INTRO.whyZh)+'</div>';
+  h+='<div class="box"><b><span class="en">How this chapter works</span><span class="zh">本章怎么学</span></b><div class="how">'
+    +'① <b><span class="en">Watch the lesson</span><span class="zh">看微课</span></b>: <span class="en">a few minutes to get what the section is about</span><span class="zh">花几分钟了解本节内容</span><br>'
+    +'② <b><span class="en">Practice</span><span class="zh">练一练</span></b>: <span class="en">5 correct in a row clears it; if you get stuck, hints walk you through</span><span class="zh">连对 5 题就算过关；卡住了就看提示</span><br>'
+    +'③ <b><span class="en">Next section</span><span class="zh">下一节</span></b>: <span class="en">on the left, </span><span class="zh">在左侧，</span>'+pts[0].n+', '+pts[1].n+'… open whichever you want, in any order'
+    +'</div></div>';
+  h+='<div class="big-start"><button id="startBtn">'+pts[0].n+' <span class="en">'+pts[0].t+'</span><span class="zh">开始 · '+NAVZH[pts[0].id]+'</span> →</button></div>';
+  main.innerHTML=h;
+  main.querySelector('#startBtn').onclick=()=>{goLesson(pts[0].id);};
+}
+const NAVZH={"intro":"概览","k1":"声音的产生与传播","k2":"声音的特性","k3":"声的利用","k4":"噪声的危害和控制","test":"章末自己测"};
+const LKEY='phys8_lang';
+function getLang(){return localStorage.getItem(LKEY)||'en';}
+function setLang(l){localStorage.setItem(LKEY,l);applyLang();}
+function applyLang(){const l=getLang();document.body.className=(' '+document.body.className+' ').replace(/\s+lang-(en|mix|zh)\b/g,' ').trim();if(l==='mix'||l==='zh')document.body.classList.add('lang-'+l);document.querySelectorAll('.langseg button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===l);});}
+applyLang();
+
+function renderNav(){
+ const nav=document.getElementById('nav');
+ nav.innerHTML=LESSONS.map(l=>{
+  const s=st(l.id);
+  let stxt='';
+  if(s.done)stxt='<span class="st ok">✓</span>';
+  else if(s.prac.tot>0)stxt=`<span class="st ${s.prac.ok/s.prac.tot>0.6?'ok':'err'}">${s.prac.ok}/${s.prac.tot}</span>`;
+  return `<div class="nav-i ${l.id===cur||cur===`micro-${l.id}`||cur===`diag-${l.id}`||cur===`prac-${l.id}`?'on':''}" data-go="${l.id}">
+   <span><b>${l.n}</b> <span class="en">${l.t}</span><span class="zh">${NAVZH[l.id]||l.t}</span></span>${stxt}</div>`;
+ }).join('');
+ nav.querySelectorAll('[data-go]').forEach(n=>n.onclick=()=>{
+  const id=n.dataset.go;
+  cur = id==='test' ? 'test' : `micro-${id}`;
+  render();
+ });
+}
+
+function render(){
+ const main=document.getElementById('main');
+ renderNav();
+ if(cur==='intro'||cur==='micro-intro'){introRender(main);return;}
+ if(cur==='test'){chTest(main);return;}
+ const m=cur.match(/^(diag|micro|prac)-(\w+)$/);
+ if(m){
+  const phase=m[1],id=m[2];
+  const lesson=LESSONS.find(l=>l.id===id);
+  if(!lesson){main.innerHTML='<div class="note">Unknown lesson</div>';return;}
+  const titles={k1:'Production & Propagation',k2:'Characteristics',k3:'Uses of Sound',k4:'Noise & Control'};
+  main.innerHTML=`<div class="lesson-id">${lesson.n} · <span class="en">${titles[id]} · ${lesson.cn}</span><span class="zh">${NAVZH[id]||titles[id]}</span></div>`;
+  const c=document.createElement('div');main.appendChild(c);
+  if(phase==='diag'){
+   if(st(id).diag===3){cur=`micro-${id}`;render();return;}
+   diag(c,id,generators[id]);
+  } else if(phase==='micro'){
+   if(id==='k1')microK1(c);
+   else if(id==='k2')microK2(c);
+   else if(id==='k3')microK3(c);
+   else if(id==='k4')microK4(c);
+   const after=document.createElement('div');main.appendChild(after);
+   videos(after,id);
+   const btn=document.createElement('div');btn.style.marginTop='14px';
+   btn.innerHTML=`<button id="toPrac">Go to practice</button>`;
+   main.appendChild(btn);
+   btn.querySelector('#toPrac').onclick=()=>{cur=`prac-${id}`;render();};
+  } else if(phase==='prac'){
+   practice(c,id);
+  }
+ } else {
+  introRender(main);
+ }
+}
+render();
+</script>
+<script>
+(function(){try{if(new URLSearchParams(location.search).get('go')==='test'){cur='test';render();}}catch(e){}})();
+</script>
+<script>
+var TKEY='phys8_theme';
+function getTheme(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}}
+function setTheme(t){try{localStorage.setItem(TKEY,t);}catch(e){}applyTheme();}
+function applyTheme(){
+ var t=getTheme();
+ document.documentElement.setAttribute('data-theme',t);
+ var bs=document.querySelectorAll('.themseg button');
+ for(var i=0;i<bs.length;i++){
+  var on=(bs[i].getAttribute('data-theme')===t);
+  if(on){bs[i].classList.add('on');}else{bs[i].classList.remove('on');}
+ }
+}
+applyTheme();
+try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
+</script>
+</body></body>
+</html>

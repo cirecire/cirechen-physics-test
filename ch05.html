@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Chapter 5 · Lenses &amp; Optical Instruments</title>
+<title>Chapter 5 · Lenses and their applications</title>
 <style>
 :root{
  --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
- --accent:#16a34a; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+ --accent:#ea580c; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 .wrap{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1180px;margin:0 auto;padding:18px}
-header{background:linear-gradient(135deg,#16a34a,#059669);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header{background:linear-gradient(135deg,#ea580c,#f97316);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
 header h1{font-size:22px;margin-bottom:4px}
 header p{opacity:.92;font-size:13px}
 nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:14px}
@@ -72,7 +72,7 @@ svg line,svg path{transition:stroke .3s,opacity .3s}
 
 .intro-h{font-size:21px;font-weight:700;margin:0 0 4px}
 .intro-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
-.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
+.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px;margin:14px 0}
 .kp-c{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f9fafb}
 .kp-c .n{font-size:12px;color:var(--accent);font-weight:700}
 .kp-c .t{font-size:15px;font-weight:600;margin:2px 0 5px;line-height:1.4}
@@ -124,14 +124,14 @@ body.lang-mix .note .zh { font-size: inherit; }
   color-scheme:dark;
   --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
   --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
-  --accent:#4ade80;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+  --accent:#fb923c;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
  }
 }
 html[data-theme="dark"]{
  color-scheme:dark;
  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
- --accent:#4ade80;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ --accent:#fb923c;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
 }
 html[data-theme="light"]{color-scheme:light}
 html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
@@ -220,25 +220,25 @@ html[data-theme="dark"] table th{color:var(--muted)}
 
 <div class="wrap">
 <header>
- <h1><span class="en">Chapter 5 · Lenses &amp; Optical Instruments</span><span class="zh">第 5 章 · 透镜及其应用</span></h1>
- <p><span class="en">Grade 8 · 5 class periods · the fourth chapter</span><span class="zh">八年级 · 5 课时 · 第四章</span></p>
+ <h1><span class="en">Chapter 5 · Lenses and their applications</span><span class="zh">第 5 章 · 透镜及其应用</span></h1>
+ <p><span class="en">Grade 8 · 5 class periods · the fifth chapter</span><span class="zh">八年级 · 5 课时 · 第五章</span></p>
  </header>
 <nav id="nav"></nav>
 <main id="main"></main>
 </div>
 
 <script>
-const KEY='phys8_ch04_state';
+const KEY='phys8_ch05_state';
 let S=load();
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 const LESSONS=[
  {id:'intro',t:'Intro',cn:'Start here · What this chapter covers',n:'🏠'},
  {id:'k1',t:'Lenses',cn:'Lenses',n:'5.1'},
- {id:'k2',t:'Lenses in daily life',cn:'Lenses in daily life',n:'5.2'},
- {id:'k3',t:'Image formation by convex lenses',cn:'Image formation by convex lenses',n:'5.3'},
- {id:'k4',t:'The eye and glasses',cn:'The eye and glasses',n:'5.4'},
- {id:'k5',t:'Microscopes & telescopes',cn:'Microscopes & telescopes',n:'5.5'},
+ {id:'k2',t:'Lenses in life',cn:'Lenses in life',n:'5.2'},
+ {id:'k3',t:'Imaging with convex lens',cn:'Imaging with convex lens',n:'5.3'},
+ {id:'k4',t:'Eye and glasses',cn:'Eye and glasses',n:'5.4'},
+ {id:'k5',t:'Microscope & telescope',cn:'Microscope & telescope',n:'5.5'},
  {id:'test',t:'Chapter check',cn:'Chapter check',n:''}
 ];
 let cur='intro';
@@ -251,131 +251,139 @@ function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==nul
 const VIDEOS={
 k1:[
  {f:'',yt:'K0sjZ5nqQ7g',t:'Convex lenses',c:'core'},
- {f:'',yt:'Vh70PyitQzo',t:'Concave lenses',c:'ext'},
+ {f:'',yt:'Vh70PyitQzo',t:'Concave lenses',c:'core'},
+ {f:'',yt:'rse0I7rZ8jM',t:'Object image and focal distance relationship (proof of formula)',c:'ext'},
 ],
 k2:[
- {f:'',yt:'xxF_mdoZom0',t:'Convex lenses example',c:'core'},
+ {f:'',yt:'7GV1UZSTNJg',t:'Thin lens equation and problem solving',c:'core'},
+ {f:'',yt:'nrOg85VPQgw',t:'Virtual image',c:'ext'},
+ {f:'',yt:'xxF_mdoZom0',t:'Convex lens examples',c:'ext'},
 ],
 k3:[
- {f:'',yt:'7GV1UZSTNJg',t:'Thin lens equation and sign conventions',c:'core'},
+ {f:'',yt:'xxF_mdoZom0',t:'Convex lens examples',c:'core'},
+ {f:'',yt:'acQYX4nwhCk',t:'Object image height and distance relationship',c:'core'},
+ {f:'',yt:'7GV1UZSTNJg',t:'Thin lens equation and problem solving',c:'ext'},
 ],
 k4:[
- {f:'',yt:'eji8zKa7H7s',t:'Human eye',c:'core'},
- {f:'',yt:'8WUEnoxUw6Y',t:'Defects of vision and their correction',c:'ext'},
+ {f:'',yt:'7HGxjs_aYyg',t:'Parts of the eye',c:'core'},
+ {f:'',yt:'8WUEnoxUw6Y',t:'Defects of vision',c:'core'},
+ {f:'',yt:'eji8zKa7H7s',t:'Diopters, Aberration, and the Human Eye',c:'ext'},
 ],
 k5:[
- {f:'',yt:'IeqD7aPKpGo',t:'Compound microscope',c:'core'},
- {f:'',yt:'8zflPRbeRXM',t:'Telescopes',c:'ext'},
+ {f:'',yt:'wJpg7oMgkVc',t:'Simple microscope',c:'core'},
+ {f:'',yt:'IeqD7aPKpGo',t:'Compound microscope',c:'ext'},
+ {f:'',yt:'LK8At6NVtoA',t:'How telescopes work',c:'ext'},
+ {f:'',yt:'8zflPRbeRXM',t:'Magnifying power of telescope',c:'ext'}
 ]
 };
 const VTZ={
  'Convex lenses':'凸透镜',
  'Concave lenses':'凹透镜',
- 'Convex lenses example':'凸透镜实例（照相机·投影仪·放大镜）',
- 'Thin lens equation and sign conventions':'薄透镜公式与符号约定',
- 'Human eye':'眼睛的结构',
- 'Defects of vision and their correction':'视力缺陷与矫正',
- 'Compound microscope':'显微镜',
- 'Telescopes':'望远镜'
+ 'Object image and focal distance relationship (proof of formula)':'物距像距关系（公式推导）',
+ 'Thin lens equation and problem solving':'薄透镜方程与解题',
+ 'Virtual image':'虚像',
+ 'Convex lens examples':'凸透镜例题',
+ 'Object image height and distance relationship':'物距像高关系',
+ 'Parts of the eye':'眼睛的结构',
+ 'Defects of vision':'视力缺陷',
+ 'Diopters, Aberration, and the Human Eye':'屈光度、像差与人眼',
+ 'Simple microscope':'简单显微镜',
+ 'Compound microscope':'复合显微镜',
+ 'How telescopes work':'望远镜怎么工作',
+ 'Magnifying power of telescope':'望远镜的放大率'
 };
 
 /* ============ Lesson K1: lenses ============ */
 function microK1(el){
  el.innerHTML=`
-  <div class="step"><span class="en">What does a lens actually do to light?</span><span class="zh">透镜到底对光做了什么？</span></div>
+  <div class="step"><span class="en">Why does a magnifying glass make things bigger?</span><span class="zh">放大镜为什么能把东西放大？</span></div>
   <div class="box">
-   <h3><span class="en">Convex vs concave</span><span class="zh">凸透镜与凹透镜</span></h3>
-   <p><span class="en">A <b class="num">convex</b> lens is thicker in the middle; a <b class="num">concave</b> lens is thinner in the middle. The shape decides what the lens does to a beam of light.</span><span class="zh"><b class="num">凸</b>透镜中间厚，<b class="num">凹</b>透镜中间薄。形状决定了透镜对光束做什么。</span></p>
+   <h3><span class="en">Two kinds of lens</span><span class="zh">两种透镜</span></h3>
+   <p><span class="en">A <b class="num">convex</b> lens is thicker in the middle — it bulges out. A <b class="num">concave</b> lens is thinner in the middle — it caves in.</span><span class="zh"><b class="num">凸透镜</b>中间厚、向外鼓；<b class="num">凹透镜</b>中间薄、向内凹。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Convex lens converges</span><span class="zh">凸透镜会聚</span></h3>
-   <p><span class="en">A convex lens bends parallel rays so they meet at one point — the <b class="num">focus</b> F. The distance from the lens to F is the <b class="num">focal length</b> f.</span><span class="zh">凸透镜把平行光弯向一点，这点叫<b class="num">焦点</b> F。透镜到 F 的距离叫<b class="num">焦距</b> f。</span></p>
+   <h3><span class="en">What each does to light</span><span class="zh">它们分别怎么对待光</span></h3>
+   <p><span class="en">A convex lens bends parallel rays <b class="num">together</b> to a point. A concave lens spreads them <b class="num">apart</b>. That is why one collects light and the other scatters it.</span><span class="zh">凸透镜把平行光<b class="num">会聚</b>到一点；凹透镜把平行光<b class="num">发散</b>开。一个聚光，一个散光。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Concave lens diverges</span><span class="zh">凹透镜发散</span></h3>
-   <p><span class="en">A concave lens spreads parallel rays apart. If you trace them backwards, they seem to come from a focus on the same side — a virtual focus.</span><span class="zh">凹透镜把平行光向外散开。若把出射光反向延长，它们像是从同侧一个焦点发出——那是虚焦点。</span></p>
+   <h3><span class="en">Focal point and focal length</span><span class="zh">焦点与焦距</span></h3>
+   <p><span class="en">The point where rays meet (for a convex lens) is the <b class="num">focal point</b>. The distance from the lens to that point is the <b class="num">focal length</b> (f). A stronger lens has a shorter focal length.</span><span class="zh">平行光会聚的点叫<b class="num">焦点</b>；透镜到焦点的距离叫<b class="num">焦距</b>（f）。透镜越强，焦距越短。</span></p>
   </div>`;
 }
 
-/* ============ Lesson K2: lenses in daily life ============ */
+/* ============ Lesson K2: lenses in life ============ */
 function microK2(el){
  el.innerHTML=`
-  <div class="step"><span class="en">One lens, three different jobs</span><span class="zh">同一个透镜，三种不同的用途</span></div>
+  <div class="step"><span class="en">How does a camera make a small, upside-down picture?</span><span class="zh">相机怎么知道要拍出又小又倒的像？</span></div>
   <div class="box">
-   <h3><span class="en">Camera (u &gt; 2f)</span><span class="zh">照相机（u &gt; 2f）</span></h3>
-   <p><span class="en">When the object is farther than twice the focal length, the lens forms a <b class="num">smaller, upside-down real image</b> on the sensor or film.</span><span class="zh">物体离透镜超过两倍焦距时，透镜在传感器或胶片上成<b class="num">缩小、倒立的实像</b>。</span></p>
+   <h3><span class="en">The camera</span><span class="zh">照相机</span></h3>
+   <p><span class="en">A camera is a convex lens plus a light sensor. When the subject is far (beyond 2f), the lens makes a <b class="num">smaller, real, upside-down</b> image on the sensor.</span><span class="zh">照相机=凸透镜+感光元件。物体较远（2f 之外）时，透镜在元件上成<b class="num">缩小、倒立、实</b>的像。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Projector (f &lt; u &lt; 2f)</span><span class="zh">投影仪（f &lt; u &lt; 2f）</span></h3>
-   <p><span class="en">When the object sits between f and 2f, the lens throws a <b class="num">larger, upside-down real image</b> onto a screen.</span><span class="zh">物体放在 f 和 2f 之间时，透镜在屏幕上投出<b class="num">放大、倒立的实像</b>。</span></p>
+   <h3><span class="en">The projector</span><span class="zh">投影仪</span></h3>
+   <p><span class="en">A projector puts the slide just beyond the focal point (between f and 2f), so the lens throws a <b class="num">larger, real, upside-down</b> image onto the screen.</span><span class="zh">投影仪把幻灯片放在焦点稍外（f 与 2f 之间），透镜在屏幕上投出<b class="num">放大、倒立、实</b>的像。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Magnifier (u &lt; f)</span><span class="zh">放大镜（u &lt; f）</span></h3>
-   <p><span class="en">When the object is inside the focal length, the lens gives a <b class="num">larger, upright virtual image</b> — you see it big, but no screen can catch it.</span><span class="zh">物体放在焦距以内时，透镜给出<b class="num">放大、正立的虚像</b>——看着变大，但屏幕接不到。</span></p>
+   <h3><span class="en">The magnifying glass</span><span class="zh">放大镜</span></h3>
+   <p><span class="en">Hold something closer than the focal length and the lens makes an <b class="num">upright, enlarged, virtual</b> image — the kind you can see but not catch on a screen.</span><span class="zh">把物体放在焦距以内，透镜成一个<b class="num">正立、放大、虚</b>的像——看得见，却接不到屏上。</span></p>
   </div>`;
 }
 
-/* ============ Lesson K3: image formation rule ============ */
+/* ============ Lesson K3: imaging with convex lens ============ */
 function microK3(el){
  el.innerHTML=`
-  <div class="step"><span class="en">Where does the image land?</span><span class="zh">像落在哪里？</span></div>
+  <div class="step"><span class="en">One lens, three very different pictures — why?</span><span class="zh">同一个透镜，为什么会出三种完全不同的像？</span></div>
   <div class="box">
-   <h3><span class="en">u &gt; 2f → small real image</span><span class="zh">u &gt; 2f → 缩小实像</span></h3>
-   <p><span class="en">Object beyond 2f: image is upside-down, smaller, on the other side, between f and 2f.</span><span class="zh">物体在 2f 外：像倒立、缩小、在另一侧 f 到 2f 之间。</span></p>
+   <h3><span class="en">It depends on the distance</span><span class="zh">全看距离</span></h3>
+   <p><span class="en">Put the object far away (u > 2f) → small real image. Between f and 2f → large real image. Inside the focal length (u < f) → big virtual image.</span><span class="zh">物体在 2f 之外 → 缩小实像；在 f 与 2f 之间 → 放大实像；在焦距之内（u&lt;f）→ 放大虚像。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">u = 2f → same-size real image</span><span class="zh">u = 2f → 等大实像</span></h3>
-   <p><span class="en">At exactly 2f the image is the same size (v = 2f). This is the border between "smaller" and "larger".</span><span class="zh">恰好在 2f 处，像等大（v = 2f）。这是"缩小"与"放大"的分界。</span></p>
+   <h3><span class="en">Real vs virtual</span><span class="zh">实像与虚像</span></h3>
+   <p><span class="en">A <b class="num">real</b> image can be caught on a screen (camera, projector). A <b class="num">virtual</b> image cannot — but your eye still sees it (magnifier).</span><span class="zh"><b class="num">实像</b>能落在屏上（相机、投影仪）；<b class="num">虚像</b>不能，但眼睛照样能看见（放大镜）。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">f &lt; u &lt; 2f → large real image</span><span class="zh">f &lt; u &lt; 2f → 放大实像</span></h3>
-   <p><span class="en">Object between f and 2f: image is upside-down, larger, beyond 2f.</span><span class="zh">物体在 f 与 2f 之间：像倒立、放大、在 2f 之外。</span></p>
-  </div>
-  <div class="box">
-   <h3><span class="en">u = f → no image</span><span class="zh">u = f → 不成像</span></h3>
-   <p><span class="en">At the focus the outgoing rays are parallel, so they never meet — no image forms.</span><span class="zh">恰好在焦点处，出射光平行，永远不会相交——不成像。</span></p>
-  </div>
-  <div class="box">
-   <h3><span class="en">u &lt; f → upright virtual image</span><span class="zh">u &lt; f → 正立虚像</span></h3>
-   <p><span class="en">Inside the focal length: image is upright, larger, on the same side as the object (what a magnifier shows).</span><span class="zh">焦距以内：像正立、放大、与物体同侧（放大镜看到的样子）。</span></p>
+   <h3><span class="en">The rule in a line</span><span class="zh">一句话记牢</span></h3>
+   <p><span class="en">Far → small & real · Near-but-past f → large & real · Inside f → large & virtual & upright. At exactly f, rays run parallel and no image forms.</span><span class="zh">远 → 小且实 · 略过 f → 大且实 · 在 f 内 → 大、虚、正立。恰在 f 处，光线平行，不成像。</span></p>
   </div>`;
 }
 
-/* ============ Lesson K4: the eye and glasses ============ */
+/* ============ Lesson K4: eye and glasses ============ */
 function microK4(el){
  el.innerHTML=`
-  <div class="step"><span class="en">Your eye is a tiny camera</span><span class="zh">你的眼睛是一台小相机</span></div>
+  <div class="step"><span class="en">Why can a near-sighted person read a book but not the board?</span><span class="zh">近视的人为什么能看清书却看不清黑板？</span></div>
   <div class="box">
-   <h3><span class="en">Eye = lens + screen</span><span class="zh">眼睛 = 透镜 + 屏</span></h3>
-   <p><span class="en">The cornea and lens focus light onto the retina, a light-sensitive screen at the back. A healthy eye forms the image right on the retina.</span><span class="zh">角膜和晶状体把光会聚到视网膜——眼球后壁一块感光的屏。健康眼睛把像正好成在视网膜上。</span></p>
+   <h3><span class="en">How the eye works</span><span class="zh">眼睛怎么工作</span></h3>
+   <p><span class="en">Your eye is a convex lens (the crystalline lens) that throws an image onto the <b class="num">retina</b> at the back. A healthy eye puts that image right on the retina.</span><span class="zh">眼睛本身就是一枚凸透镜（晶状体），把像投到后方的<b class="num">视网膜</b>上。健康的眼睛恰好把像落在视网膜。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Nearsight (myopia)</span><span class="zh">近视眼</span></h3>
-   <p><span class="en">The eye focuses too strongly, so distant objects land <b class="num">in front of</b> the retina. A <b class="num">concave</b> lens spreads the light first, pushing the image back onto the retina.</span><span class="zh">眼睛会聚过强，远处物体的像落在视网膜<b class="num">前</b>。先用<b class="num">凹</b>透镜把光发散，把像推回到视网膜上。</span></p>
+   <h3><span class="en">Myopia (near-sighted)</span><span class="zh">近视</span></h3>
+   <p><span class="en">A near-sighted eye focuses the image <b class="num">in front of</b> the retina, so distant things blur. A <b class="num">concave</b> lens spreads the light out first, pushing the image back onto the retina.</span><span class="zh">近视眼把像成在视网膜<b class="num">前方</b>，所以看远模糊。先用<b class="num">凹</b>透镜把光发散，把像推回视网膜。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Farsight (hyperopia)</span><span class="zh">远视眼</span></h3>
-   <p><span class="en">The eye focuses too weakly, so near objects land <b class="num">behind</b> the retina. A <b class="num">convex</b> lens bends the light in first, pulling the image forward onto the retina.</span><span class="zh">眼睛会聚过弱，近处物体的像落在视网膜<b class="num">后</b>。先用<b class="num">凸</b>透镜把光会聚，把像拉前到视网膜上。</span></p>
+   <h3><span class="en">Hyperopia (far-sighted) and correction</span><span class="zh">远视与矫正</span></h3>
+   <p><span class="en">A far-sighted eye focuses <b class="num">behind</b> the retina, so near things blur. A <b class="num">convex</b> lens bends the light in first, pulling the image forward onto the retina.</span><span class="zh">远视眼把像成在视网膜<b class="num">后方</b>，所以看近模糊。用<b class="num">凸</b>透镜先把光会聚，把像拉回视网膜。</span></p>
   </div>`;
 }
 
-/* ============ Lesson K5: microscopes & telescopes ============ */
+/* ============ Lesson K5: microscope & telescope ============ */
 function microK5(el){
  el.innerHTML=`
-  <div class="step"><span class="en">Two lenses do more than one</span><span class="zh">两组透镜，胜过一组</span></div>
+  <div class="step"><span class="en">How can two small lenses show you a cell, or a star?</span><span class="zh">两片小透镜，怎么让你看见细胞、也看见星星？</span></div>
   <div class="box">
-   <h3><span class="en">Microscope</span><span class="zh">显微镜</span></h3>
-   <p><span class="en">A short-focal objective makes a large real image of a tiny object; the eyepiece then magnifies that image again into a virtual one you look at. Two enlargements in a row.</span><span class="zh">短焦距的物镜先把微小物体成一个放大的实像，目镜再把这个像放大成虚像供眼睛看。两次放大叠加。</span></p>
+   <h3><span class="en">The microscope</span><span class="zh">显微镜</span></h3>
+   <p><span class="en">A microscope uses <b class="num">two convex lenses</b>: a strong objective lens makes a small real image of the tiny object, then an eyepiece magnifies that image again.</span><span class="zh">显微镜用<b class="num">两枚凸透镜</b>：强物镜先把微小物体成一个小的实像，目镜再把这像放大一次。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Telescope</span><span class="zh">望远镜</span></h3>
-   <p><span class="en">A long-focal objective forms a small real image of a faraway object; the eyepiece enlarges the viewing angle so the distant thing looks close.</span><span class="zh">长焦距的物镜把远处的物体成一个缩小的实像，目镜放大视角，让远处的东西看着很近。</span></p>
+   <h3><span class="en">The telescope</span><span class="zh">望远镜</span></h3>
+   <p><span class="en">A telescope aims a large objective lens at a <b class="num">distant</b> object to gather its light and make a real image; the eyepiece then magnifies that image so far things look close.</span><span class="zh">望远镜用大物镜对准<b class="num">远处</b>物体，收集它的光并成实像；目镜再放大，让远物显得很近。</span></p>
   </div>
   <div class="box">
-   <h3><span class="en">Same trick</span><span class="zh">同一个窍门</span></h3>
-   <p><span class="en">Both pair an objective (makes the first real image) with an eyepiece (magnifies it). That is the whole idea behind most optical tools.</span><span class="zh">两者都是"物镜（成第一个实像）+ 目镜（放大它）"。这几乎是所有光学工具的思路。</span></p>
+   <h3><span class="en">Why two lenses</span><span class="zh">为什么要用两片</span></h3>
+   <p><span class="en">One lens alone gives either a tiny field or no real gain. Two lenses in a row multiply their power: the first catches and pre-images, the second enlarges what the eye sees.</span><span class="zh">单靠一片，要么视野太小，要么放不大。两片串联把倍率叠乘：第一片先接光成初像，第二片再把眼睛看到的东西放大。</span></p>
   </div>`;
 }
+
+/* ============ Quick check ============ */
 function diag(el,lessonId,generator){
  el.innerHTML=`<div class="step"><span class="en">Quick check</span><span class="zh">小测一下</span></div><div class="box"><p style="font-size:14px;color:var(--muted)">3 questions, just to see where you stand. Pass 3/3 to skip the lesson; otherwise the lesson comes next.</p><div id="diagQ"></div></div>`;
  const qEl=el.querySelector('#diagQ');
@@ -421,151 +429,150 @@ function diag(el,lessonId,generator){
 }
 
 /* ============ Practice generators (by topic) ============ */
-/* ============ Practice generators (by topic) ============ */
 const generators={
 k1:()=>{ // lenses
  const type=ri(1,5);
  if(type===1){
-  return {q:`A lens thicker in the middle is a ___ lens. (type: convex / concave)`,
-   zhq:`中间厚的透镜是___透镜（填 convex / concave）`,
-   check:a=>a.trim().toLowerCase()==='convex',ans:'convex',choice:true,
-   hint:'it bulges out in the centre.',zhh:'它中间鼓出来。'};
+  return {q:`A convex lens is ___ in the middle. (type: thicker / thinner)`,
+   zhq:`凸透镜中间___（填 thicker / thinner）`,
+   check:v=>v.trim().toLowerCase()==='thicker',ans:'thicker',choice:true,
+   hint:'it bulges out at the centre.',zhh:'中间向外鼓。',zhs:'凸透镜中间厚。'};
  } else if(type===2){
-  return {q:`A lens thinner in the middle is a ___ lens. (type: concave / convex)`,
-   zhq:`中间薄的透镜是___透镜（填 concave / convex）`,
-   check:a=>a.trim().toLowerCase()==='concave',ans:'concave',choice:true,
-   hint:'it curves inwards at the centre.',zhh:'它中间向内凹。'};
+  return {q:`A concave lens is ___ in the middle. (type: thicker / thinner)`,
+   zhq:`凹透镜中间___（填 thicker / thinner）`,
+   check:v=>v.trim().toLowerCase()==='thinner',ans:'thinner',choice:true,
+   hint:'it caves in at the centre.',zhh:'中间向内凹。',zhs:'凹透镜中间薄。'};
  } else if(type===3){
-  return {q:`A convex lens ___ parallel rays to a point (the focus). (type: converges / diverges)`,
-   zhq:`凸透镜把平行光___到一点（焦点）（填 converges / diverges）`,
-   check:a=>a.trim().toLowerCase()==='converges',ans:'converges',choice:true,
-   hint:'the rays meet at F.',zhh:'光线在 F 处会合。'};
+  return {q:`A convex (converging) lens bends parallel light rays ___ to a point. (type: together / apart)`,
+   zhq:`凸透镜把平行光___到一点（填 together / apart）`,
+   check:v=>v.trim().toLowerCase()==='together',ans:'together',choice:true,
+   hint:'converging means coming together.',zhh:'会聚就是聚到一起。',zhs:'凸透镜会聚光。'};
  } else if(type===4){
-  return {q:`A concave lens ___ parallel rays apart. (type: diverges / converges)`,
-   zhq:`凹透镜把平行光___开（填 diverges / converges）`,
-   check:a=>a.trim().toLowerCase()==='diverges',ans:'diverges',choice:true,
-   hint:'the rays spread out.',zhh:'光线向外散开。'};
+  return {q:`A concave (diverging) lens spreads light rays ___ . (type: together / apart)`,
+   zhq:`凹透镜把光___开（填 together / apart）`,
+   check:v=>v.trim().toLowerCase()==='apart',ans:'apart',choice:true,
+   hint:'diverging means going apart.',zhh:'发散就是散开。',zhs:'凹透镜发散光。'};
  } else {
-  return {q:`The distance from a lens to its focus is the ___ length. (type: focal / total)`,
-   zhq:`透镜到焦点的距离叫___距（填 focal / total）`,
-   check:a=>a.trim().toLowerCase()==='focal',ans:'focal',choice:true,
-   hint:'measured to the point F.',zhh:'量到 F 点。'};
+  return {q:`The distance from a lens to its focal point is the ___ (type: focal length / diameter)`,
+   zhq:`透镜到焦点的距离叫___（填 focal length / diameter）`,
+   check:v=>v.trim().toLowerCase()==='focal length',ans:'focal length',choice:true,
+   hint:'it is measured in the same unit as other lengths.',zhh:'它和其他长度用同一单位。',zhs:'这叫焦距。'};
  }
 },
-k2:()=>{ // lenses in daily life
+k2:()=>{ // lenses in life
  const type=ri(1,5);
  if(type===1){
-  return {q:`A camera places the object beyond 2f and gets a ___ image. (type: smaller / larger)`,
-   zhq:`照相机把物体放在 2f 外，得到___的像（填 smaller / larger）`,
-   check:a=>a.trim().toLowerCase()==='smaller',ans:'smaller',choice:true,
-   hint:'think of a phone photo of a mountain.',zhh:'想想手机拍的山。'};
+  return {q:`A camera forms an image that is ___ (type: real / virtual)`,
+   zhq:`照相机成的是___像（填 real / virtual）`,
+   check:v=>v.trim().toLowerCase()==='real',ans:'real',choice:true,
+   hint:'it lands on the sensor, so a screen can catch it.',zhh:'落在感光元件上，屏能接住。',zhs:'相机成实像。'};
  } else if(type===2){
-  return {q:`A projector places the object between f and 2f and throws a ___ image on the screen. (type: larger / smaller)`,
-   zhq:`投影仪把物体放在 f 和 2f 之间，在屏幕上投出___的像（填 larger / smaller）`,
-   check:a=>a.trim().toLowerCase()==='larger',ans:'larger',choice:true,
-   hint:'it is shown big for the room.',zhh:'它要放给全屋看，所以大。'};
+  return {q:`A camera image is ___ than the object. (type: smaller / larger)`,
+   zhq:`照相机的像比物体___（填 smaller / larger）`,
+   check:v=>v.trim().toLowerCase()==='smaller',ans:'smaller',choice:true,
+   hint:'you can fit a whole scene on a small chip.',zhh:'一整片景能塞进小元件。',zhs:'相机像缩小。'};
  } else if(type===3){
-  return {q:`A magnifier is used with the object ___ the focal length. (type: inside / beyond)`,
-   zhq:`放大镜使用时，物体放在焦距___（填 inside / beyond）`,
-   check:a=>a.trim().toLowerCase()==='inside',ans:'inside',choice:true,
-   hint:'u < f gives an upright virtual image.',zhh:'u < f 才得到正立虚像。'};
+  return {q:`A magnifying glass gives an image that is ___ when the object is very close. (type: virtual / real)`,
+   zhq:`物体很近时，放大镜成的是___像（填 virtual / real）`,
+   check:v=>v.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
+   hint:'you can see it but not catch it on a screen.',zhh:'看得见却接不到屏上。',zhs:'放大镜成虚像。'};
  } else if(type===4){
-  return {q:`The image from a magnifier is ___ (type: virtual / real)`,
-   zhq:`放大镜成的像是___（填 virtual / real）`,
-   check:a=>a.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
-   hint:'no screen can catch it.',zhh:'屏幕接不到它。'};
+  return {q:`A projector makes an image ___ than the slide. (type: larger / smaller)`,
+   zhq:`投影仪把幻灯片投成___的像（填 larger / smaller）`,
+   check:v=>v.trim().toLowerCase()==='larger',ans:'larger',choice:true,
+   hint:'it fills a big screen from a small slide.',zhh:'小幻灯片填满大屏幕。',zhs:'投影仪像放大。'};
  } else {
-  return {q:`A camera image is upside-down and ___ (type: real / virtual)`,
-   zhq:`照相机的像是倒立且___的（填 real / virtual）`,
-   check:a=>a.trim().toLowerCase()==='real',ans:'real',choice:true,
-   hint:'it lands on the sensor.',zhh:'它落在传感器上。'};
+  return {q:`To use a magnifier, the object must be placed ___ the focal point. (type: inside / outside)`,
+   zhq:`用放大镜时，物体要放在焦点的___（填 inside / outside）`,
+   check:v=>v.trim().toLowerCase()==='inside',ans:'inside',choice:true,
+   hint:'closer than f gives an upright virtual image.',zhh:'比 f 更近才得正立虚像。',zhs:'物体在焦距内。'};
  }
 },
-k3:()=>{ // image formation rule
+k3:()=>{ // imaging with convex lens
  const type=ri(1,5);
  if(type===1){
-  return {q:`When u > 2f, the image is ___ (type: smaller / larger)`,
-   zhq:`当 u > 2f 时，像比物体___（填 smaller / larger）`,
-   check:a=>a.trim().toLowerCase()==='smaller',ans:'smaller',choice:true,
-   hint:'like a camera.',zhh:'像照相机那样。'};
+  return {q:`When the object is far away (u > 2f), the convex-lens image is ___ and real. (type: smaller / larger)`,
+   zhq:`物体很远（u>2f）时，凸透镜成___的实像（填 smaller / larger）`,
+   check:v=>v.trim().toLowerCase()==='smaller',ans:'smaller',choice:true,
+   hint:'far objects shrink on the sensor.',zhh:'远物在元件上变小。',zhs:'远处成缩小实像。'};
  } else if(type===2){
-  return {q:`When f < u < 2f, the image is ___ (type: larger / smaller)`,
-   zhq:`当 f < u < 2f 时，像比物体___（填 larger / smaller）`,
-   check:a=>a.trim().toLowerCase()==='larger',ans:'larger',choice:true,
-   hint:'like a projector.',zhh:'像投影仪那样。'};
+  return {q:`When the object is between f and 2f, the image is ___ and real. (type: larger / smaller)`,
+   zhq:`物体在 f 与 2f 之间时，成___的实像（填 larger / smaller）`,
+   check:v=>v.trim().toLowerCase()==='larger',ans:'larger',choice:true,
+   hint:'this is how a projector works.',zhh:'投影仪就是这个区间。',zhs:'中间成放大实像。'};
  } else if(type===3){
-  return {q:`When u = f, the lens forms ___ image. (type: no / a large)`,
-   zhq:`当 u = f 时，透镜___像（填 no / a large）`,
-   check:a=>a.trim().toLowerCase()==='no',ans:'no',choice:true,
-   hint:'outgoing rays are parallel.',zhh:'出射光平行，不相交。'};
+  return {q:`When the object is inside the focal length (u < f), the image is ___ (type: virtual / real)`,
+   zhq:`物体在焦距内（u<f）时，像是___（填 virtual / real）`,
+   check:v=>v.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
+   hint:'the magnifier lives here.',zhh:'放大镜就在这个区间。',zhs:'焦距内成虚像。'};
  } else if(type===4){
-  return {q:`When u < f, the image is upright and ___ (type: virtual / real)`,
-   zhq:`当 u < f 时，像正立且___（填 virtual / real）`,
-   check:a=>a.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
-   hint:'same side as the object.',zhh:'与物体同侧。'};
+  return {q:`When the object is at exactly 2f, the image is the ___ size as the object. (type: same / half)`,
+   zhq:`物体恰在 2f 处时，像和物体___大（填 same / half）`,
+   check:v=>v.trim().toLowerCase()==='same',ans:'same',choice:true,
+   hint:'it is the crossover point.',zhh:'这是放缩的交界点。',zhs:'2f 处像与物等大。'};
  } else {
-  return {q:`u = 2f is the border between smaller and ___ images. (type: larger / same-size)`,
-   zhq:`u = 2f 是"缩小"和"___"的分界（填 larger / same-size）`,
-   check:a=>a.trim().toLowerCase()==='larger',ans:'larger',choice:true,
-   hint:'at 2f the image is exactly the same size.',zhh:'在 2f 处像恰好等大。'};
+  return {q:`When the object is inside the focal point, the image is ___ (type: upright / upside down)`,
+   zhq:`物体在焦距内时，像是___的（填 upright / upside down）`,
+   check:v=>v.trim().toLowerCase()==='upright',ans:'upright',choice:true,
+   hint:'the magnifier image stands up.',zhh:'放大镜的像正着。',zhs:'焦距内像正立。'};
  }
 },
 k4:()=>{ // eye and glasses
  const type=ri(1,5);
  if(type===1){
-  return {q:`In the eye, light is focused onto the ___ . (type: retina / lens)`,
-   zhq:`眼睛里，光被会聚到___上（填 retina / lens）`,
-   check:a=>a.trim().toLowerCase()==='retina',ans:'retina',choice:true,
-   hint:'the screen at the back of the eye.',zhh:'眼球后壁的屏。'};
+  return {q:`In a healthy eye, the image is formed on the ___ . (type: retina / cornea)`,
+   zhq:`健康的眼睛把像成在___上（填 retina / cornea）`,
+   check:v=>v.trim().toLowerCase()==='retina',ans:'retina',choice:true,
+   hint:'it is the screen at the back of the eye.',zhh:'它是眼球后方的屏。',zhs:'像落在视网膜。'};
  } else if(type===2){
-  return {q:`Nearsight means the image lands ___ the retina. (type: in front of / behind)`,
-   zhq:`近视是指像落在视网膜___（填 in front of / behind）`,
-   check:a=>a.trim().toLowerCase()==='in front of',ans:'in front of',choice:true,
-   hint:'the eye focuses too strongly.',zhh:'眼睛会聚过强。'};
+  return {q:`Myopia (near-sighted) means the image forms ___ the retina. (type: in front of / behind)`,
+   zhq:`近视意味着像成在视网膜的___（填 in front of / behind）`,
+   check:v=>v.trim().toLowerCase()==='in front of',ans:'in front of',choice:true,
+   hint:'too much bending puts it early.',zhh:'会聚过头，落点偏前。',zhs:'近视眼像在视网膜前。'};
  } else if(type===3){
-  return {q:`A nearsighted eye is corrected with a ___ lens. (type: concave / convex)`,
-   zhq:`近视眼用___透镜矫正（填 concave / convex）`,
-   check:a=>a.trim().toLowerCase()==='concave',ans:'concave',choice:true,
-   hint:'it spreads the light out first.',zhh:'先让光发散。'};
+  return {q:`A near-sighted person is corrected with a ___ lens. (type: concave / convex)`,
+   zhq:`近视用___透镜矫正（填 concave / convex）`,
+   check:v=>v.trim().toLowerCase()==='concave',ans:'concave',choice:true,
+   hint:'it spreads light out before the eye.',zhh:'它先把光发散。',zhs:'近视戴凹透镜。'};
  } else if(type===4){
-  return {q:`A farsighted eye is corrected with a ___ lens. (type: convex / concave)`,
-   zhq:`远视眼用___透镜矫正（填 convex / concave）`,
-   check:a=>a.trim().toLowerCase()==='convex',ans:'convex',choice:true,
-   hint:'it bends the light in first.',zhh:'先把光会聚。'};
+  return {q:`Hyperopia (far-sighted) means the image forms ___ the retina. (type: behind / in front of)`,
+   zhq:`远视意味着像成在视网膜的___（填 behind / in front of）`,
+   check:v=>v.trim().toLowerCase()==='behind',ans:'behind',choice:true,
+   hint:'not enough bending puts it late.',zhh:'会聚不够，落点偏后。',zhs:'远视眼像在视网膜后。'};
  } else {
-  return {q:`Farsight means the image lands ___ the retina. (type: behind / in front of)`,
-   zhq:`远视是指像落在视网膜___（填 behind / in front of）`,
-   check:a=>a.trim().toLowerCase()==='behind',ans:'behind',choice:true,
-   hint:'the eye focuses too weakly.',zhh:'眼睛会聚过弱。'};
+  return {q:`A far-sighted person is corrected with a ___ lens. (type: convex / concave)`,
+   zhq:`远视用___透镜矫正（填 convex / concave）`,
+   check:v=>v.trim().toLowerCase()==='convex',ans:'convex',choice:true,
+   hint:'it bends light in before the eye.',zhh:'它先把光会聚。',zhs:'远视戴凸透镜。'};
  }
 },
-k5:()=>{ // microscopes and telescopes
+k5:()=>{ // microscope & telescope
  const type=ri(1,5);
  if(type===1){
-  return {q:`A microscope uses two lenses to enlarge a ___ object. (type: tiny / faraway)`,
-   zhq:`显微镜用两组透镜放大___物体（填 tiny / faraway）`,
-   check:a=>a.trim().toLowerCase()==='tiny',ans:'tiny',choice:true,
-   hint:'like a cell.',zhh:'比如一个细胞。'};
+  return {q:`A microscope uses ___ convex lenses to magnify tiny things. (type: two / one)`,
+   zhq:`显微镜用___枚凸透镜放大微小物体（填 two / one）`,
+   check:v=>v.trim().toLowerCase()==='two',ans:'two',choice:true,
+   hint:'an objective plus an eyepiece.',zhh:'物镜加目镜。',zhs:'显微镜用两片凸透镜。'};
  } else if(type===2){
-  return {q:`A telescope uses two lenses to bring a ___ object close. (type: faraway / tiny)`,
-   zhq:`望远镜用两组透镜把___物体拉近（填 faraway / tiny）`,
-   check:a=>a.trim().toLowerCase()==='faraway',ans:'faraway',choice:true,
-   hint:'like the Moon.',zhh:'比如月亮。'};
+  return {q:`A telescope makes far-away things look ___ (type: closer / smaller)`,
+   zhq:`望远镜让远处的东西看起来___（填 closer / smaller）`,
+   check:v=>v.trim().toLowerCase()==='closer',ans:'closer',choice:true,
+   hint:'it enlarges the angle they make.',zhh:'它放大物体所对的角。',zhs:'望远镜把远物拉近。'};
  } else if(type===3){
-  return {q:`In a microscope, the objective makes the first ___ image. (type: real / virtual)`,
-   zhq:`显微镜里，物镜先成第一个___像（填 real / virtual）`,
-   check:a=>a.trim().toLowerCase()==='real',ans:'real',choice:true,
-   hint:'the eyepiece then magnifies it.',zhh:'再由目镜放大。'};
+  return {q:`A microscope's objective lens first makes a small ___ image. (type: real / virtual)`,
+   zhq:`显微镜的物镜先成一个小的___像（填 real / virtual）`,
+   check:v=>v.trim().toLowerCase()==='real',ans:'real',choice:true,
+   hint:'the eyepiece then enlarges that image.',zhh:'目镜再把它放大。',zhs:'物镜成小的实像。'};
  } else if(type===4){
-  return {q:`The eyepiece in both tools ___ the first image. (type: magnifies / shrinks)`,
-   zhq:`两种工具里，目镜都是把第一个像___（填 magnifies / shrinks）`,
-   check:a=>a.trim().toLowerCase()==='magnifies',ans:'magnifies',choice:true,
-   hint:'that is its job.',zhh:'这是它的作用。'};
+  return {q:`A simple magnifying glass is a single ___ lens. (type: convex / concave)`,
+   zhq:`单独的放大镜是一片___透镜（填 convex / concave）`,
+   check:v=>v.trim().toLowerCase()==='convex',ans:'convex',choice:true,
+   hint:'it bulges in the middle.',zhh:'它中间向外鼓。',zhs:'放大镜是凸透镜。'};
  } else {
-  return {q:`Both tools pair an objective with an ___ . (type: eyepiece / mirror)`,
-   zhq:`两种工具都把物镜和___配对（填 eyepiece / mirror）`,
-   check:a=>a.trim().toLowerCase()==='eyepiece',ans:'eyepiece',choice:true,
-   hint:'objective + eyepiece.',zhh:'物镜 + 目镜。'};
+  return {q:`A telescope uses its objective lens to gather light from ___ objects. (type: distant / nearby)`,
+   zhq:`望远镜用物镜收集___物体的光（填 distant / nearby）`,
+   check:v=>v.trim().toLowerCase()==='distant',ans:'distant',choice:true,
+   hint:'a big lens catches faint far light.',zhh:'大物镜接住远处微弱的光。',zhs:'望远镜看远处物体。'};
  }
 },
 };
@@ -711,7 +718,8 @@ function chTest(el){
 /* ============ Render ============ */
 const GLOSS={k1:"透镜",k2:"生活中的透镜",k3:"凸透镜成像规律",k4:"眼睛和眼镜",k5:"显微镜和望远镜",test:""};
 const USE_MICRO=true;
-const INTRO={why:"A lens bends light on purpose. With the right curve it can focus sunlight to a point, shrink a mountain onto a phone sensor, or let a person see clearly again. This chapter shows how convex and concave lenses steer light, the rule for where an image lands, and how the same idea builds cameras, glasses, microscopes and telescopes.",whyZh:"透镜是故意把光弯折的光学元件。合适的弧度能把阳光聚成一点、把整座山缩进手机传感器、也能让人重新看清世界。这一章讲凸透镜和凹透镜怎么引导光、像落在哪里的规律，以及相机、眼镜、显微镜、望远镜如何用同一个原理造出来。",desc:{k1:"Convex vs concave lenses — how each bends a parallel beam (focusing vs spreading)",k2:"Cameras, projectors and magnifiers — three ways a convex lens makes an image",k3:"The lens rule: where the image forms for every object distance",k4:"The eye is a lens and a screen; glasses fix near- and far-sight",k5:"Two lenses together: the microscope and the telescope"}};
+const INTRO={why:"Lenses are everywhere — in your eyes, your phone camera, glasses, microscopes, and telescopes. This chapter shows how the shape of a lens decides whether it gathers light or scatters it, how a single convex lens can make a camera, a projector, or a magnifier depending on distance, how your eye focuses and why glasses fix blurry vision, and how two lenses together let you see a cell or a star.",
+whyZh:"透镜无处不在——在你眼睛里、手机摄像头里、眼镜里、显微镜和望远镜里。这一章讲：透镜的形状如何决定它是聚光还是散光；同一片凸透镜，距离不同，能当相机、投影仪或放大镜；眼睛怎么聚焦、眼镜怎么矫正模糊；两片透镜怎样让你看见细胞、也看见星星。",desc:{k1:"Convex vs concave; what each does to light; focal point and focal length",k2:"Camera, projector, magnifier — one convex lens, three jobs",k3:"Where the image lands as the object distance changes (u vs f)",k4:"How the eye focuses; myopia and hyperopia and their correction",k5:"Microscope and telescope: two lenses working together"}};
 function goLesson(id){cur=USE_MICRO?('micro-'+id):id;render();}
 function introRender(main){
   const pts=LESSONS.filter(l=>l.id!=='test'&&l.id!=='intro');
@@ -767,7 +775,7 @@ function render(){
   const phase=m[1],id=m[2];
   const lesson=LESSONS.find(l=>l.id===id);
   if(!lesson){main.innerHTML='<div class="note">Unknown lesson</div>';return;}
-  const titles={k1:'Straight-line travel',k2:'Reflection',k3:'Plane-mirror images',k4:'Refraction',k5:'Dispersion'};
+  const titles={k1:'Lenses',k2:'Lenses in life',k3:'Imaging with convex lens',k4:'Eye and glasses',k5:'Microscope & telescope'};
   main.innerHTML=`<div class="lesson-id">${lesson.n} · <span class="en">${titles[id]} · ${lesson.cn}</span><span class="zh">${NAVZH[id]||titles[id]}</span></div>`;
   const c=document.createElement('div');main.appendChild(c);
   if(phase==='diag'){
@@ -813,5 +821,6 @@ function applyTheme(){
 applyTheme();
 try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
 </script>
-</body></body>
+</body>
+</body>
 </html>

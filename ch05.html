@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 5 · Lenses &amp; Optical Instruments</title>
+<style>
+:root{
+ --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
+ --accent:#16a34a; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1180px;margin:0 auto;padding:18px}
+header{background:linear-gradient(135deg,#16a34a,#059669);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header h1{font-size:22px;margin-bottom:4px}
+header p{opacity:.92;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:14px}
+.nav-i{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-i:hover{background:#fff7ed}
+.nav-i.on{background:var(--accent);color:#fff}
+.nav-i .st{font-size:11px;opacity:.85}
+.nav-i .st.ok{color:var(--ok)}
+.nav-i .st.err{color:var(--err)}
+.nav-i.on .st.ok,.nav-i.on .st.err{color:#fff}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;min-height:80vh}
+h2{font-size:18px;margin-bottom:6px}
+.lesson-id{color:var(--muted);font-size:13px;margin-bottom:14px}
+.box{background:#f9fafb;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.box h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.box .cn{font-size:12px;color:var(--muted);font-style:italic}
+.step{padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;margin-bottom:14px;font-size:15px}
+.note{background:#fffbeb;border-left:3px solid var(--warn);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.note strong{color:var(--warn)}
+.vid{margin:14px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vid-h{padding:10px 14px;background:#fff7ed;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vid-h .meta{display:flex;gap:8px;align-items:center;font-size:11px}
+.tag{background:#e5e7eb;padding:2px 8px;border-radius:10px;font-size:11px}
+.tag.core{background:#dcfce7;color:#166534}
+.tag.ext{background:#fef3c7;color:#92400e}
+.vid-h .cn{font-size:12px;color:var(--muted);margin-right:auto}
+.vid-h .title{font-size:13px;font-weight:600}
+button{font-family:inherit;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:14px;background:var(--accent);color:#fff}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button:hover{opacity:.92}
+input[type=text],input[type=number]{padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;width:120px;font-family:inherit}
+input:focus{outline:none;border-color:var(--accent)}
+input.ok{border-color:var(--ok);background:#f0fdf4}
+input.err{border-color:var(--err);background:#fef2f2}
+input:disabled{background:#f3f4f6;cursor:not-allowed}
+.q{margin:12px 0;padding:14px;background:#f9fafb;border-radius:8px;border-left:3px solid var(--accent)}
+.q .q-text{font-size:15px;margin-bottom:8px}
+.q .q-cn{font-size:12px;color:var(--muted);margin-bottom:8px}
+.q .feedback{margin-top:8px;font-size:13px;padding:6px 10px;border-radius:6px;display:none}
+.q .feedback.show{display:block}
+.q .feedback.ok{background:#dcfce7;color:#166534}
+.q .feedback.err{background:#fee2e2;color:#991b1b}
+.q .feedback.warn{background:#fef3c7;color:#92400e}
+.hint{background:#fef3c7;border-left:3px solid var(--warn);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:13px;display:none}
+.hint.show{display:block}
+.diff{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.diff button{padding:4px 10px;font-size:12px}
+.diff button.on{background:var(--ok)}
+.controls{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
+.controls .info{margin-left:auto;font-size:13px;color:var(--muted)}
+.progress{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:var(--accent);transition:width .3s}
+svg{max-width:100%;display:block;margin:0 auto}
+.num{color:var(--accent);font-weight:600}
+svg circle{transition:r .2s,fill .2s}
+svg line,svg path{transition:stroke .3s,opacity .3s}
+
+.intro-h{font-size:21px;font-weight:700;margin:0 0 4px}
+.intro-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
+.kp-c{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f9fafb}
+.kp-c .n{font-size:12px;color:var(--accent);font-weight:700}
+.kp-c .t{font-size:15px;font-weight:600;margin:2px 0 5px;line-height:1.4}
+.kp-c .d{font-size:12px;color:var(--muted);line-height:1.55}
+.why{background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px;line-height:1.85}
+.why b{color:var(--accent)}
+.how{font-size:14px;line-height:2.1;margin:8px 0 2px}
+.how b{color:var(--accent)}
+.big-start{margin-top:20px;text-align:center}
+.big-start button{font-size:16px;padding:13px 30px;border-radius:10px}
+.trytip{font-size:12px;color:var(--muted);margin:10px 0 2px}
+.cn-tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:1px 6px;margin-left:6px}
+
+.zh{display:none}
+body.lang-en .zh{display:none}
+body.lang-mix .zh{display:inline;font-size:.82em;margin-left:6px;font-weight:400}
+body.lang-zh .en{display:inline;font-size:.78em;margin-left:6px;font-weight:400}
+body.lang-zh .zh{display:inline}
+header, header h1, header p, header .en, header .zh, header .src, header .sub, header .t, header .no{ color:#fff; }
+header p, header .en, header .zh{ opacity:1; }
+
+.langbar{position:fixed;top:8px;right:10px;z-index:300;display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.langseg{display:inline-flex}
+.langseg button{background:transparent;color:#374151;border:none;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:999px;white-space:nowrap}
+.langseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.langbar{top:6px;right:6px}.langseg button{padding:5px 8px;font-size:11px}}
+
+body.lang-mix h1 .en, body.lang-mix h1 .zh,
+body.lang-mix h2 .en, body.lang-mix h2 .zh,
+body.lang-mix h3 .en, body.lang-mix h3 .zh,
+body.lang-mix h4 .en, body.lang-mix h4 .zh,
+body.lang-mix p .en,  body.lang-mix p .zh,
+body.lang-mix li .en, body.lang-mix li .zh,
+body.lang-mix summary .en, body.lang-mix summary .zh,
+body.lang-mix .step .en, body.lang-mix .step .zh,
+body.lang-mix header .en, body.lang-mix header .zh,
+body.lang-mix .ch .en, body.lang-mix .ch .zh,
+body.lang-mix .ch .top .en, body.lang-mix .ch .top .zh,
+body.lang-mix .note .en, body.lang-mix .note .zh { display: block; }
+body.lang-mix h1 .zh, body.lang-mix h2 .zh, body.lang-mix h3 .zh, body.lang-mix h4 .zh,
+body.lang-mix p .zh, body.lang-mix li .zh, body.lang-mix summary .zh,
+body.lang-mix .step .zh, body.lang-mix header .zh,
+body.lang-mix .ch .zh, body.lang-mix .ch .top .zh,
+body.lang-mix .note .zh { font-size: inherit; }
+
+:root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+  --accent:#4ade80;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ }
+}
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+ --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+ --accent:#4ade80;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] main{background:var(--card);color:var(--text)}
+html[data-theme="dark"] nav{background:var(--card)}
+html[data-theme="dark"] .langbar,
+html[data-theme="dark"] .chip:not(.on),
+html[data-theme="dark"] .kp,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] .vid-item,
+html[data-theme="dark"] .proof,
+html[data-theme="dark"] .q{background:var(--card)}
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .kp-c,
+html[data-theme="dark"] .badge:not(.ok):not(.warn):not(.lock),
+html[data-theme="dark"] .pbar,
+html[data-theme="dark"] .ltsw button{background:var(--card2)}
+html[data-theme="dark"] .opt{background:var(--card);color:var(--text)}
+html[data-theme="dark"] .opt:hover:not(:disabled),
+html[data-theme="dark"] button.choice:hover{background:var(--card2);border-color:var(--accent)}
+html[data-theme="dark"] .opt.sel-ok{background:#14532d;color:#bbf7d0;border-color:var(--ok)}
+html[data-theme="dark"] .opt.sel-bad{background:#7f1d1d;color:#fecaca;border-color:var(--err)}
+html[data-theme="dark"] button{color:#0f172a!important}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .langseg button,
+html[data-theme="dark"] .themseg button{color:var(--text)!important}
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary{background:var(--card2)!important}
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .sel .num{color:#0f172a!important}
+html[data-theme="dark"] .langseg button.on,
+html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
+html[data-theme="dark"] .nav-i.on .st.ok,
+html[data-theme="dark"] .nav-i.on .st.err{color:#0f172a!important}
+html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
+html[data-theme="dark"] .step{color:#3a1900!important}
+html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
+html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
+html[data-theme="dark"] .fig *{color:#1f2937!important}
+html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
+html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
+html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
+html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+ background:var(--card2);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder{color:var(--muted)}
+html[data-theme="dark"] table th{color:var(--muted)}
+.themebar{position:fixed;top:44px;right:12px;z-index:300;display:inline-flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.themseg{display:inline-flex}
+.themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
+.themseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+</style>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
+</head>
+<body>
+<div style="background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 16px;font-size:13px;display:flex;gap:18px;align-items:center;position:sticky;top:0;z-index:99">
+ <a href="index.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="zh">← 主页</span><span class="en">← Home</span></a> <a href="home.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="en">← Overview</span><span class="zh">← 总览</span></a>
+ <a href="unittests.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="en">Unit tests</span><span class="zh">单元测试</span></a>
+ <span style="font-size:11px;color:#5b6472"><span class="en">Content from Khan Academy · CC BY-NC-SA</span><span class="zh">内容来自 Khan Academy · CC BY-NC-SA</span></span>
+</div>
+
+<div class="langbar" title="显示语言 · Language display — 随时可改 · change anytime">
+ <span class="langseg">
+  <button data-lang="en" onclick="setLang('en')">English</button>
+  <button data-lang="mix" onclick="setLang('mix')">English + 中文</button>
+  <button data-lang="zh" onclick="setLang('zh')">中文 + English</button>
+ </span>
+</div>
+<div class="themebar" title="日间 / 夜间 / 自动 · Day / Night / Auto">
+ <span class="themseg">
+  <button data-theme="light" onclick="setTheme('light')" title="日间 · Day">☀️</button>
+  <button data-theme="dark" onclick="setTheme('dark')" title="夜间 · Night">🌙</button>
+  <button data-theme="auto" onclick="setTheme('auto')" title="自动跟随系统 · Auto">⚙️</button>
+ </span>
+</div>
+
+<div class="wrap">
+<header>
+ <h1><span class="en">Chapter 5 · Lenses &amp; Optical Instruments</span><span class="zh">第 5 章 · 透镜及其应用</span></h1>
+ <p><span class="en">Grade 8 · 5 class periods · the fourth chapter</span><span class="zh">八年级 · 5 课时 · 第四章</span></p>
+ </header>
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+const KEY='phys8_ch04_state';
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const LESSONS=[
+ {id:'intro',t:'Intro',cn:'Start here · What this chapter covers',n:'🏠'},
+ {id:'k1',t:'Lenses',cn:'Lenses',n:'5.1'},
+ {id:'k2',t:'Lenses in daily life',cn:'Lenses in daily life',n:'5.2'},
+ {id:'k3',t:'Image formation by convex lenses',cn:'Image formation by convex lenses',n:'5.3'},
+ {id:'k4',t:'The eye and glasses',cn:'The eye and glasses',n:'5.4'},
+ {id:'k5',t:'Microscopes & telescopes',cn:'Microscopes & telescopes',n:'5.5'},
+ {id:'test',t:'Chapter check',cn:'Chapter check',n:''}
+];
+let cur='intro';
+function st(id){return S[id]||(S[id]={diag:null,prac:{ok:0,tot:0},vid:{},done:false});}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[ri(0,a.length-1)];}
+function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==null?a:b)+'</span>'; }
+
+/* ===== Video list (Khan Academy · embedded via YouTube; verified 11-char IDs) ===== */
+const VIDEOS={
+k1:[
+ {f:'',yt:'K0sjZ5nqQ7g',t:'Convex lenses',c:'core'},
+ {f:'',yt:'Vh70PyitQzo',t:'Concave lenses',c:'ext'},
+],
+k2:[
+ {f:'',yt:'xxF_mdoZom0',t:'Convex lenses example',c:'core'},
+],
+k3:[
+ {f:'',yt:'7GV1UZSTNJg',t:'Thin lens equation and sign conventions',c:'core'},
+],
+k4:[
+ {f:'',yt:'eji8zKa7H7s',t:'Human eye',c:'core'},
+ {f:'',yt:'8WUEnoxUw6Y',t:'Defects of vision and their correction',c:'ext'},
+],
+k5:[
+ {f:'',yt:'IeqD7aPKpGo',t:'Compound microscope',c:'core'},
+ {f:'',yt:'8zflPRbeRXM',t:'Telescopes',c:'ext'},
+]
+};
+const VTZ={
+ 'Convex lenses':'凸透镜',
+ 'Concave lenses':'凹透镜',
+ 'Convex lenses example':'凸透镜实例（照相机·投影仪·放大镜）',
+ 'Thin lens equation and sign conventions':'薄透镜公式与符号约定',
+ 'Human eye':'眼睛的结构',
+ 'Defects of vision and their correction':'视力缺陷与矫正',
+ 'Compound microscope':'显微镜',
+ 'Telescopes':'望远镜'
+};
+
+/* ============ Lesson K1: lenses ============ */
+function microK1(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">What does a lens actually do to light?</span><span class="zh">透镜到底对光做了什么？</span></div>
+  <div class="box">
+   <h3><span class="en">Convex vs concave</span><span class="zh">凸透镜与凹透镜</span></h3>
+   <p><span class="en">A <b class="num">convex</b> lens is thicker in the middle; a <b class="num">concave</b> lens is thinner in the middle. The shape decides what the lens does to a beam of light.</span><span class="zh"><b class="num">凸</b>透镜中间厚，<b class="num">凹</b>透镜中间薄。形状决定了透镜对光束做什么。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Convex lens converges</span><span class="zh">凸透镜会聚</span></h3>
+   <p><span class="en">A convex lens bends parallel rays so they meet at one point — the <b class="num">focus</b> F. The distance from the lens to F is the <b class="num">focal length</b> f.</span><span class="zh">凸透镜把平行光弯向一点，这点叫<b class="num">焦点</b> F。透镜到 F 的距离叫<b class="num">焦距</b> f。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Concave lens diverges</span><span class="zh">凹透镜发散</span></h3>
+   <p><span class="en">A concave lens spreads parallel rays apart. If you trace them backwards, they seem to come from a focus on the same side — a virtual focus.</span><span class="zh">凹透镜把平行光向外散开。若把出射光反向延长，它们像是从同侧一个焦点发出——那是虚焦点。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K2: lenses in daily life ============ */
+function microK2(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">One lens, three different jobs</span><span class="zh">同一个透镜，三种不同的用途</span></div>
+  <div class="box">
+   <h3><span class="en">Camera (u &gt; 2f)</span><span class="zh">照相机（u &gt; 2f）</span></h3>
+   <p><span class="en">When the object is farther than twice the focal length, the lens forms a <b class="num">smaller, upside-down real image</b> on the sensor or film.</span><span class="zh">物体离透镜超过两倍焦距时，透镜在传感器或胶片上成<b class="num">缩小、倒立的实像</b>。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Projector (f &lt; u &lt; 2f)</span><span class="zh">投影仪（f &lt; u &lt; 2f）</span></h3>
+   <p><span class="en">When the object sits between f and 2f, the lens throws a <b class="num">larger, upside-down real image</b> onto a screen.</span><span class="zh">物体放在 f 和 2f 之间时，透镜在屏幕上投出<b class="num">放大、倒立的实像</b>。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Magnifier (u &lt; f)</span><span class="zh">放大镜（u &lt; f）</span></h3>
+   <p><span class="en">When the object is inside the focal length, the lens gives a <b class="num">larger, upright virtual image</b> — you see it big, but no screen can catch it.</span><span class="zh">物体放在焦距以内时，透镜给出<b class="num">放大、正立的虚像</b>——看着变大，但屏幕接不到。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K3: image formation rule ============ */
+function microK3(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Where does the image land?</span><span class="zh">像落在哪里？</span></div>
+  <div class="box">
+   <h3><span class="en">u &gt; 2f → small real image</span><span class="zh">u &gt; 2f → 缩小实像</span></h3>
+   <p><span class="en">Object beyond 2f: image is upside-down, smaller, on the other side, between f and 2f.</span><span class="zh">物体在 2f 外：像倒立、缩小、在另一侧 f 到 2f 之间。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">u = 2f → same-size real image</span><span class="zh">u = 2f → 等大实像</span></h3>
+   <p><span class="en">At exactly 2f the image is the same size (v = 2f). This is the border between "smaller" and "larger".</span><span class="zh">恰好在 2f 处，像等大（v = 2f）。这是"缩小"与"放大"的分界。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">f &lt; u &lt; 2f → large real image</span><span class="zh">f &lt; u &lt; 2f → 放大实像</span></h3>
+   <p><span class="en">Object between f and 2f: image is upside-down, larger, beyond 2f.</span><span class="zh">物体在 f 与 2f 之间：像倒立、放大、在 2f 之外。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">u = f → no image</span><span class="zh">u = f → 不成像</span></h3>
+   <p><span class="en">At the focus the outgoing rays are parallel, so they never meet — no image forms.</span><span class="zh">恰好在焦点处，出射光平行，永远不会相交——不成像。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">u &lt; f → upright virtual image</span><span class="zh">u &lt; f → 正立虚像</span></h3>
+   <p><span class="en">Inside the focal length: image is upright, larger, on the same side as the object (what a magnifier shows).</span><span class="zh">焦距以内：像正立、放大、与物体同侧（放大镜看到的样子）。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K4: the eye and glasses ============ */
+function microK4(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Your eye is a tiny camera</span><span class="zh">你的眼睛是一台小相机</span></div>
+  <div class="box">
+   <h3><span class="en">Eye = lens + screen</span><span class="zh">眼睛 = 透镜 + 屏</span></h3>
+   <p><span class="en">The cornea and lens focus light onto the retina, a light-sensitive screen at the back. A healthy eye forms the image right on the retina.</span><span class="zh">角膜和晶状体把光会聚到视网膜——眼球后壁一块感光的屏。健康眼睛把像正好成在视网膜上。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Nearsight (myopia)</span><span class="zh">近视眼</span></h3>
+   <p><span class="en">The eye focuses too strongly, so distant objects land <b class="num">in front of</b> the retina. A <b class="num">concave</b> lens spreads the light first, pushing the image back onto the retina.</span><span class="zh">眼睛会聚过强，远处物体的像落在视网膜<b class="num">前</b>。先用<b class="num">凹</b>透镜把光发散，把像推回到视网膜上。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Farsight (hyperopia)</span><span class="zh">远视眼</span></h3>
+   <p><span class="en">The eye focuses too weakly, so near objects land <b class="num">behind</b> the retina. A <b class="num">convex</b> lens bends the light in first, pulling the image forward onto the retina.</span><span class="zh">眼睛会聚过弱，近处物体的像落在视网膜<b class="num">后</b>。先用<b class="num">凸</b>透镜把光会聚，把像拉前到视网膜上。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K5: microscopes & telescopes ============ */
+function microK5(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Two lenses do more than one</span><span class="zh">两组透镜，胜过一组</span></div>
+  <div class="box">
+   <h3><span class="en">Microscope</span><span class="zh">显微镜</span></h3>
+   <p><span class="en">A short-focal objective makes a large real image of a tiny object; the eyepiece then magnifies that image again into a virtual one you look at. Two enlargements in a row.</span><span class="zh">短焦距的物镜先把微小物体成一个放大的实像，目镜再把这个像放大成虚像供眼睛看。两次放大叠加。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Telescope</span><span class="zh">望远镜</span></h3>
+   <p><span class="en">A long-focal objective forms a small real image of a faraway object; the eyepiece enlarges the viewing angle so the distant thing looks close.</span><span class="zh">长焦距的物镜把远处的物体成一个缩小的实像，目镜放大视角，让远处的东西看着很近。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Same trick</span><span class="zh">同一个窍门</span></h3>
+   <p><span class="en">Both pair an objective (makes the first real image) with an eyepiece (magnifies it). That is the whole idea behind most optical tools.</span><span class="zh">两者都是"物镜（成第一个实像）+ 目镜（放大它）"。这几乎是所有光学工具的思路。</span></p>
+  </div>`;
+}
+function diag(el,lessonId,generator){
+ el.innerHTML=`<div class="step"><span class="en">Quick check</span><span class="zh">小测一下</span></div><div class="box"><p style="font-size:14px;color:var(--muted)">3 questions, just to see where you stand. Pass 3/3 to skip the lesson; otherwise the lesson comes next.</p><div id="diagQ"></div></div>`;
+ const qEl=el.querySelector('#diagQ');
+ let ok=0;
+ const qs=Array.from({length:3},()=>generator('diag'));
+ let i=0;
+ const show=()=>{
+  if(i>=3){
+   st(lessonId).diag=ok;
+   if(ok===3){
+    qEl.innerHTML=`<div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong>3/3:</strong> you already have this — skip the lesson and go to practice.</div><div style="margin-top:14px"><button id="skipMicro"><span class="en">Skip the lesson, go to practice →</span><span class="zh">跳过微课，去做练习 →</span></button></div>`;
+    qEl.querySelector('#skipMicro').onclick=()=>{cur=`prac-${lessonId}`;render();};
+   } else {
+    qEl.innerHTML=`<div class="note" style="background:#fef3c7;border-color:var(--warn)"><strong>${ok}/3:</strong> work through the lesson below to fill the gap.</div><div style="margin-top:14px"><button id="goMicro"><span class="en">Go to lesson →</span><span class="zh">去看微课 →</span></button></div>`;
+    qEl.querySelector('#goMicro').onclick=()=>{cur=`micro-${lessonId}`;render();};
+   }
+   save();renderNav();
+   return;
+  }
+  const q=qs[i];
+  qEl.innerHTML=`
+   <div class="q">
+    <div class="q-text">${i+1}. ${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="da" autocomplete="off" placeholder="?"> <button id="sub"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ht"></div>
+    <div class="feedback" id="fb"></div>
+   </div>`;
+  const input=qEl.querySelector('#da'),fb=qEl.querySelector('#fb'),ht=qEl.querySelector('#ht');
+  input.focus();
+  qEl.querySelector('#sub').onclick=check;
+  input.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const ans=input.value.trim();
+   const correct=q.check(ans);
+   if(correct===true){ok++;fb.className='feedback show ok';fb.innerHTML=L('✓ Correct · correct','✓ 正确 · 对了');input.disabled=true;setTimeout(()=>{i++;show();},700);}
+   else if(correct==='hint'){ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');}
+   else{fb.className='feedback show err';fb.innerHTML=L('✗ Not right, try again.','✗ 不对，再试一次。');}
+  }
+ };
+ show();
+}
+
+/* ============ Practice generators (by topic) ============ */
+/* ============ Practice generators (by topic) ============ */
+const generators={
+k1:()=>{ // lenses
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`A lens thicker in the middle is a ___ lens. (type: convex / concave)`,
+   zhq:`中间厚的透镜是___透镜（填 convex / concave）`,
+   check:a=>a.trim().toLowerCase()==='convex',ans:'convex',choice:true,
+   hint:'it bulges out in the centre.',zhh:'它中间鼓出来。'};
+ } else if(type===2){
+  return {q:`A lens thinner in the middle is a ___ lens. (type: concave / convex)`,
+   zhq:`中间薄的透镜是___透镜（填 concave / convex）`,
+   check:a=>a.trim().toLowerCase()==='concave',ans:'concave',choice:true,
+   hint:'it curves inwards at the centre.',zhh:'它中间向内凹。'};
+ } else if(type===3){
+  return {q:`A convex lens ___ parallel rays to a point (the focus). (type: converges / diverges)`,
+   zhq:`凸透镜把平行光___到一点（焦点）（填 converges / diverges）`,
+   check:a=>a.trim().toLowerCase()==='converges',ans:'converges',choice:true,
+   hint:'the rays meet at F.',zhh:'光线在 F 处会合。'};
+ } else if(type===4){
+  return {q:`A concave lens ___ parallel rays apart. (type: diverges / converges)`,
+   zhq:`凹透镜把平行光___开（填 diverges / converges）`,
+   check:a=>a.trim().toLowerCase()==='diverges',ans:'diverges',choice:true,
+   hint:'the rays spread out.',zhh:'光线向外散开。'};
+ } else {
+  return {q:`The distance from a lens to its focus is the ___ length. (type: focal / total)`,
+   zhq:`透镜到焦点的距离叫___距（填 focal / total）`,
+   check:a=>a.trim().toLowerCase()==='focal',ans:'focal',choice:true,
+   hint:'measured to the point F.',zhh:'量到 F 点。'};
+ }
+},
+k2:()=>{ // lenses in daily life
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`A camera places the object beyond 2f and gets a ___ image. (type: smaller / larger)`,
+   zhq:`照相机把物体放在 2f 外，得到___的像（填 smaller / larger）`,
+   check:a=>a.trim().toLowerCase()==='smaller',ans:'smaller',choice:true,
+   hint:'think of a phone photo of a mountain.',zhh:'想想手机拍的山。'};
+ } else if(type===2){
+  return {q:`A projector places the object between f and 2f and throws a ___ image on the screen. (type: larger / smaller)`,
+   zhq:`投影仪把物体放在 f 和 2f 之间，在屏幕上投出___的像（填 larger / smaller）`,
+   check:a=>a.trim().toLowerCase()==='larger',ans:'larger',choice:true,
+   hint:'it is shown big for the room.',zhh:'它要放给全屋看，所以大。'};
+ } else if(type===3){
+  return {q:`A magnifier is used with the object ___ the focal length. (type: inside / beyond)`,
+   zhq:`放大镜使用时，物体放在焦距___（填 inside / beyond）`,
+   check:a=>a.trim().toLowerCase()==='inside',ans:'inside',choice:true,
+   hint:'u < f gives an upright virtual image.',zhh:'u < f 才得到正立虚像。'};
+ } else if(type===4){
+  return {q:`The image from a magnifier is ___ (type: virtual / real)`,
+   zhq:`放大镜成的像是___（填 virtual / real）`,
+   check:a=>a.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
+   hint:'no screen can catch it.',zhh:'屏幕接不到它。'};
+ } else {
+  return {q:`A camera image is upside-down and ___ (type: real / virtual)`,
+   zhq:`照相机的像是倒立且___的（填 real / virtual）`,
+   check:a=>a.trim().toLowerCase()==='real',ans:'real',choice:true,
+   hint:'it lands on the sensor.',zhh:'它落在传感器上。'};
+ }
+},
+k3:()=>{ // image formation rule
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`When u > 2f, the image is ___ (type: smaller / larger)`,
+   zhq:`当 u > 2f 时，像比物体___（填 smaller / larger）`,
+   check:a=>a.trim().toLowerCase()==='smaller',ans:'smaller',choice:true,
+   hint:'like a camera.',zhh:'像照相机那样。'};
+ } else if(type===2){
+  return {q:`When f < u < 2f, the image is ___ (type: larger / smaller)`,
+   zhq:`当 f < u < 2f 时，像比物体___（填 larger / smaller）`,
+   check:a=>a.trim().toLowerCase()==='larger',ans:'larger',choice:true,
+   hint:'like a projector.',zhh:'像投影仪那样。'};
+ } else if(type===3){
+  return {q:`When u = f, the lens forms ___ image. (type: no / a large)`,
+   zhq:`当 u = f 时，透镜___像（填 no / a large）`,
+   check:a=>a.trim().toLowerCase()==='no',ans:'no',choice:true,
+   hint:'outgoing rays are parallel.',zhh:'出射光平行，不相交。'};
+ } else if(type===4){
+  return {q:`When u < f, the image is upright and ___ (type: virtual / real)`,
+   zhq:`当 u < f 时，像正立且___（填 virtual / real）`,
+   check:a=>a.trim().toLowerCase()==='virtual',ans:'virtual',choice:true,
+   hint:'same side as the object.',zhh:'与物体同侧。'};
+ } else {
+  return {q:`u = 2f is the border between smaller and ___ images. (type: larger / same-size)`,
+   zhq:`u = 2f 是"缩小"和"___"的分界（填 larger / same-size）`,
+   check:a=>a.trim().toLowerCase()==='larger',ans:'larger',choice:true,
+   hint:'at 2f the image is exactly the same size.',zhh:'在 2f 处像恰好等大。'};
+ }
+},
+k4:()=>{ // eye and glasses
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`In the eye, light is focused onto the ___ . (type: retina / lens)`,
+   zhq:`眼睛里，光被会聚到___上（填 retina / lens）`,
+   check:a=>a.trim().toLowerCase()==='retina',ans:'retina',choice:true,
+   hint:'the screen at the back of the eye.',zhh:'眼球后壁的屏。'};
+ } else if(type===2){
+  return {q:`Nearsight means the image lands ___ the retina. (type: in front of / behind)`,
+   zhq:`近视是指像落在视网膜___（填 in front of / behind）`,
+   check:a=>a.trim().toLowerCase()==='in front of',ans:'in front of',choice:true,
+   hint:'the eye focuses too strongly.',zhh:'眼睛会聚过强。'};
+ } else if(type===3){
+  return {q:`A nearsighted eye is corrected with a ___ lens. (type: concave / convex)`,
+   zhq:`近视眼用___透镜矫正（填 concave / convex）`,
+   check:a=>a.trim().toLowerCase()==='concave',ans:'concave',choice:true,
+   hint:'it spreads the light out first.',zhh:'先让光发散。'};
+ } else if(type===4){
+  return {q:`A farsighted eye is corrected with a ___ lens. (type: convex / concave)`,
+   zhq:`远视眼用___透镜矫正（填 convex / concave）`,
+   check:a=>a.trim().toLowerCase()==='convex',ans:'convex',choice:true,
+   hint:'it bends the light in first.',zhh:'先把光会聚。'};
+ } else {
+  return {q:`Farsight means the image lands ___ the retina. (type: behind / in front of)`,
+   zhq:`远视是指像落在视网膜___（填 behind / in front of）`,
+   check:a=>a.trim().toLowerCase()==='behind',ans:'behind',choice:true,
+   hint:'the eye focuses too weakly.',zhh:'眼睛会聚过弱。'};
+ }
+},
+k5:()=>{ // microscopes and telescopes
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`A microscope uses two lenses to enlarge a ___ object. (type: tiny / faraway)`,
+   zhq:`显微镜用两组透镜放大___物体（填 tiny / faraway）`,
+   check:a=>a.trim().toLowerCase()==='tiny',ans:'tiny',choice:true,
+   hint:'like a cell.',zhh:'比如一个细胞。'};
+ } else if(type===2){
+  return {q:`A telescope uses two lenses to bring a ___ object close. (type: faraway / tiny)`,
+   zhq:`望远镜用两组透镜把___物体拉近（填 faraway / tiny）`,
+   check:a=>a.trim().toLowerCase()==='faraway',ans:'faraway',choice:true,
+   hint:'like the Moon.',zhh:'比如月亮。'};
+ } else if(type===3){
+  return {q:`In a microscope, the objective makes the first ___ image. (type: real / virtual)`,
+   zhq:`显微镜里，物镜先成第一个___像（填 real / virtual）`,
+   check:a=>a.trim().toLowerCase()==='real',ans:'real',choice:true,
+   hint:'the eyepiece then magnifies it.',zhh:'再由目镜放大。'};
+ } else if(type===4){
+  return {q:`The eyepiece in both tools ___ the first image. (type: magnifies / shrinks)`,
+   zhq:`两种工具里，目镜都是把第一个像___（填 magnifies / shrinks）`,
+   check:a=>a.trim().toLowerCase()==='magnifies',ans:'magnifies',choice:true,
+   hint:'that is its job.',zhh:'这是它的作用。'};
+ } else {
+  return {q:`Both tools pair an objective with an ___ . (type: eyepiece / mirror)`,
+   zhq:`两种工具都把物镜和___配对（填 eyepiece / mirror）`,
+   check:a=>a.trim().toLowerCase()==='eyepiece',ans:'eyepiece',choice:true,
+   hint:'objective + eyepiece.',zhh:'物镜 + 目镜。'};
+ }
+},
+};
+
+/* ============ Videos module (YouTube embed) ============ */
+function videos(el,lessonId){
+ const list=VIDEOS[lessonId]||[];
+ if(!list.length){el.innerHTML='<div class="note">No videos for this section.</div>';return;}
+ let html=`<div class="step"><span class="en">Videos</span><span class="zh">视频</span> · ${LESSONS.find(l=>l.id===lessonId).t}</div>`;
+ html+=`<div class="box"><p style="font-size:13px;color:var(--muted)"><span class="tag core">Watch first</span> watch first; <span class="tag ext">Optional</span> if you have time.</p></div>`;
+ list.forEach((v,i)=>{
+  const watched=st(lessonId).vid[i];
+  const yt=v.yt&&v.yt.indexOf('TODO')!==0?v.yt:'';
+  html+=`<div class="vid">
+   <div class="vid-h">
+    <span class="title">${L(v.t,(typeof VTZ!=='undefined'&&VTZ[v.t])||v.t)}</span>
+    <span class="meta">
+     <span class="tag ${v.c}"><span class="en">${v.c==='core'?'Core':'Extra'}</span><span class="zh">${v.c==='core'?'核心':'拓展'}</span></span>
+     <span class="st ${watched?'ok':''}">${watched?'✓ watched':'Unwatched'}</span>
+     <button data-i="${i}">${watched?'<span class="en">▶ Replay</span><span class="zh">▶ 重播</span>':'<span class="en">▶ Play</span><span class="zh">▶ 播放</span>'}</button>
+    </span>
+   </div>
+   <div id="vc${i}" style="display:${watched?'block':'none'};position:relative;padding-top:56.25%">
+    ${yt?`<iframe src="https://www.youtube.com/embed/${yt}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"></iframe>`:'<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;background:#f3f4f6">video id pending Khan mapping</div>'}
+   </div>
+  </div>`;
+ });
+ el.innerHTML=html;
+ el.querySelectorAll('[data-i]').forEach(b=>{
+  b.onclick=()=>{
+   const i=parseInt(b.dataset.i);
+   const slot=el.querySelector('#vc'+i);
+   slot.style.display = slot.style.display==='none'?'block':'none';
+   st(lessonId).vid[i]=true;save();renderNav();
+   b.parentElement.querySelector('.st').className='st ok';
+   b.parentElement.querySelector('.st').textContent='✓ watched';
+  };
+ });
+}
+
+/* ============ Practice module ============ */
+function practice(el,lessonId){
+ const gen=generators[lessonId];
+ if(!gen){el.innerHTML='<div class="note">No practice for this.</div>';return;}
+ const s=st(lessonId);
+ let streak=0,need=5,q=null,tries=0,diff=1;
+ function newQ(){q=gen(diff);tries=0;}
+ const update=()=>{
+  el.innerHTML=`
+   <div class="step"><span class="en">Practice</span><span class="zh">练习</span> (${streak}/${need})</div>
+   <div class="diff">
+    Difficulty: 
+    <button class="secondary ${diff===1?'on':''}" data-d="1">Easy</button>
+    <button class="secondary ${diff===2?'on':''}" data-d="2">Medium</button>
+    <button class="secondary ${diff===3?'on':''}" data-d="3">Hard</button>
+    <span class="info">Correct: ${s.prac.ok}/${s.prac.tot} (streak ${streak})<button class="secondary" id="rs" style="margin-left:8px"><span class="en">Reset</span><span class="zh">重置</span></button></span>
+   </div>
+   <div class="progress"><div style="width:${(streak/need)*100}%"></div></div>
+   <div class="q">
+    <div class="q-text">${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="pi" autocomplete="off" placeholder="?"> <button id="ps"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ph"></div>
+    <div class="feedback" id="pf"></div>
+   </div>`;
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{diff=parseInt(b.dataset.d);update();});
+  el.querySelector('#rs').onclick=()=>{s.prac={ok:0,tot:0};streak=0;diff=1;save();update();renderNav();};
+  const syncTop=()=>{
+   const stp=el.querySelector('.step'); if(stp) stp.innerHTML='<span class="en">Practice</span><span class="zh">练习</span> ('+streak+'/'+need+')';
+   const pg=el.querySelector('.progress'); if(pg&&pg.firstElementChild) pg.firstElementChild.style.width=(streak/need)*100+'%';
+   const inf=el.querySelector('.info'); if(inf){const rb=inf.querySelector('#rs');inf.textContent='Correct: '+s.prac.ok+'/'+s.prac.tot+' (streak '+streak+') ';if(rb)inf.appendChild(rb);}
+  };
+  const inp=el.querySelector('#pi'),fb=el.querySelector('#pf'),ht=el.querySelector('#ph');
+  inp.focus();
+  el.querySelector('#ps').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const a=inp.value.trim();
+   const r=q.check(a);
+   if(r===true){
+    streak++;s.prac.ok++;s.prac.tot++;
+    fb.className='feedback show ok';fb.innerHTML=L('✓ correct!','✓ 对了！');
+    inp.disabled=true;syncTop();
+    if(streak>=need){s.done=true;fb.innerHTML+='<br><strong>'+L('Section cleared ✓','本节过关 ✓')+'</strong>';save();renderNav();}
+    else if(streak>=3&&diff<3){diff++;}
+    setTimeout(()=>{newQ();update();},900);
+   } else {
+    tries++;
+    if(tries===1){
+     ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');
+     fb.className='feedback show err';fb.innerHTML=L('✗ Try again. ','✗ 再试一次。');
+    } else if(tries===2){
+     fb.className='feedback show err';
+     fb.innerHTML=L('✗ Not quite. '+(q.sol?('Method: '+q.sol):(q.hint?('Hint: '+q.hint):'Work through it once more.')), '✗ 不太对。'+(q.zhs?('方法：'+q.zhs):(q.zhh?('提示：'+q.zhh):'再算一遍。')));
+    } else {
+     streak=0;s.prac.tot++;syncTop();
+     if(diff>1)diff--;
+     fb.className='feedback show err';
+     fb.innerHTML=L('The answer is <b>'+q.ans+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+q.ans+'</b>'+(q.zhs?('。'+q.zhs):'。'));
+     inp.disabled=true;save();renderNav();
+     setTimeout(()=>{q=gen();tries=0;update();},2400);
+    }
+   }
+   save();
+  }
+ };
+ newQ();update();
+}
+
+/* ============ Chapter check ============ */
+function chTest(el){
+ const N=10;
+ el.innerHTML=`<div class="step"><span class="en">Chapter check</span><span class="zh">章末自己测</span></div><div class="box"><p style="font-size:13px;color:var(--muted)">${N} questions covering every topic in this chapter. Not timed, not scored.</p><div id="tq"></div></div>`;
+ const tq=el.querySelector('#tq');
+ const qs=[];
+ for(let i=0;i<2;i++)qs.push(generators.k1(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k2(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k3(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k4(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k5(i+1));
+ let i=0,ok=0;
+ const show=()=>{
+  if(i>=qs.length){
+   const pass=ok>=Math.ceil(qs.length*0.7);
+   tq.innerHTML=`<div class="note" style="background:${pass?'#dcfce7':'#fef3c7'};border-color:${pass?'var(--ok)':'var(--warn)'}"><strong>${ok}/${qs.length}</strong> ${pass?'Chapter passed! Move on to the next chapter':'Go back and review what you missed'}</div>`;
+   S.test={ok,tot:qs.length};save();renderNav();return;
+  }
+  const q=qs[i];
+  tq.innerHTML=`<div class="q"><div class="q-text">${i+1}/${qs.length}. ${L(q.q,q.zhq)}</div><div style="display:flex;gap:8px"><input id="ti" autocomplete="off"><button id="ts"><span class="en">Submit</span><span class="zh">提交</span></button></div><div class="hint" id="th"></div><div class="feedback" id="tf"></div></div>`;
+  const inp=tq.querySelector('#ti'),fb=tq.querySelector('#tf'),ht=tq.querySelector('#th');
+  inp.focus();tq.querySelector('#ts').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const r=q.check(inp.value.trim());
+   if(r===true){ok++;fb.className='feedback show ok';fb.textContent='✓';inp.disabled=true;setTimeout(()=>{i++;show();},600);}
+   else if(r==='hint'){ht.className='hint show';ht.textContent=q.hint;}
+   else{fb.className='feedback show err';fb.textContent='✗';setTimeout(()=>{i++;show();},900);}
+  }
+ };
+ show();
+}
+
+/* ============ Render ============ */
+const GLOSS={k1:"透镜",k2:"生活中的透镜",k3:"凸透镜成像规律",k4:"眼睛和眼镜",k5:"显微镜和望远镜",test:""};
+const USE_MICRO=true;
+const INTRO={why:"A lens bends light on purpose. With the right curve it can focus sunlight to a point, shrink a mountain onto a phone sensor, or let a person see clearly again. This chapter shows how convex and concave lenses steer light, the rule for where an image lands, and how the same idea builds cameras, glasses, microscopes and telescopes.",whyZh:"透镜是故意把光弯折的光学元件。合适的弧度能把阳光聚成一点、把整座山缩进手机传感器、也能让人重新看清世界。这一章讲凸透镜和凹透镜怎么引导光、像落在哪里的规律，以及相机、眼镜、显微镜、望远镜如何用同一个原理造出来。",desc:{k1:"Convex vs concave lenses — how each bends a parallel beam (focusing vs spreading)",k2:"Cameras, projectors and magnifiers — three ways a convex lens makes an image",k3:"The lens rule: where the image forms for every object distance",k4:"The eye is a lens and a screen; glasses fix near- and far-sight",k5:"Two lenses together: the microscope and the telescope"}};
+function goLesson(id){cur=USE_MICRO?('micro-'+id):id;render();}
+function introRender(main){
+  const pts=LESSONS.filter(l=>l.id!=='test'&&l.id!=='intro');
+  let h='<div class="intro-h"><span class="en">What this chapter covers</span><span class="zh">本章学什么</span></div>'
+    +'<div class="intro-sub"><span class="en">Here is what this chapter walks you through, in order. Read it first, then start the first lesson below.</span><span class="zh">下面是这一章要走的全部内容，按顺序排好。先看一遍，再点下面开始第一小节。</span></div><div class="kp">';
+  pts.forEach(l=>{
+    const s=st(l.id);
+    const badge=s.done?' <span class="st ok">✓ done</span>':(s.prac.tot>0?' <span class="st">'+s.prac.ok+'/'+s.prac.tot+'</span>':'');
+    h+='<div class="kp-c"><div class="n">'+l.n+'</div><div class="t">'+l.t+(GLOSS[l.id]?' <span class="cn-tag">'+GLOSS[l.id]+'</span>':'')+'</div><div class="d">'+((INTRO.desc&&INTRO.desc[l.id])||'')+'</div>'+badge+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="why"><b><span class="en">Where this shows up in real life</span><span class="zh">在真实生活里哪里会用到</span></b><br>'+L(INTRO.why,INTRO.whyZh)+'</div>';
+  h+='<div class="box"><b><span class="en">How this chapter works</span><span class="zh">本章怎么学</span></b><div class="how">'
+    +'① <b><span class="en">Watch the lesson</span><span class="zh">看微课</span></b>: <span class="en">a few minutes to get what the section is about</span><span class="zh">花几分钟了解本节内容</span><br>'
+    +'② <b><span class="en">Practice</span><span class="zh">练一练</span></b>: <span class="en">5 correct in a row clears it; if you get stuck, hints walk you through</span><span class="zh">连对 5 题就算过关；卡住了就看提示</span><br>'
+    +'③ <b><span class="en">Next section</span><span class="zh">下一节</span></b>: <span class="en">on the left, </span><span class="zh">在左侧，</span>'+pts[0].n+', '+pts[1].n+'… open whichever you want, in any order'
+    +'</div></div>';
+  h+='<div class="big-start"><button id="startBtn">'+pts[0].n+' <span class="en">'+pts[0].t+'</span><span class="zh">开始 · '+NAVZH[pts[0].id]+'</span> →</button></div>';
+  main.innerHTML=h;
+  main.querySelector('#startBtn').onclick=()=>{goLesson(pts[0].id);};
+}
+const NAVZH={"intro":"概览","k1":"透镜","k2":"生活中的透镜","k3":"凸透镜成像规律","k4":"眼睛和眼镜","k5":"显微镜和望远镜","test":"章末自己测"};
+const LKEY='phys8_lang';
+function getLang(){return localStorage.getItem(LKEY)||'en';}
+function setLang(l){localStorage.setItem(LKEY,l);applyLang();}
+function applyLang(){const l=getLang();document.body.className=(' '+document.body.className+' ').replace(/\s+lang-(en|mix|zh)\b/g,' ').trim();if(l==='mix'||l==='zh')document.body.classList.add('lang-'+l);document.querySelectorAll('.langseg button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===l);});}
+applyLang();
+
+function renderNav(){
+ const nav=document.getElementById('nav');
+ nav.innerHTML=LESSONS.map(l=>{
+  const s=st(l.id);
+  let stxt='';
+  if(s.done)stxt='<span class="st ok">✓</span>';
+  else if(s.prac.tot>0)stxt=`<span class="st ${s.prac.ok/s.prac.tot>0.6?'ok':'err'}">${s.prac.ok}/${s.prac.tot}</span>`;
+  return `<div class="nav-i ${l.id===cur||cur===`micro-${l.id}`||cur===`diag-${l.id}`||cur===`prac-${l.id}`?'on':''}" data-go="${l.id}">
+   <span><b>${l.n}</b> <span class="en">${l.t}</span><span class="zh">${NAVZH[l.id]||l.t}</span></span>${stxt}</div>`;
+ }).join('');
+ nav.querySelectorAll('[data-go]').forEach(n=>n.onclick=()=>{
+  const id=n.dataset.go;
+  cur = id==='test' ? 'test' : `micro-${id}`;
+  render();
+ });
+}
+
+function render(){
+ const main=document.getElementById('main');
+ renderNav();
+ if(cur==='intro'||cur==='micro-intro'){introRender(main);return;}
+ if(cur==='test'){chTest(main);return;}
+ const m=cur.match(/^(diag|micro|prac)-(\w+)$/);
+ if(m){
+  const phase=m[1],id=m[2];
+  const lesson=LESSONS.find(l=>l.id===id);
+  if(!lesson){main.innerHTML='<div class="note">Unknown lesson</div>';return;}
+  const titles={k1:'Straight-line travel',k2:'Reflection',k3:'Plane-mirror images',k4:'Refraction',k5:'Dispersion'};
+  main.innerHTML=`<div class="lesson-id">${lesson.n} · <span class="en">${titles[id]} · ${lesson.cn}</span><span class="zh">${NAVZH[id]||titles[id]}</span></div>`;
+  const c=document.createElement('div');main.appendChild(c);
+  if(phase==='diag'){
+   if(st(id).diag===3){cur=`micro-${id}`;render();return;}
+   diag(c,id,generators[id]);
+  } else if(phase==='micro'){
+   if(id==='k1')microK1(c);
+   else if(id==='k2')microK2(c);
+   else if(id==='k3')microK3(c);
+   else if(id==='k4')microK4(c);
+   else if(id==='k5')microK5(c);
+   const after=document.createElement('div');main.appendChild(after);
+   videos(after,id);
+   const btn=document.createElement('div');btn.style.marginTop='14px';
+   btn.innerHTML=`<button id="toPrac">Go to practice</button>`;
+   main.appendChild(btn);
+   btn.querySelector('#toPrac').onclick=()=>{cur=`prac-${id}`;render();};
+  } else if(phase==='prac'){
+   practice(c,id);
+  }
+ } else {
+  introRender(main);
+ }
+}
+render();
+</script>
+<script>
+(function(){try{if(new URLSearchParams(location.search).get('go')==='test'){cur='test';render();}}catch(e){}})();
+</script>
+<script>
+var TKEY='phys8_theme';
+function getTheme(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}}
+function setTheme(t){try{localStorage.setItem(TKEY,t);}catch(e){}applyTheme();}
+function applyTheme(){
+ var t=getTheme();
+ document.documentElement.setAttribute('data-theme',t);
+ var bs=document.querySelectorAll('.themseg button');
+ for(var i=0;i<bs.length;i++){
+  var on=(bs[i].getAttribute('data-theme')===t);
+  if(on){bs[i].classList.add('on');}else{bs[i].classList.remove('on');}
+ }
+}
+applyTheme();
+try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
+</script>
+</body></body>
+</html>

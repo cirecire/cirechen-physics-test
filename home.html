@@ -10,19 +10,19 @@
  --accent:#7c3aed; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 .wrap{max-width:1180px;margin:0 auto;padding:18px}
-header{background:linear-gradient(135deg,#0e7490,#7c3aed);color:#fff;padding:24px 28px;border-radius:14px;margin-bottom:16px}
+header{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:24px 28px;border-radius:14px;margin-bottom:16px;box-shadow:0 6px 18px rgba(124,58,237,.18)}
 header h1{font-size:20px;margin-bottom:4px}
 header .h1sub{font-size:22px;font-weight:700;letter-spacing:.06em;margin-bottom:10px;line-height:1.25}
 header p{opacity:.93;font-size:13px}
 .src{margin-top:10px;font-size:11px;opacity:.75}
-.welcome{background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #fcd34d;border-radius:14px;padding:20px 24px;margin-bottom:16px;position:relative}
+.welcome{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:14px;padding:20px 24px;margin-bottom:16px;position:relative}
 .welcome-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:12px}
-.welcome .hi{font-size:20px;font-weight:700;color:#92400e;line-height:1.2}
+.welcome .hi{font-size:20px;font-weight:700;color:#6d28d9;line-height:1.2}
 .welcome-close{background:transparent;color:#92400e;font-size:18px;padding:2px 8px;cursor:pointer;border:none;line-height:1;border-radius:6px}
 .welcome-close:hover{background:rgba(146,64,14,.12)}
-.welcome-lead{font-size:14px;color:#78350f;margin-bottom:14px;line-height:1.5}
+.welcome-lead{font-size:14px;color:#5b21b6;margin-bottom:14px;line-height:1.5}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .step-card{background:rgba(255,255,255,.65);border-radius:10px;padding:10px 12px;border:1px solid rgba(252,211,77,.5)}
 .step-no{width:24px;height:24px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:6px}
@@ -50,21 +50,21 @@ header p, header .en, header .zh, header .h1sub{ opacity:1; }
 @media(max-width:680px){.steps{grid-template-columns:1fr}}
 h2{font-size:17px;margin:22px 0 12px;display:flex;align-items:center;gap:8px}
 h2 small{font-size:12px;color:var(--muted);font-weight:400}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(124,58,237,.08)}
 .summary{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:8px}
 @media(max-width:680px){.summary{grid-template-columns:1fr}}
 .big-prog{height:14px;background:#ede9fe;border-radius:7px;overflow:hidden;margin:10px 0}
 .big-prog div{height:100%;background:linear-gradient(90deg,#7c3aed,#a855f7);transition:width .4s}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:#f9fafb;border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.stat{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(124,58,237,.06)}
 .stat .v{font-size:19px;font-weight:700;color:var(--accent)}
 .stat .l{font-size:11px;color:var(--muted)}
 .lvbar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin:8px 0 6px}
 .lvlegend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--muted)}
 .lvlegend span b{color:var(--text)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px}
-.ch{border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;display:flex;flex-direction:column}
-.ch .top{padding:12px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ch{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(124,58,237,.08)}
+.ch .top{padding:12px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(135deg,#7c3aed,#a855f7)!important}
 .ch .top .t{font-size:15px;font-weight:700}
 .ch .top .en{font-size:11px;opacity:.9}
 .ch .top .no{font-size:11px;opacity:.85;text-align:right;line-height:1.3}
@@ -215,7 +215,7 @@ html[data-theme="dark"] table th{color:var(--muted)}
 
 <header>
  <h1><span class="en">📚 My learning map</span><span class="zh">📚 我的学习地图</span></h1>
- <div class="h1sub"><span class="en">PHYSICS · GRADE 8 · 人教版</span><span class="zh">物理 · 八年级 · 人教版</span></div>
+ <div class="h1sub"><span class="en">PHYSICS · GRADE 8 · PEP</span><span class="zh">物理 · 八年级 · 人教版</span></div>
  <p><span class="en">6 chapters · 28 topics · videos from Khan Academy, embedded from YouTube</span><span class="zh">6 章 · 28 个知识点 · 视频来自可汗学院，内嵌自 YouTube</span></p>
  <p style="margin-top:4px"><span class="en">Language: English, with each key term glossed in Chinese once</span><span class="zh">语言：全英文，每个关键词在门厅标注一次中文</span></p>
  <div class="src"><span class="en">Video content from Khan Academy · CC BY-NC-SA</span><span class="zh">视频内容来自 Khan Academy · CC BY-NC-SA</span></div>

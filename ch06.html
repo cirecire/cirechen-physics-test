@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 6 · Mass &amp; Density</title>
+<style>
+:root{
+ --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
+ --accent:#2563eb; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.wrap{display:grid;grid-template-columns:240px 1fr;gap:18px;max-width:1180px;margin:0 auto;padding:18px}
+header{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header h1{font-size:22px;margin-bottom:4px}
+header p{opacity:.92;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:14px}
+.nav-i{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-i:hover{background:#fff7ed}
+.nav-i.on{background:var(--accent);color:#fff}
+.nav-i .st{font-size:11px;opacity:.85}
+.nav-i .st.ok{color:var(--ok)}
+.nav-i .st.err{color:var(--err)}
+.nav-i.on .st.ok,.nav-i.on .st.err{color:#fff}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;min-height:80vh}
+h2{font-size:18px;margin-bottom:6px}
+.lesson-id{color:var(--muted);font-size:13px;margin-bottom:14px}
+.box{background:#f9fafb;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.box h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.box .cn{font-size:12px;color:var(--muted);font-style:italic}
+.step{padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;margin-bottom:14px;font-size:15px}
+.note{background:#fffbeb;border-left:3px solid var(--warn);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.note strong{color:var(--warn)}
+.vid{margin:14px 0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.vid-h{padding:10px 14px;background:#fff7ed;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.vid-h .meta{display:flex;gap:8px;align-items:center;font-size:11px}
+.tag{background:#e5e7eb;padding:2px 8px;border-radius:10px;font-size:11px}
+.tag.core{background:#dcfce7;color:#166534}
+.tag.ext{background:#fef3c7;color:#92400e}
+.vid-h .cn{font-size:12px;color:var(--muted);margin-right:auto}
+.vid-h .title{font-size:13px;font-weight:600}
+button{font-family:inherit;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:14px;background:var(--accent);color:#fff}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button:hover{opacity:.92}
+input[type=text],input[type=number]{padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;width:120px;font-family:inherit}
+input:focus{outline:none;border-color:var(--accent)}
+input.ok{border-color:var(--ok);background:#f0fdf4}
+input.err{border-color:var(--err);background:#fef2f2}
+input:disabled{background:#f3f4f6;cursor:not-allowed}
+.q{margin:12px 0;padding:14px;background:#f9fafb;border-radius:8px;border-left:3px solid var(--accent)}
+.q .q-text{font-size:15px;margin-bottom:8px}
+.q .q-cn{font-size:12px;color:var(--muted);margin-bottom:8px}
+.q .feedback{margin-top:8px;font-size:13px;padding:6px 10px;border-radius:6px;display:none}
+.q .feedback.show{display:block}
+.q .feedback.ok{background:#dcfce7;color:#166534}
+.q .feedback.err{background:#fee2e2;color:#991b1b}
+.q .feedback.warn{background:#fef3c7;color:#92400e}
+.hint{background:#fef3c7;border-left:3px solid var(--warn);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:13px;display:none}
+.hint.show{display:block}
+.diff{display:flex;gap:10px;align-items:center;margin:10px 0;font-size:13px}
+.diff button{padding:4px 10px;font-size:12px}
+.diff button.on{background:var(--ok)}
+.controls{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
+.controls .info{margin-left:auto;font-size:13px;color:var(--muted)}
+.progress{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin:8px 0}
+.progress div{height:100%;background:var(--accent);transition:width .3s}
+svg{max-width:100%;display:block;margin:0 auto}
+.num{color:var(--accent);font-weight:600}
+svg circle{transition:r .2s,fill .2s}
+svg line,svg path{transition:stroke .3s,opacity .3s}
+
+.intro-h{font-size:21px;font-weight:700;margin:0 0 4px}
+.intro-sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.kp{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:10px;margin:14px 0}
+.kp-c{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#f9fafb}
+.kp-c .n{font-size:12px;color:var(--accent);font-weight:700}
+.kp-c .t{font-size:15px;font-weight:600;margin:2px 0 5px;line-height:1.4}
+.kp-c .d{font-size:12px;color:var(--muted);line-height:1.55}
+.why{background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:14px 16px;margin:14px 0;font-size:14px;line-height:1.85}
+.why b{color:var(--accent)}
+.how{font-size:14px;line-height:2.1;margin:8px 0 2px}
+.how b{color:var(--accent)}
+.big-start{margin-top:20px;text-align:center}
+.big-start button{font-size:16px;padding:13px 30px;border-radius:10px}
+.trytip{font-size:12px;color:var(--muted);margin:10px 0 2px}
+.cn-tag{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:8px;padding:1px 6px;margin-left:6px}
+
+.zh{display:none}
+body.lang-en .zh{display:none}
+body.lang-mix .zh{display:inline;font-size:.82em;margin-left:6px;font-weight:400}
+body.lang-zh .en{display:inline;font-size:.78em;margin-left:6px;font-weight:400}
+body.lang-zh .zh{display:inline}
+header, header h1, header p, header .en, header .zh, header .src, header .sub, header .t, header .no{ color:#fff; }
+header p, header .en, header .zh{ opacity:1; }
+
+.langbar{position:fixed;top:8px;right:10px;z-index:300;display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.langseg{display:inline-flex}
+.langseg button{background:transparent;color:#374151;border:none;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:999px;white-space:nowrap}
+.langseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.langbar{top:6px;right:6px}.langseg button{padding:5px 8px;font-size:11px}}
+
+body.lang-mix h1 .en, body.lang-mix h1 .zh,
+body.lang-mix h2 .en, body.lang-mix h2 .zh,
+body.lang-mix h3 .en, body.lang-mix h3 .zh,
+body.lang-mix h4 .en, body.lang-mix h4 .zh,
+body.lang-mix p .en,  body.lang-mix p .zh,
+body.lang-mix li .en, body.lang-mix li .zh,
+body.lang-mix summary .en, body.lang-mix summary .zh,
+body.lang-mix .step .en, body.lang-mix .step .zh,
+body.lang-mix header .en, body.lang-mix header .zh,
+body.lang-mix .ch .en, body.lang-mix .ch .zh,
+body.lang-mix .ch .top .en, body.lang-mix .ch .top .zh,
+body.lang-mix .note .en, body.lang-mix .note .zh { display: block; }
+body.lang-mix h1 .zh, body.lang-mix h2 .zh, body.lang-mix h3 .zh, body.lang-mix h4 .zh,
+body.lang-mix p .zh, body.lang-mix li .zh, body.lang-mix summary .zh,
+body.lang-mix .step .zh, body.lang-mix header .zh,
+body.lang-mix .ch .zh, body.lang-mix .ch .top .zh,
+body.lang-mix .note .zh { font-size: inherit; }
+
+:root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+  --accent:#60a5fa;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ }
+}
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+ --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+ --accent:#60a5fa;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] main{background:var(--card);color:var(--text)}
+html[data-theme="dark"] nav{background:var(--card)}
+html[data-theme="dark"] .langbar,
+html[data-theme="dark"] .chip:not(.on),
+html[data-theme="dark"] .kp,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] .vid-item,
+html[data-theme="dark"] .proof,
+html[data-theme="dark"] .q{background:var(--card)}
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .kp-c,
+html[data-theme="dark"] .badge:not(.ok):not(.warn):not(.lock),
+html[data-theme="dark"] .pbar,
+html[data-theme="dark"] .ltsw button{background:var(--card2)}
+html[data-theme="dark"] .opt{background:var(--card);color:var(--text)}
+html[data-theme="dark"] .opt:hover:not(:disabled),
+html[data-theme="dark"] button.choice:hover{background:var(--card2);border-color:var(--accent)}
+html[data-theme="dark"] .opt.sel-ok{background:#14532d;color:#bbf7d0;border-color:var(--ok)}
+html[data-theme="dark"] .opt.sel-bad{background:#7f1d1d;color:#fecaca;border-color:var(--err)}
+html[data-theme="dark"] button{color:#0f172a!important}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .langseg button,
+html[data-theme="dark"] .themseg button{color:var(--text)!important}
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary{background:var(--card2)!important}
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .sel .num{color:#0f172a!important}
+html[data-theme="dark"] .langseg button.on,
+html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
+html[data-theme="dark"] .nav-i.on .st.ok,
+html[data-theme="dark"] .nav-i.on .st.err{color:#0f172a!important}
+html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
+html[data-theme="dark"] .step{color:#3a1900!important}
+html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
+html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
+html[data-theme="dark"] .fig *{color:#1f2937!important}
+html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
+html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
+html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
+html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+ background:var(--card2);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder{color:var(--muted)}
+html[data-theme="dark"] table th{color:var(--muted)}
+.themebar{position:fixed;top:44px;right:12px;z-index:300;display:inline-flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.themseg{display:inline-flex}
+.themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
+.themseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+</style>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
+</head>
+<body>
+<div style="background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 16px;font-size:13px;display:flex;gap:18px;align-items:center;position:sticky;top:0;z-index:99">
+ <a href="index.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="zh">← 主页</span><span class="en">← Home</span></a> <a href="home.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="en">← Overview</span><span class="zh">← 总览</span></a>
+ <a href="unittests.html" style="color:#ea580c;text-decoration:none;font-weight:600"><span class="en">Unit tests</span><span class="zh">单元测试</span></a>
+ <span style="font-size:11px;color:#5b6472"><span class="en">Content from Khan Academy · CC BY-NC-SA</span><span class="zh">内容来自 Khan Academy · CC BY-NC-SA</span></span>
+</div>
+
+<div class="langbar" title="显示语言 · Language display — 随时可改 · change anytime">
+ <span class="langseg">
+  <button data-lang="en" onclick="setLang('en')">English</button>
+  <button data-lang="mix" onclick="setLang('mix')">English + 中文</button>
+  <button data-lang="zh" onclick="setLang('zh')">中文 + English</button>
+ </span>
+</div>
+<div class="themebar" title="日间 / 夜间 / 自动 · Day / Night / Auto">
+ <span class="themseg">
+  <button data-theme="light" onclick="setTheme('light')" title="日间 · Day">☀️</button>
+  <button data-theme="dark" onclick="setTheme('dark')" title="夜间 · Night">🌙</button>
+  <button data-theme="auto" onclick="setTheme('auto')" title="自动跟随系统 · Auto">⚙️</button>
+ </span>
+</div>
+
+<div class="wrap">
+<header>
+ <h1><span class="en">Chapter 6 · Mass &amp; Density</span><span class="zh">第 6 章 · 质量与密度</span></h1>
+ <p><span class="en">Grade 8 · 5 class periods · the fifth chapter</span><span class="zh">八年级 · 5 课时 · 第五章</span></p>
+ </header>
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+const KEY='phys8_ch05_state';
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const LESSONS=[
+ {id:'intro',t:'Intro',cn:'Start here · What this chapter covers',n:'🏠'},
+ {id:'k1',t:'Mass',cn:'Mass',n:'6.1'},
+ {id:'k2',t:'Density',cn:'Density',n:'6.2'},
+ {id:'k3',t:'Measuring density',cn:'Measuring density',n:'6.3'},
+ {id:'k4',t:'Using density',cn:'Using density',n:'6.4'},
+ {id:'k5',t:'Density in daily life',cn:'Density in daily life',n:'6.5'},
+ {id:'test',t:'Chapter check',cn:'Chapter check',n:''}
+];
+let cur='intro';
+function st(id){return S[id]||(S[id]={diag:null,prac:{ok:0,tot:0},vid:{},done:false});}
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[ri(0,a.length-1)];}
+function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==null?a:b)+'</span>'; }
+
+/* ===== Video list (Khan Academy · embedded via YouTube; verified 11-char IDs) ===== */
+const VIDEOS={
+k1:[
+ {f:'',yt:'',t:'Mass',c:'core'},
+],
+k2:[
+ {f:'',yt:'',t:'Density',c:'core'},
+ {f:'',yt:'',t:'Density calculation',c:'ext'},
+],
+k3:[
+ {f:'',yt:'',t:'Measuring density',c:'core'},
+],
+k4:[
+ {f:'',yt:'',t:'Specific gravity',c:'core'},
+],
+k5:[
+ {f:'',yt:'',t:'Buoyant force and Archimedes principle',c:'core'},
+]
+};
+const VTZ={
+ 'Mass':'质量',
+ 'Density':'密度',
+ 'Density calculation':'密度的计算',
+ 'Measuring density':'测量密度',
+ 'Specific gravity':'比重',
+ 'Buoyant force and Archimedes principle':'浮力与阿基米德原理'
+};
+
+/* ============ Lesson K1: mass ============ */
+function microK1(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">What is mass, really?</span><span class="zh">质量到底是什么？</span></div>
+  <div class="box">
+   <h3><span class="en">Mass = amount of matter</span><span class="zh">质量 = 物质的多少</span></h3>
+   <p><span class="en">Mass tells you how much stuff an object is made of. A big rock has more mass than a small pebble of the same stone.</span><span class="zh">质量表示物体含有多少物质。同样石头，大石块比小石子质量大。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Units of mass</span><span class="zh">质量的单位</span></h3>
+   <p><span class="en">The SI unit is the <b class="num">kilogram (kg)</b>. Smaller: gram (g), milligram (mg). Larger: tonne (t). 1 kg = 1000 g, 1 t = 1000 kg.</span><span class="zh">国际单位是<b class="num">千克（kg）</b>。更小：克（g）、毫克（mg）。更大：吨（t）。1 kg = 1000 g，1 t = 1000 kg。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Mass stays the same</span><span class="zh">质量不变</span></h3>
+   <p><span class="en">Cut, bend, or melt an object and its mass does not change — you have the same amount of matter, just in a new shape. It is the same on Earth and on the Moon.</span><span class="zh">把物体切开、弯折或熔化，质量都不变——物质的量一样，只是形状变了。在地球和月球上质量也一样。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K2: density ============ */
+function microK2(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">How tightly is the matter packed?</span><span class="zh">物质塞得有多紧？</span></div>
+  <div class="box">
+   <h3><span class="en">Density = mass ÷ volume</span><span class="zh">密度 = 质量 ÷ 体积</span></h3>
+   <p><span class="en">Two boxes the same size can hold different amounts of matter. Density ρ is mass m divided by volume V: ρ = m / V.</span><span class="zh">两个一样大的盒子，装的物质的量可能不同。密度 ρ 是质量 m 除以体积 V：ρ = m / V。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Units</span><span class="zh">单位</span></h3>
+   <p><span class="en">SI unit: <b class="num">kg/m³</b>. Everyday unit: <b class="num">g/cm³</b>. 1 g/cm³ = 1000 kg/m³.</span><span class="zh">国际单位：<b class="num">kg/m³</b>。常用单位：<b class="num">g/cm³</b>。1 g/cm³ = 1000 kg/m³。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Water as a reference</span><span class="zh">以水为基准</span></h3>
+   <p><span class="en">Water's density is about <b class="num">1000 kg/m³</b> (1 g/cm³). Things denser than water sink; things less dense float.</span><span class="zh">水的密度约为<b class="num">1000 kg/m³</b>（1 g/cm³）。比水密的会沉，比水疏的会浮。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K3: measuring density ============ */
+function microK3(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Find mass and volume, then divide</span><span class="zh">量出质量和体积，再相除</span></div>
+  <div class="box">
+   <h3><span class="en">Measure volume</span><span class="zh">测体积</span></h3>
+   <p><span class="en">A regular solid: multiply length × width × height. An irregular solid or a liquid: read a <b class="num">graduated cylinder</b>, looking at the bottom of the meniscus.</span><span class="zh">规则固体：长 × 宽 × 高。不规则固体或液体：看<b class="num">量筒</b>，读凹液面的最低处。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Measure mass</span><span class="zh">测质量</span></h3>
+   <p><span class="en">Use a <b class="num">balance</b>. For a solid, weigh it directly. For a liquid, weigh the container with and without the liquid and subtract.</span><span class="zh">用<b class="num">天平</b>。固体直接称；液体则称容器加液体和空容器，相减得到液体质量。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Compute density</span><span class="zh">算密度</span></h3>
+   <p><span class="en">ρ = m / V. Keep the units consistent — if m is in grams and V in cm³, ρ comes out in g/cm³.</span><span class="zh">ρ = m / V。单位要统一——m 用克、V 用 cm³，得到的就是 g/cm³。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K4: using density ============ */
+function microK4(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Density is a material's fingerprint</span><span class="zh">密度是材料的指纹</span></div>
+  <div class="box">
+   <h3><span class="en">Tell materials apart</span><span class="zh">区分材料</span></h3>
+   <p><span class="en">Each material has its own density. Measure an unknown object's density and match it to a table to name the material — gold vs fool's gold, aluminium vs steel.</span><span class="zh">每种材料都有自己的密度。量出未知物体的密度，对照密度表就能认出它——真金还是假金、铝还是钢。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Convert units</span><span class="zh">单位换算</span></h3>
+   <p><span class="en">To switch between g/cm³ and kg/m³, multiply or divide by 1000. 2 g/cm³ = 2000 kg/m³.</span><span class="zh">g/cm³ 与 kg/m³ 换算，乘或除以 1000。2 g/cm³ = 2000 kg/m³。</span></p>
+  </div>`;
+}
+
+/* ============ Lesson K5: density in daily life ============ */
+function microK5(el){
+ el.innerHTML=`
+  <div class="step"><span class="en">Why density matters around us</span><span class="zh">密度在身边为什么重要</span></div>
+  <div class="box">
+   <h3><span class="en">Heat makes things expand</span><span class="zh">受热膨胀</span></h3>
+   <p><span class="en">Most substances expand when heated, so the same mass takes more volume and density <b class="num">drops</b>. That is why hot air rises.</span><span class="zh">多数物质受热膨胀，同样质量占更大体积，密度就<b class="num">变小</b>。所以热空气会上升。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Ice floats on water</span><span class="zh">冰浮在水上</span></h3>
+   <p><span class="en">Water is one of the few substances denser as a liquid than as a solid. Ice is less dense than water, so it floats — and lakes freeze from the top.</span><span class="zh">水是少数液态比固态更密的物质之一。冰比水疏，所以浮着——湖是从上面开始结冰的。</span></p>
+  </div>
+  <div class="box">
+   <h3><span class="en">Solid vs hollow</span><span class="zh">实心与空心</span></h3>
+   <p><span class="en">A hollow object has the same outside but less matter inside, so its average density is lower than the solid version.</span><span class="zh">空心物体外形一样、里面却少了物质，所以平均密度比实心的低。</span></p>
+  </div>`;
+}
+function diag(el,lessonId,generator){
+ el.innerHTML=`<div class="step"><span class="en">Quick check</span><span class="zh">小测一下</span></div><div class="box"><p style="font-size:14px;color:var(--muted)">3 questions, just to see where you stand. Pass 3/3 to skip the lesson; otherwise the lesson comes next.</p><div id="diagQ"></div></div>`;
+ const qEl=el.querySelector('#diagQ');
+ let ok=0;
+ const qs=Array.from({length:3},()=>generator('diag'));
+ let i=0;
+ const show=()=>{
+  if(i>=3){
+   st(lessonId).diag=ok;
+   if(ok===3){
+    qEl.innerHTML=`<div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong>3/3:</strong> you already have this — skip the lesson and go to practice.</div><div style="margin-top:14px"><button id="skipMicro"><span class="en">Skip the lesson, go to practice →</span><span class="zh">跳过微课，去做练习 →</span></button></div>`;
+    qEl.querySelector('#skipMicro').onclick=()=>{cur=`prac-${lessonId}`;render();};
+   } else {
+    qEl.innerHTML=`<div class="note" style="background:#fef3c7;border-color:var(--warn)"><strong>${ok}/3:</strong> work through the lesson below to fill the gap.</div><div style="margin-top:14px"><button id="goMicro"><span class="en">Go to lesson →</span><span class="zh">去看微课 →</span></button></div>`;
+    qEl.querySelector('#goMicro').onclick=()=>{cur=`micro-${lessonId}`;render();};
+   }
+   save();renderNav();
+   return;
+  }
+  const q=qs[i];
+  qEl.innerHTML=`
+   <div class="q">
+    <div class="q-text">${i+1}. ${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="da" autocomplete="off" placeholder="?"> <button id="sub"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ht"></div>
+    <div class="feedback" id="fb"></div>
+   </div>`;
+  const input=qEl.querySelector('#da'),fb=qEl.querySelector('#fb'),ht=qEl.querySelector('#ht');
+  input.focus();
+  qEl.querySelector('#sub').onclick=check;
+  input.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const ans=input.value.trim();
+   const correct=q.check(ans);
+   if(correct===true){ok++;fb.className='feedback show ok';fb.innerHTML=L('✓ Correct · correct','✓ 正确 · 对了');input.disabled=true;setTimeout(()=>{i++;show();},700);}
+   else if(correct==='hint'){ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');}
+   else{fb.className='feedback show err';fb.innerHTML=L('✗ Not right, try again.','✗ 不对，再试一次。');}
+  }
+ };
+ show();
+}
+
+/* ============ Practice generators (by topic) ============ */
+/* ============ Practice generators (by topic) ============ */
+const generators={
+k1:()=>{ // mass
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Mass tells you how much ___ an object is made of. (type: matter / colour)`,
+   zhq:`质量表示物体由多少___组成（填 matter / colour）`,
+   check:a=>a.trim().toLowerCase()==='matter',ans:'matter',choice:true,
+   hint:'mass is about the amount of stuff.',zhh:'质量说的是物质有多少。'};
+ } else if(type===2){
+  return {q:`The SI unit of mass is the ___ . (type: kilogram / metre)`,
+   zhq:`质量的国际单位是___（填 kilogram / metre）`,
+   check:a=>a.trim().toLowerCase()==='kilogram',ans:'kilogram',choice:true,
+   hint:'its symbol is kg.',zhh:'符号是 kg。'};
+ } else if(type===3){
+  return {q:`1 kg = ___ grams. (type: 100 / 1000)`,
+   zhq:`1 kg = ___ 克（填 100 / 1000）`,
+   check:a=>a.trim().toLowerCase()==='1000',ans:'1000',choice:true,
+   hint:'kilo means a thousand.',zhh:'kilo 表示一千。'};
+ } else if(type===4){
+  return {q:`An object's mass is the ___ on the Moon as on Earth. (type: same / smaller)`,
+   zhq:`物体在月球上的质量和在地球上___（填 same / smaller）`,
+   check:a=>a.trim().toLowerCase()==='same',ans:'same',choice:true,
+   hint:'mass does not depend on location.',zhh:'质量不随位置改变。'};
+ } else {
+  return {q:`You cut a block in half; its mass becomes ___ . (type: half / the same)`,
+   zhq:`把一块物体切成两半，它的质量变成___（填 half / the same）`,
+   check:a=>a.trim().toLowerCase()==='half',ans:'half',choice:true,
+   hint:'half the matter, half the mass.',zhh:'物质少一半，质量也少一半。'};
+ }
+},
+k2:()=>{ // density
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Density is mass ___ by volume. (type: divided / multiplied)`,
+   zhq:`密度是质量___体积（填 divided / multiplied）`,
+   check:a=>a.trim().toLowerCase()==='divided',ans:'divided',choice:true,
+   hint:'the formula is ρ = m / V.',zhh:'公式是 ρ = m / V。'};
+ } else if(type===2){
+  return {q:`1 g/cm³ = ___ kg/m³. (type: 100 / 1000)`,
+   zhq:`1 g/cm³ = ___ kg/m³（填 100 / 1000）`,
+   check:a=>a.trim().toLowerCase()==='1000',ans:'1000',choice:true,
+   hint:'multiply by a thousand.',zhh:'乘一千。'};
+ } else if(type===3){
+  return {q:`Water's density is about ___ kg/m³. (type: 100 / 1000)`,
+   zhq:`水的密度约为___ kg/m³（填 100 / 1000）`,
+   check:a=>a.trim().toLowerCase()==='1000',ans:'1000',choice:true,
+   hint:'it is 1 g/cm³.',zhh:'就是 1 g/cm³。'};
+ } else if(type===4){
+  return {q:`Two boxes same size, but one has more matter — that one is ___ dense. (type: more / less)`,
+   zhq:`两个一样大的盒子，一个物质更多——那个更___密（填 more / less）`,
+   check:a=>a.trim().toLowerCase()==='more',ans:'more',choice:true,
+   hint:'more mass in the same volume.',zhh:'同样体积里质量更大。'};
+ } else {
+  return {q:`An object sinks in water if it is ___ dense than water. (type: more / less)`,
+   zhq:`物体比水___密就会沉（填 more / less）`,
+   check:a=>a.trim().toLowerCase()==='more',ans:'more',choice:true,
+   hint:'denser things sink.',zhh:'更密的会沉。'};
+ }
+},
+k3:()=>{ // measuring density
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Volume of a regular box = length × width × ___ . (type: height / mass)`,
+   zhq:`规则长方体的体积 = 长 × 宽 × ___（填 height / mass）`,
+   check:a=>a.trim().toLowerCase()==='height',ans:'height',choice:true,
+   hint:'three lengths multiplied.',zhh:'三个长度相乘。'};
+ } else if(type===2){
+  return {q:`An irregular solid's volume is found with a ___ . (type: graduated cylinder / ruler)`,
+   zhq:`不规则固体的体积用量___测（填 graduated cylinder / ruler）`,
+   check:a=>a.trim().toLowerCase()==='graduated cylinder',ans:'graduated cylinder',choice:true,
+   hint:'it holds liquid.',zhh:'它装液体。'};
+ } else if(type===3){
+  return {q:`When reading a liquid in a cylinder, read the ___ of the meniscus. (type: bottom / top)`,
+   zhq:`读量筒里液面时，读凹液面的___（填 bottom / top）`,
+   check:a=>a.trim().toLowerCase()==='bottom',ans:'bottom',choice:true,
+   hint:'the lowest point of the curve.',zhh:'曲线的最低点。'};
+ } else if(type===4){
+  return {q:`Mass is measured with a ___ . (type: balance / clock)`,
+   zhq:`质量用量___测（填 balance / clock）`,
+   check:a=>a.trim().toLowerCase()==='balance',ans:'balance',choice:true,
+   hint:'it compares masses.',zhh:'它比较质量。'};
+ } else {
+  return {q:`To get density you divide mass ___ volume. (type: by / and add to)`,
+   zhq:`算密度要把质量___体积（填 by / and add to）`,
+   check:a=>a.trim().toLowerCase()==='by',ans:'by',choice:true,
+   hint:'ρ = m / V.',zhh:'ρ = m / V。'};
+ }
+},
+k4:()=>{ // using density
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`You can ___ a material by measuring its density. (type: identify / paint)`,
+   zhq:`量出密度就能___这种材料（填 identify / paint）`,
+   check:a=>a.trim().toLowerCase()==='identify',ans:'identify',choice:true,
+   hint:'density is like a fingerprint.',zhh:'密度像指纹。'};
+ } else if(type===2){
+  return {q:`Gold is denser than water, so its density is ___ 1000 kg/m³. (type: more than / less than)`,
+   zhq:`金比水密，所以金的密度___ 1000 kg/m³（填 more than / less than）`,
+   check:a=>a.trim().toLowerCase()==='more than',ans:'more than',choice:true,
+   hint:'it sinks in water.',zhh:'它在水里会沉。'};
+ } else if(type===3){
+  return {q:`Two objects same volume, different mass — the ___ one is denser. (type: heavier / lighter)`,
+   zhq:`两个体积相同、质量不同——___的更密（填 heavier / lighter）`,
+   check:a=>a.trim().toLowerCase()==='heavier',ans:'heavier',choice:true,
+   hint:'more mass in the same space.',zhh:'同样空间里质量更大。'};
+ } else if(type===4){
+  return {q:`2 g/cm³ = ___ kg/m³. (type: 200 / 2000)`,
+   zhq:`2 g/cm³ = ___ kg/m³（填 200 / 2000）`,
+   check:a=>a.trim().toLowerCase()==='2000',ans:'2000',choice:true,
+   hint:'× 1000.',zhh:'乘 1000。'};
+ } else {
+  return {q:`Density helps tell two look-alike metals ___ . (type: apart / together)`,
+   zhq:`密度能帮我们把两种很像的金属区分___（填 apart / together）`,
+   check:a=>a.trim().toLowerCase()==='apart',ans:'apart',choice:true,
+   hint:'different densities, different materials.',zhh:'密度不同，材料就不同。'};
+ }
+},
+k5:()=>{ // density in daily life
+ const type=ri(1,5);
+ if(type===1){
+  return {q:`Most substances expand when ___ , so density drops. (type: heated / frozen)`,
+   zhq:`多数物质___时会膨胀，密度变小（填 heated / frozen）`,
+   check:a=>a.trim().toLowerCase()==='heated',ans:'heated',choice:true,
+   hint:'hot air rises.',zhh:'热空气上升。'};
+ } else if(type===2){
+  return {q:`Hot air is ___ dense than cold air. (type: less / more)`,
+   zhq:`热空气比冷空气___密（填 less / more）`,
+   check:a=>a.trim().toLowerCase()==='less',ans:'less',choice:true,
+   hint:'it rises because it is lighter.',zhh:'它更轻，所以上升。'};
+ } else if(type===3){
+  return {q:`A hollow object has ___ average density than a solid one. (type: lower / higher)`,
+   zhq:`空心物体比实心物体平均密度___（填 lower / higher）`,
+   check:a=>a.trim().toLowerCase()==='lower',ans:'lower',choice:true,
+   hint:'same shell, less matter inside.',zhh:'外壳一样，里面物质更少。'};
+ } else if(type===4){
+  return {q:`Ice floats on water because ice is ___ dense than water. (type: less / more)`,
+   zhq:`冰浮在水上是因为冰比水___密（填 less / more）`,
+   check:a=>a.trim().toLowerCase()==='less',ans:'less',choice:true,
+   hint:'less dense things float.',zhh:'更疏的会浮。'};
+ } else {
+  return {q:`A substance's density usually ___ when its temperature rises. (type: decreases / increases)`,
+   zhq:`温度升高时，物质的密度通常___（填 decreases / increases）`,
+   check:a=>a.trim().toLowerCase()==='decreases',ans:'decreases',choice:true,
+   hint:'it expands, so same mass in more volume.',zhh:'它膨胀，同样质量占更大体积。'};
+ }
+},
+};
+
+/* ============ Videos module (YouTube embed) ============ */
+function videos(el,lessonId){
+ const list=VIDEOS[lessonId]||[];
+ if(!list.length){el.innerHTML='<div class="note">No videos for this section.</div>';return;}
+ let html=`<div class="step"><span class="en">Videos</span><span class="zh">视频</span> · ${LESSONS.find(l=>l.id===lessonId).t}</div>`;
+ html+=`<div class="box"><p style="font-size:13px;color:var(--muted)"><span class="tag core">Watch first</span> watch first; <span class="tag ext">Optional</span> if you have time.</p></div>`;
+ list.forEach((v,i)=>{
+  const watched=st(lessonId).vid[i];
+  const yt=v.yt&&v.yt.indexOf('TODO')!==0?v.yt:'';
+  html+=`<div class="vid">
+   <div class="vid-h">
+    <span class="title">${L(v.t,(typeof VTZ!=='undefined'&&VTZ[v.t])||v.t)}</span>
+    <span class="meta">
+     <span class="tag ${v.c}"><span class="en">${v.c==='core'?'Core':'Extra'}</span><span class="zh">${v.c==='core'?'核心':'拓展'}</span></span>
+     <span class="st ${watched?'ok':''}">${watched?'✓ watched':'Unwatched'}</span>
+     <button data-i="${i}">${watched?'<span class="en">▶ Replay</span><span class="zh">▶ 重播</span>':'<span class="en">▶ Play</span><span class="zh">▶ 播放</span>'}</button>
+    </span>
+   </div>
+   <div id="vc${i}" style="display:${watched?'block':'none'};position:relative;padding-top:56.25%">
+    ${yt?`<iframe src="https://www.youtube.com/embed/${yt}" frameborder="0" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"></iframe>`:'<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;background:#f3f4f6">video id pending Khan mapping</div>'}
+   </div>
+  </div>`;
+ });
+ el.innerHTML=html;
+ el.querySelectorAll('[data-i]').forEach(b=>{
+  b.onclick=()=>{
+   const i=parseInt(b.dataset.i);
+   const slot=el.querySelector('#vc'+i);
+   slot.style.display = slot.style.display==='none'?'block':'none';
+   st(lessonId).vid[i]=true;save();renderNav();
+   b.parentElement.querySelector('.st').className='st ok';
+   b.parentElement.querySelector('.st').textContent='✓ watched';
+  };
+ });
+}
+
+/* ============ Practice module ============ */
+function practice(el,lessonId){
+ const gen=generators[lessonId];
+ if(!gen){el.innerHTML='<div class="note">No practice for this.</div>';return;}
+ const s=st(lessonId);
+ let streak=0,need=5,q=null,tries=0,diff=1;
+ function newQ(){q=gen(diff);tries=0;}
+ const update=()=>{
+  el.innerHTML=`
+   <div class="step"><span class="en">Practice</span><span class="zh">练习</span> (${streak}/${need})</div>
+   <div class="diff">
+    Difficulty: 
+    <button class="secondary ${diff===1?'on':''}" data-d="1">Easy</button>
+    <button class="secondary ${diff===2?'on':''}" data-d="2">Medium</button>
+    <button class="secondary ${diff===3?'on':''}" data-d="3">Hard</button>
+    <span class="info">Correct: ${s.prac.ok}/${s.prac.tot} (streak ${streak})<button class="secondary" id="rs" style="margin-left:8px"><span class="en">Reset</span><span class="zh">重置</span></button></span>
+   </div>
+   <div class="progress"><div style="width:${(streak/need)*100}%"></div></div>
+   <div class="q">
+    <div class="q-text">${L(q.q,q.zhq)}</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+     <input type="text" id="pi" autocomplete="off" placeholder="?"> <button id="ps"><span class="en">Submit</span><span class="zh">提交</span></button>
+    </div>
+    <div class="hint" id="ph"></div>
+    <div class="feedback" id="pf"></div>
+   </div>`;
+  el.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{diff=parseInt(b.dataset.d);update();});
+  el.querySelector('#rs').onclick=()=>{s.prac={ok:0,tot:0};streak=0;diff=1;save();update();renderNav();};
+  const syncTop=()=>{
+   const stp=el.querySelector('.step'); if(stp) stp.innerHTML='<span class="en">Practice</span><span class="zh">练习</span> ('+streak+'/'+need+')';
+   const pg=el.querySelector('.progress'); if(pg&&pg.firstElementChild) pg.firstElementChild.style.width=(streak/need)*100+'%';
+   const inf=el.querySelector('.info'); if(inf){const rb=inf.querySelector('#rs');inf.textContent='Correct: '+s.prac.ok+'/'+s.prac.tot+' (streak '+streak+') ';if(rb)inf.appendChild(rb);}
+  };
+  const inp=el.querySelector('#pi'),fb=el.querySelector('#pf'),ht=el.querySelector('#ph');
+  inp.focus();
+  el.querySelector('#ps').onclick=check;
+  inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const a=inp.value.trim();
+   const r=q.check(a);
+   if(r===true){
+    streak++;s.prac.ok++;s.prac.tot++;
+    fb.className='feedback show ok';fb.innerHTML=L('✓ correct!','✓ 对了！');
+    inp.disabled=true;syncTop();
+    if(streak>=need){s.done=true;fb.innerHTML+='<br><strong>'+L('Section cleared ✓','本节过关 ✓')+'</strong>';save();renderNav();}
+    else if(streak>=3&&diff<3){diff++;}
+    setTimeout(()=>{newQ();update();},900);
+   } else {
+    tries++;
+    if(tries===1){
+     ht.className='hint show';ht.innerHTML=L(q.hint||'Have another go.', q.zhh||'再试一次。');
+     fb.className='feedback show err';fb.innerHTML=L('✗ Try again. ','✗ 再试一次。');
+    } else if(tries===2){
+     fb.className='feedback show err';
+     fb.innerHTML=L('✗ Not quite. '+(q.sol?('Method: '+q.sol):(q.hint?('Hint: '+q.hint):'Work through it once more.')), '✗ 不太对。'+(q.zhs?('方法：'+q.zhs):(q.zhh?('提示：'+q.zhh):'再算一遍。')));
+    } else {
+     streak=0;s.prac.tot++;syncTop();
+     if(diff>1)diff--;
+     fb.className='feedback show err';
+     fb.innerHTML=L('The answer is <b>'+q.ans+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+q.ans+'</b>'+(q.zhs?('。'+q.zhs):'。'));
+     inp.disabled=true;save();renderNav();
+     setTimeout(()=>{q=gen();tries=0;update();},2400);
+    }
+   }
+   save();
+  }
+ };
+ newQ();update();
+}
+
+/* ============ Chapter check ============ */
+function chTest(el){
+ const N=10;
+ el.innerHTML=`<div class="step"><span class="en">Chapter check</span><span class="zh">章末自己测</span></div><div class="box"><p style="font-size:13px;color:var(--muted)">${N} questions covering every topic in this chapter. Not timed, not scored.</p><div id="tq"></div></div>`;
+ const tq=el.querySelector('#tq');
+ const qs=[];
+ for(let i=0;i<2;i++)qs.push(generators.k1(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k2(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k3(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k4(i+1));
+ for(let i=0;i<2;i++)qs.push(generators.k5(i+1));
+ let i=0,ok=0;
+ const show=()=>{
+  if(i>=qs.length){
+   const pass=ok>=Math.ceil(qs.length*0.7);
+   tq.innerHTML=`<div class="note" style="background:${pass?'#dcfce7':'#fef3c7'};border-color:${pass?'var(--ok)':'var(--warn)'}"><strong>${ok}/${qs.length}</strong> ${pass?'Chapter passed! Move on to the next chapter':'Go back and review what you missed'}</div>`;
+   S.test={ok,tot:qs.length};save();renderNav();return;
+  }
+  const q=qs[i];
+  tq.innerHTML=`<div class="q"><div class="q-text">${i+1}/${qs.length}. ${L(q.q,q.zhq)}</div><div style="display:flex;gap:8px"><input id="ti" autocomplete="off"><button id="ts"><span class="en">Submit</span><span class="zh">提交</span></button></div><div class="hint" id="th"></div><div class="feedback" id="tf"></div></div>`;
+  const inp=tq.querySelector('#ti'),fb=tq.querySelector('#tf'),ht=tq.querySelector('#th');
+  inp.focus();tq.querySelector('#ts').onclick=check;inp.onkeydown=e=>{if(e.key==='Enter')check();};
+  function check(){
+   const r=q.check(inp.value.trim());
+   if(r===true){ok++;fb.className='feedback show ok';fb.textContent='✓';inp.disabled=true;setTimeout(()=>{i++;show();},600);}
+   else if(r==='hint'){ht.className='hint show';ht.textContent=q.hint;}
+   else{fb.className='feedback show err';fb.textContent='✗';setTimeout(()=>{i++;show();},900);}
+  }
+ };
+ show();
+}
+
+/* ============ Render ============ */
+const GLOSS={k1:"质量",k2:"密度",k3:"测量物质的密度",k4:"密度的应用",k5:"密度与社会生活",test:""};
+const USE_MICRO=true;
+const INTRO={why:"Everything around you is made of matter, and matter raises two questions: how much of it (mass), and how tightly it is packed (density). This chapter shows what mass really means, why density is the packed-ness of a material, how to measure both with a balance and a graduated cylinder, and how density lets you tell gold from fool's gold or explain why ice floats.",whyZh:"你周围的一切都是物质做的。物质有两个问题：有多少（质量），以及塞得有多紧（密度）。这一章讲质量到底是什么、为什么密度是材料的紧密程度、怎么用天平和量筒把两者量出来，以及密度怎么帮你区分真金和假金、解释冰为什么浮在水上。",desc:{k1:"Mass — amount of matter, the units (t, kg, g, mg), and why mass never changes when you reshape or move an object",k2:"Density — ρ = m/V, the units kg/m³ and g/cm³, and the density of water",k3:"Measuring density — find volume (ruler or graduated cylinder) and mass (balance), then divide",k4:"Using density — identify a material by its density, and convert between units",k5:"Density in daily life — why things expand when hot, why hot air rises, why ice floats"}};
+function goLesson(id){cur=USE_MICRO?('micro-'+id):id;render();}
+function introRender(main){
+  const pts=LESSONS.filter(l=>l.id!=='test'&&l.id!=='intro');
+  let h='<div class="intro-h"><span class="en">What this chapter covers</span><span class="zh">本章学什么</span></div>'
+    +'<div class="intro-sub"><span class="en">Here is what this chapter walks you through, in order. Read it first, then start the first lesson below.</span><span class="zh">下面是这一章要走的全部内容，按顺序排好。先看一遍，再点下面开始第一小节。</span></div><div class="kp">';
+  pts.forEach(l=>{
+    const s=st(l.id);
+    const badge=s.done?' <span class="st ok">✓ done</span>':(s.prac.tot>0?' <span class="st">'+s.prac.ok+'/'+s.prac.tot+'</span>':'');
+    h+='<div class="kp-c"><div class="n">'+l.n+'</div><div class="t">'+l.t+(GLOSS[l.id]?' <span class="cn-tag">'+GLOSS[l.id]+'</span>':'')+'</div><div class="d">'+((INTRO.desc&&INTRO.desc[l.id])||'')+'</div>'+badge+'</div>';
+  });
+  h+='</div>';
+  h+='<div class="why"><b><span class="en">Where this shows up in real life</span><span class="zh">在真实生活里哪里会用到</span></b><br>'+L(INTRO.why,INTRO.whyZh)+'</div>';
+  h+='<div class="box"><b><span class="en">How this chapter works</span><span class="zh">本章怎么学</span></b><div class="how">'
+    +'① <b><span class="en">Watch the lesson</span><span class="zh">看微课</span></b>: <span class="en">a few minutes to get what the section is about</span><span class="zh">花几分钟了解本节内容</span><br>'
+    +'② <b><span class="en">Practice</span><span class="zh">练一练</span></b>: <span class="en">5 correct in a row clears it; if you get stuck, hints walk you through</span><span class="zh">连对 5 题就算过关；卡住了就看提示</span><br>'
+    +'③ <b><span class="en">Next section</span><span class="zh">下一节</span></b>: <span class="en">on the left, </span><span class="zh">在左侧，</span>'+pts[0].n+', '+pts[1].n+'… open whichever you want, in any order'
+    +'</div></div>';
+  h+='<div class="big-start"><button id="startBtn">'+pts[0].n+' <span class="en">'+pts[0].t+'</span><span class="zh">开始 · '+NAVZH[pts[0].id]+'</span> →</button></div>';
+  main.innerHTML=h;
+  main.querySelector('#startBtn').onclick=()=>{goLesson(pts[0].id);};
+}
+const NAVZH={"intro":"概览","k1":"质量","k2":"密度","k3":"测量物质的密度","k4":"密度的应用","k5":"密度与社会生活","test":"章末自己测"};
+const LKEY='phys8_lang';
+function getLang(){return localStorage.getItem(LKEY)||'en';}
+function setLang(l){localStorage.setItem(LKEY,l);applyLang();}
+function applyLang(){const l=getLang();document.body.className=(' '+document.body.className+' ').replace(/\s+lang-(en|mix|zh)\b/g,' ').trim();if(l==='mix'||l==='zh')document.body.classList.add('lang-'+l);document.querySelectorAll('.langseg button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===l);});}
+applyLang();
+
+function renderNav(){
+ const nav=document.getElementById('nav');
+ nav.innerHTML=LESSONS.map(l=>{
+  const s=st(l.id);
+  let stxt='';
+  if(s.done)stxt='<span class="st ok">✓</span>';
+  else if(s.prac.tot>0)stxt=`<span class="st ${s.prac.ok/s.prac.tot>0.6?'ok':'err'}">${s.prac.ok}/${s.prac.tot}</span>`;
+  return `<div class="nav-i ${l.id===cur||cur===`micro-${l.id}`||cur===`diag-${l.id}`||cur===`prac-${l.id}`?'on':''}" data-go="${l.id}">
+   <span><b>${l.n}</b> <span class="en">${l.t}</span><span class="zh">${NAVZH[l.id]||l.t}</span></span>${stxt}</div>`;
+ }).join('');
+ nav.querySelectorAll('[data-go]').forEach(n=>n.onclick=()=>{
+  const id=n.dataset.go;
+  cur = id==='test' ? 'test' : `micro-${id}`;
+  render();
+ });
+}
+
+function render(){
+ const main=document.getElementById('main');
+ renderNav();
+ if(cur==='intro'||cur==='micro-intro'){introRender(main);return;}
+ if(cur==='test'){chTest(main);return;}
+ const m=cur.match(/^(diag|micro|prac)-(\w+)$/);
+ if(m){
+  const phase=m[1],id=m[2];
+  const lesson=LESSONS.find(l=>l.id===id);
+  if(!lesson){main.innerHTML='<div class="note">Unknown lesson</div>';return;}
+  const titles={k1:'Lenses',k2:'Lenses in life',k3:'Imaging with convex lens',k4:'Eye and glasses',k5:'Microscope & telescope'};
+  main.innerHTML=`<div class="lesson-id">${lesson.n} · <span class="en">${titles[id]} · ${lesson.cn}</span><span class="zh">${NAVZH[id]||titles[id]}</span></div>`;
+  const c=document.createElement('div');main.appendChild(c);
+  if(phase==='diag'){
+   if(st(id).diag===3){cur=`micro-${id}`;render();return;}
+   diag(c,id,generators[id]);
+  } else if(phase==='micro'){
+   if(id==='k1')microK1(c);
+   else if(id==='k2')microK2(c);
+   else if(id==='k3')microK3(c);
+   else if(id==='k4')microK4(c);
+   else if(id==='k5')microK5(c);
+   const after=document.createElement('div');main.appendChild(after);
+   videos(after,id);
+   const btn=document.createElement('div');btn.style.marginTop='14px';
+   btn.innerHTML=`<button id="toPrac">Go to practice</button>`;
+   main.appendChild(btn);
+   btn.querySelector('#toPrac').onclick=()=>{cur=`prac-${id}`;render();};
+  } else if(phase==='prac'){
+   practice(c,id);
+  }
+ } else {
+  introRender(main);
+ }
+}
+render();
+</script>
+<script>
+(function(){try{if(new URLSearchParams(location.search).get('go')==='test'){cur='test';render();}}catch(e){}})();
+</script>
+<script>
+var TKEY='phys8_theme';
+function getTheme(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}}
+function setTheme(t){try{localStorage.setItem(TKEY,t);}catch(e){}applyTheme();}
+function applyTheme(){
+ var t=getTheme();
+ document.documentElement.setAttribute('data-theme',t);
+ var bs=document.querySelectorAll('.themseg button');
+ for(var i=0;i<bs.length;i++){
+  var on=(bs[i].getAttribute('data-theme')===t);
+  if(on){bs[i].classList.add('on');}else{bs[i].classList.remove('on');}
+ }
+}
+applyTheme();
+try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
+</script>
+</body>
+</body>
+</html>

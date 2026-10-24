@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Level-up challenges · Grade 8 physics</title>
+<style>
+:root{
+ --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
+ --accent:#2563eb; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.topbar{background:#fff;border-bottom:1px solid var(--line);padding:8px 16px;font-size:13px;display:flex;gap:16px;align-items:center;position:sticky;top:0;z-index:99}
+.topbar a{color:var(--accent);text-decoration:none;font-weight:600}
+.wrap{display:grid;grid-template-columns:220px 1fr;gap:18px;max-width:1160px;margin:0 auto;padding:18px}
+header{background:linear-gradient(135deg,#0891b2,#2563eb);color:#fff;padding:22px 26px;border-radius:14px;margin-bottom:14px;grid-column:1/-1}
+header h1{font-size:22px;margin-bottom:4px}
+header p{opacity:.92;font-size:13px}
+nav{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;height:fit-content;position:sticky;top:60px}
+.nav-i{padding:10px 12px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.nav-i:hover{background:#eff6ff}
+.nav-i.on{background:var(--accent);color:#fff}
+.nav-i .st{font-size:11px;opacity:.85}
+main{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 26px;min-height:70vh}
+.step{padding:10px 14px;background:var(--accent);color:#fff;border-radius:8px;margin-bottom:14px;font-size:15px}
+.box{background:#f9fafb;border:1px solid var(--line);border-radius:10px;padding:14px;margin:14px 0}
+.box h3{font-size:15px;margin-bottom:8px;color:var(--accent)}
+.note{background:#fffbeb;border-left:3px solid var(--warn);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:13px}
+.q{margin:12px 0;padding:14px;background:#f9fafb;border-radius:8px;border-left:3px solid var(--accent)}
+.q .q-text{font-size:15px;margin-bottom:6px}
+.q .q-cn{font-size:12px;color:var(--muted);margin-bottom:10px}
+.feedback{margin-top:8px;font-size:13px;padding:8px 10px;border-radius:6px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#dcfce7;color:#166534}
+.feedback.err{background:#fee2e2;color:#991b1b}
+.feedback.warn{background:#fef3c7;color:#92400e}
+.hint{background:#fef3c7;border-left:3px solid var(--warn);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:13px;display:none}
+.hint.show{display:block}
+input[type=text]{padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;width:140px;font-family:inherit}
+button{font-family:inherit;border:none;cursor:pointer;border-radius:8px;padding:8px 14px;font-size:14px;background:var(--accent);color:#fff}
+button.secondary{background:#e5e7eb;color:var(--text)}
+button.choice{display:block;width:100%;text-align:left;background:#fff;color:var(--text);border:1px solid var(--line);margin:6px 0}
+button.choice:hover{background:#eff6ff;border-color:var(--accent)}
+.progress{height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;background:var(--accent);transition:width .3s}
+.badge{font-size:11px;padding:2px 9px;border-radius:10px;background:#f3f4f6;color:var(--muted)}
+.badge.ok{background:#dcfce7;color:#166534}
+.badge.warn{background:#fef3c7;color:#92400e}
+.badge.lock{background:#fee2e2;color:#991b1b}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+th{font-size:11px;color:var(--muted);font-weight:600}
+.sol{font-family:"Courier New",monospace;background:#1f2937;color:#a5f3fc;padding:8px 12px;border-radius:6px;margin-top:8px;font-size:13px;white-space:pre-wrap}
+/* ===== Language tiers (en / mix / zh) ===== */
+.zh{display:none}
+body.lang-en .zh{display:none}
+body.lang-mix .zh{display:inline;font-size:.82em;margin-left:6px;font-weight:400}
+body.lang-zh .en{display:inline;font-size:.78em;margin-left:6px;font-weight:400}
+body.lang-zh .zh{display:inline}
+header, header h1, header p, header .en, header .zh, header .src, header .sub, header .t, header .no{ color:#fff; }
+header p, header .en, header .zh{ opacity:1; }
+.ch .top, .ch .top .en, .ch .top .zh, .ch .top .no, .ch .top .t{ color:#fff; opacity:1; }
+
+.langbar{position:fixed;top:8px;right:10px;z-index:300;display:inline-flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.langseg{display:inline-flex}
+.langseg button{background:transparent;color:#374151;border:none;padding:6px 11px;font-size:12px;cursor:pointer;font-family:inherit;border-radius:999px;white-space:nowrap}
+.langseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.langbar{top:6px;right:6px}.langseg button{padding:5px 8px;font-size:11px}}
+body.lang-en .q .q-cn{display:none}
+body.lang-zh .q .q-text{font-size:.82em;color:var(--muted);margin-bottom:6px}
+body.lang-zh .q .q-cn{font-size:15px;color:var(--text);font-weight:600;margin-bottom:10px}
+
+body.lang-mix h1 .en, body.lang-mix h1 .zh,
+body.lang-mix h2 .en, body.lang-mix h2 .zh,
+body.lang-mix h3 .en, body.lang-mix h3 .zh,
+body.lang-mix h4 .en, body.lang-mix h4 .zh,
+body.lang-mix p .en,  body.lang-mix p .zh,
+body.lang-mix li .en, body.lang-mix li .zh,
+body.lang-mix summary .en, body.lang-mix summary .zh,
+body.lang-mix .step .en, body.lang-mix .step .zh,
+body.lang-mix header .en, body.lang-mix header .zh,
+body.lang-mix .hero .en, body.lang-mix .hero .zh,
+body.lang-mix .ch .en, body.lang-mix .ch .zh,
+body.lang-mix .ch .top .en, body.lang-mix .ch .top .zh,
+body.lang-mix .welcome .en, body.lang-mix .welcome .zh,
+body.lang-mix .note .en, body.lang-mix .note .zh { display: block; }
+body.lang-mix h1 .zh, body.lang-mix h2 .zh, body.lang-mix h3 .zh, body.lang-mix h4 .zh,
+body.lang-mix p .zh, body.lang-mix li .zh, body.lang-mix summary .zh,
+body.lang-mix .step .zh, body.lang-mix header .zh, body.lang-mix .hero .zh,
+body.lang-mix .ch .zh, body.lang-mix .ch .top .zh, body.lang-mix .welcome .zh,
+body.lang-mix .note .zh { font-size: inherit; }
+
+/* ===== Day / Night / Auto (follows the system by default) ===== */
+:root{color-scheme:light}
+@media (prefers-color-scheme: dark){
+ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+  --accent:#a78bfa;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ }
+}
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
+ --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
+ --accent:#a78bfa;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+}
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+html[data-theme="dark"] main{background:var(--card);color:var(--text)}
+html[data-theme="dark"] nav{background:var(--card)}
+html[data-theme="dark"] .langbar,
+html[data-theme="dark"] .chip:not(.on),
+html[data-theme="dark"] .kp,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] .vid-item,
+html[data-theme="dark"] .proof,
+html[data-theme="dark"] .q{background:var(--card)}
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .box,
+html[data-theme="dark"] .kp-c,
+html[data-theme="dark"] .badge:not(.ok):not(.warn):not(.lock),
+html[data-theme="dark"] .pbar,
+html[data-theme="dark"] .nav-i:hover,
+html[data-theme="dark"] input:disabled,
+html[data-theme="dark"] .bars,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .ltsw button{background:var(--card2)}
+html[data-theme="dark"] .opt{background:var(--card);color:var(--text)}
+html[data-theme="dark"] .opt:hover:not(:disabled),
+html[data-theme="dark"] button.choice:hover{background:var(--card2);border-color:var(--accent)}
+html[data-theme="dark"] .opt.sel-ok{background:#14532d;color:#bbf7d0;border-color:var(--ok)}
+html[data-theme="dark"] .opt.sel-bad{background:#7f1d1d;color:#fecaca;border-color:var(--err)}
+html[data-theme="dark"] button{color:#0f172a!important}
+html[data-theme="dark"] .opt,
+html[data-theme="dark"] button.choice,
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary,
+html[data-theme="dark"] .langseg button,
+html[data-theme="dark"] .themseg button{color:var(--text)!important}
+html[data-theme="dark"] button.ghost,
+html[data-theme="dark"] button.secondary{background:var(--card2)!important}
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .sel .num{color:#0f172a!important}
+html[data-theme="dark"] .langseg button.on,
+html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
+html[data-theme="dark"] .nav-i.on .st.ok,
+html[data-theme="dark"] .nav-i.on .st.err{color:#0f172a!important}
+html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
+html[data-theme="dark"] .step{color:#1e1b4b!important}
+html[data-theme="dark"] .ltsw button{color:#93c5fd!important}
+html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
+html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
+html[data-theme="dark"] .fig *{color:#1f2937!important}
+html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
+html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
+html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
+html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
+html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{
+ background:var(--card2);color:var(--text);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder{color:var(--muted)}
+html[data-theme="dark"] table th{color:var(--muted)}
+.themebar{position:fixed;top:44px;right:12px;z-index:300;display:inline-flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.themseg{display:inline-flex}
+.themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
+.themseg button.on{background:var(--accent);color:#fff}
+@media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+</style>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
+</head>
+<body>
+
+<div class="topbar">
+ <a href="home.html" style="color:#2563eb;text-decoration:none;font-weight:600"><span class="zh">← 主页</span><span class="en">← Home</span></a>
+ <a href="index.html"><span class="en">← Portal</span><span class="zh">← 网站首页</span></a>
+ <a href="unittests.html"><span class="en">Level-up challenges</span><span class="zh">闯关挑战</span></a>
+ <span style="margin-left:auto;font-size:11px;color:var(--muted)"><span class="en">Content from Khan Academy · CC BY-NC-SA</span><span class="zh">内容来自 Khan Academy · CC BY-NC-SA</span></span>
+</div>
+
+<div class="wrap">
+<header>
+ <h1><span class="en">🏆 Level-up challenges</span><span class="zh">🏆 闯关挑战</span></h1>
+ <p><span class="en">Mixes topics from the chapters — pass a level to prove you have got it.</span><span class="zh">把各章的内容混在一起考——通过一关说明你真的掌握了。</span></p>
+ <p style="margin-top:6px;font-size:12px"><span class="en">10 questions per level (12 for the final). Miss once and you get a hint; miss twice and you get the full solution, and it goes into your review list.</span><span class="zh">每关 10 题（期末 12 题）。错一次会给提示；错两次直接给完整解法，并自动收进复习清单。</span></p>
+</header>
+<div class="langbar" title="显示语言 · Language display — 随时可改 · change anytime">
+ <span class="langseg">
+  <button data-lang="en" onclick="setLang('en')">English</button>
+  <button data-lang="mix" onclick="setLang('mix')">English + 中文</button>
+  <button data-lang="zh" onclick="setLang('zh')">中文 + English</button>
+ </span>
+</div>
+<div class="themebar" title="日间 / 夜间 / 自动 · Day / Night / Auto">
+ <span class="themseg">
+  <button data-theme="light" onclick="setTheme('light')" title="日间 · Day">☀️</button>
+  <button data-theme="dark" onclick="setTheme('dark')" title="夜间 · Night">🌙</button>
+  <button data-theme="auto" onclick="setTheme('auto')" title="自动跟随系统 · Auto">⚙️</button>
+ </span>
+</div>
+
+<nav id="nav"></nav>
+<main id="main"></main>
+</div>
+
+<script>
+/* ================= Helpers ================= */
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function mkNum(q,zhq,ans,hint,sol){return {type:'num',q:q,zhq:zhq,ans:String(ans),hint:hint||'',sol:sol||''};}
+function mkChoice(q,zhq,choices,ci,hint,sol,choicesZh){return {type:'choice',q:q,zhq:zhq,choices:choices,choicesZh:choicesZh||null,ans:String(choices[ci]),ci:ci,hint:hint||'',sol:sol||''};}
+function shownChoices(qq){return (getLang()==='zh'&&qq.choicesZh)?qq.choicesZh:qq.choices;}
+function isRight(qq,v){
+ v=String(v).trim();
+ if(qq.type==='choice'){
+  const i=parseInt(v,10);
+  if(!isNaN(i))return i===qq.ci;
+  return v.toLowerCase()===String(qq.ans).toLowerCase();
+ }
+ let x;
+ if(v.indexOf('/')>0){const p=v.split('/');x=parseFloat(p[0])/parseFloat(p[1]);}
+ else x=parseFloat(v.replace(/[^0-9.\-]/g,''));
+ if(isNaN(x))return false;
+ return Math.abs(x-parseFloat(qq.ans))<1e-6;
+}
+
+/* ================= U1 · Motion & Sound (Ch01 + Ch02) ================= */
+const G1=[
+ ()=>{const v=ri(20,90),t=ri(1,6),d=v*t;return mkNum(`A car travels ${d} km in ${t} hours. What is its average speed in km/h?`,`一辆汽车 ${t} 小时行驶 ${d} km，平均速度是多少 km/h？`,v,
+   `speed = distance ÷ time.`,`v = ${d} km ÷ ${t} h = ${v} km/h`);},
+ ()=>{const v=ri(2,12),t=ri(3,20),d=v*t;return mkNum(`A runner covers ${d} m in ${t} s. What is the speed in m/s?`,`一名跑步者 ${t} 秒跑完 ${d} m，速度是多少 m/s？`,v,
+   `speed = distance ÷ time.`,`v = ${d} m ÷ ${t} s = ${v} m/s`);},
+ ()=>{const v=ri(10,80),t=ri(1,5),d=v*t;return mkNum(`A cyclist rides at ${v} km/h for ${t} hours. How far does she go (km)?`,`骑自行车以 ${v} km/h 的速度骑了 ${t} 小时，走了多少 km？`,d,
+   `distance = speed × time.`,`d = ${v} km/h × ${t} h = ${d} km`);},
+ ()=>{const v=ri(10,60),t=ri(2,8),d=v*t;return mkNum(`A train travels ${d} km at a steady ${v} km/h. How long does it take (hours)?`,`火车以匀速 ${v} km/h 行驶 ${d} km，需要多少小时？`,t,
+   `time = distance ÷ speed.`,`t = ${d} km ÷ ${v} km/h = ${t} h`);},
+ ()=>{const m=ri(2,20);return mkNum(`How many seconds are there in ${m} minutes?`,`${m} 分钟等于多少秒？`,60*m,
+   `1 minute = 60 seconds.`,`${m} × 60 = ${60*m} s`);},
+ ()=>{const k=ri(2,15);return mkNum(`How many metres are there in ${k} kilometres?`,`${k} 千米等于多少米？`,1000*k,
+   `1 km = 1000 m.`,`${k} × 1000 = ${1000*k} m`);},
+ ()=>{const t=ri(2,10);return mkNum(`You shout at a cliff and hear the echo ${t} s later. Sound travels 340 m/s. How far away is the cliff (m)?`,`对着悬崖喊一声，${t} 秒后听到回声。声速 340 m/s，悬崖离你多远（m）？`,170*t,
+   `The sound goes to the cliff AND back, so the one-way distance is half of 340 × ${t}.`,`total path = 340 × ${t} = ${340*t} m; one-way = ${340*t} / 2 = ${170*t} m`);},
+ ()=>{const t=ri(1,8);return mkNum(`You see lightning and hear thunder ${t} s later. How far away is the storm (m)? (speed of sound 340 m/s)`,`先看到闪电，${t} 秒后才听到雷声。风暴离你多远（m）？（声速 340 m/s）`,340*t,
+   `distance = speed × time (light travel time is negligible).`,`d = 340 × ${t} = ${340*t} m`);},
+ ()=>{const v=ri(5,25),t=ri(4,20),L=v*t;return mkNum(`A ${L} m-long train passes a fixed signal in ${t} s. Find its speed in m/s.`,`一列长 ${L} m 的火车经过一个固定信号用了 ${t} 秒，求它的速度 m/s`,v,
+   `The whole train length must pass the point: distance = train length.`,`v = ${L} m ÷ ${t} s = ${v} m/s`);},
+ ()=>{const V=ri(20,60),T=ri(4,12),D=V*T;const t1=ri(1,T-1),t2=T-t1;const d1=ri(10,D-10),d2=D-d1;return mkNum(`A car travels ${d1} m in ${t1} s, then ${d2} m in ${t2} s. Find the average speed for the whole trip (m/s).`,`一辆车先 ${t1} 秒走 ${d1} m，再 ${t2} 秒走 ${d2} m，全程平均速度是多少 m/s？`,V,
+   `average speed = total distance ÷ total time.`,`total = ${d1}+${d2}=${D} m, ${t1}+${t2}=${T} s, v = ${D} / ${T} = ${V} m/s`);},
+ ()=>mkChoice(`In which medium does sound travel the FASTEST?`,`声音在下列哪种介质中传播最快？`,['air','water','steel','vacuum'],2,
+   `Sound needs particles to carry it; denser, more rigid materials pass vibrations faster.`,`Steel is rigid and dense → sound travels fastest in solids like steel`,['空气','水','钢铁','真空']),
+ ()=>mkChoice(`Can sound travel through a vacuum (empty space with no matter)?`,`声音能在真空（没有任何物质的空间）中传播吗？`,['Yes','No'],1,
+   `Sound is a mechanical wave — it needs a medium.`,`No medium → no sound; that is why space is silent`,['能','不能']),
+ ()=>mkChoice(`A higher-pitched sound has a higher ___ .`,`音调更高的声音具有更大的____。`,['frequency','amplitude','speed','wavelength'],0,
+   `Pitch is how we hear frequency.`,`Pitch ↔ frequency (not amplitude or speed)`,['频率','振幅','速度','波长']),
+ ()=>mkChoice(`A louder sound has a larger ___ .`,`更响的声音具有更大的____。`,['amplitude','frequency','speed','wavelength'],0,
+   `Loudness comes from the amplitude of the wave.`,`Loudness ↔ amplitude`,['振幅','频率','速度','波长']),
+ ()=>{const f=ri(100,1000);return mkNum(`A tuning fork vibrates at ${f} Hz. How many complete vibrations does it make each second?`,`音叉以 ${f} Hz 振动，它每秒完成多少次完整振动？`,f,
+   `Hz means "vibrations per second".`,`${f} Hz = ${f} vibrations per second`);},
+ ()=>mkChoice(`Sound with a frequency above ___ Hz is called ultrasound.`,`频率超过____ Hz 的声波称为超声波。`,['20000','20','2000','200000'],0,
+   `Human hearing is roughly 20 Hz – 20000 Hz; above that is ultrasound.`,`Above 20000 Hz → ultrasound`,['20000','20','2000','200000']),
+];
+
+/* ================= U2 · Matter & Light (Ch03 + Ch04) ================= */
+const G2=[
+ ()=>mkChoice(`At standard atmospheric pressure, water boils at ___ °C.`,`在标准大气压下，水的沸点是____°C。`,['100','0','50','212'],0,
+   `Water boils at 100 °C (212 °F) at 1 atm.`,`Boiling point of water = 100 °C`,['100','0','50','212']),
+ ()=>mkChoice(`At standard atmospheric pressure, water freezes at ___ °C.`,`在标准大气压下，水的凝固点是____°C。`,['0','100','-10','50'],0,
+   `Water freezes / melts at 0 °C.`,`Freezing point of water = 0 °C`,['0','100','-10','50']),
+ ()=>{const T=ri(20,80),T2=T+ri(40,120);let temp,ans,stDesc;const r=ri(0,2);
+   if(r===0){temp=T-ri(5,15);ans='solid';stDesc='below '+T+' °C';}
+   else if(r===1){temp=ri(T+1,T2-1);ans='liquid';stDesc='between '+T+' and '+T2+' °C';}
+   else{temp=T2+ri(5,40);ans='gas';stDesc='above '+T2+' °C';}
+   const CH=['solid','liquid','gas'];
+   return mkChoice(`Substance X melts at ${T} °C and boils at ${T2} °C. At ${temp} °C it is a ___ .`,
+     `物质 X 熔点 ${T} °C、沸点 ${T2} °C。在 ${temp} °C 时它是____。`,
+     CH,CH.indexOf(ans),
+     `Below the melting point it is solid; between melting and boiling it is liquid; above boiling it is gas.`,
+     `${temp} °C is ${stDesc} (so it is ${ans})`,['固体','液体','气体']);},
+ ()=>mkChoice(`While ice is melting, its temperature ___ .`,`冰在熔化过程中，温度____。`,['stays the same','keeps rising','keeps falling','drops to 0 °C'],0,
+   `During a phase change the temperature stays constant.`,`Phase change → temperature constant`,['保持不变','持续上升','持续下降','降到 0°C']),
+ ()=>mkChoice(`While water is boiling, its temperature ___ .`,`水沸腾时，温度____。`,['stays the same','keeps rising','keeps falling','reaches 50 °C'],0,
+   `During boiling the temperature stays at the boiling point.`,`Boiling → temperature constant`,['保持不变','持续上升','持续下降','达到 50°C']),
+ ()=>mkChoice(`Evaporation can happen ___ .`,`蒸发可以发生在____。`,['at any temperature','only at 100 °C','only in winter','only under pressure'],0,
+   `Evaporation is surface-only and occurs at any temperature.`,`Evaporation occurs at any temperature`,['任何温度下','只在 100°C','只在冬天','只在高压下']),
+ ()=>mkChoice(`Dry ice (solid CO₂) turning directly into gas is called ___ .`,`干冰（固态二氧化碳）直接变成气体，称为____。`,['sublimation','melting','condensation','boiling'],0,
+   `Solid → gas with no liquid stage is sublimation.`,`Solid → gas directly = sublimation`,['升华','熔化','液化','沸腾']),
+ ()=>{const a=ri(10,80);return mkNum(`A light ray hits a mirror. The angle of incidence is ${a}°. What is the angle of reflection (°)?`,`一束光射向镜子，入射角是 ${a}°，反射角是多少度？`,a,
+   `The law of reflection: angle of incidence = angle of reflection.`,`angle of reflection = ${a}°`);},
+ ()=>{const a=ri(10,80),inc=90-a;return mkNum(`A ray meets a mirror making ${a}° with the mirror surface. What is the angle of incidence (°)?`,`一束光与镜面成 ${a}° 角入射，入射角是多少度？`,inc,
+   `Angle of incidence is measured from the normal (perpendicular to the surface): 90° − ${a}°.`,`incidence = 90° − ${a}° = ${inc}°`);},
+ ()=>mkChoice(`A plane (flat) mirror forms a ___ image.`,`平面镜成的是____像。`,['virtual','real','inverted','magnified'],0,
+   `A plane mirror image cannot be projected on a screen → virtual.`,`Plane mirror → virtual, upright, same size`,['虚','实','倒立','放大']),
+ ()=>mkChoice(`When light passes from air into water (a denser medium), it bends ___ the normal.`,`光从空气进入水（更密的介质）时，会向法线____偏折。`,['toward','away from'],0,
+   `Entering a denser medium slows light, bending it toward the normal.`,`Denser medium → bend toward normal`,['靠拢','远离']),
+ ()=>mkChoice(`Light travels fastest in ___ .`,`光在____中传播最快。`,['vacuum','water','glass','diamond'],0,
+   `Light slows in matter; it is fastest in empty space.`,`Fastest in vacuum`,['真空','水','玻璃','钻石']),
+ ()=>mkChoice(`White light splits into about ___ colours when it passes through a prism.`,`白光通过棱镜后会分成大约____种颜色。`,['7','3','5','infinite'],0,
+   `A prism disperses white light into the visible spectrum (the rainbow).`,`Prism → about 7 colours (the rainbow)`,['7','3','5','无数']),
+ ()=>mkChoice(`A material that blocks all light is called ___ .`,`完全挡住光线的材料称为____。`,['opaque','transparent','translucent','reflective'],0,
+   `Opaque lets no light through; transparent lets most through.`,`Blocks all light → opaque`,['不透明','透明','半透明','反光']),
+ ()=>mkChoice(`Light travels ___ than sound.`,`光的传播比声音____。`,['much faster','much slower','at the same speed','only underwater'],0,
+   `Light ≈ 3×10⁸ m/s; sound ≈ 340 m/s in air.`,`Light is far faster than sound`,['快得多','慢得多','一样快','只在水下']),
+];
+
+/* ================= U3 · Lenses & Density (Ch05 + Ch06) ================= */
+const G3=[
+ ()=>{const rho=ri(1,10),V=ri(5,40),m=rho*V;return mkNum(`A block has mass ${m} g and volume ${V} cm³. What is its density (g/cm³)?`,`一块物体质量 ${m} g、体积 ${V} cm³，密度是多少 g/cm³？`,rho,
+   `density = mass ÷ volume.`,`ρ = ${m} g ÷ ${V} cm³ = ${rho} g/cm³`);},
+ ()=>{const rho=ri(1,10),V=ri(5,40),m=rho*V;return mkNum(`A substance has density ${rho} g/cm³ and volume ${V} cm³. What is its mass (g)?`,`某种物质密度 ${rho} g/cm³、体积 ${V} cm³，质量是多少 g？`,m,
+   `mass = density × volume.`,`m = ${rho} × ${V} = ${m} g`);},
+ ()=>{const rho=ri(1,10),V=ri(5,40),m=rho*V;return mkNum(`An object has mass ${m} g and density ${rho} g/cm³. What is its volume (cm³)?`,`一个物体质量 ${m} g、密度 ${rho} g/cm³，体积是多少 cm³？`,V,
+   `volume = mass ÷ density.`,`V = ${m} g ÷ ${rho} = ${V} cm³`);},
+ ()=>{const rho=ri(2,20)/10;const sink=rho>=1;return mkChoice(`An object has density ${rho.toFixed(1)} g/cm³. Water is 1.0 g/cm³. Does it float or sink?`,`一个物体密度 ${rho.toFixed(1)} g/cm³，水是 1.0 g/cm³。它漂浮还是下沉？`,['float','sink'],sink?1:0,
+   `If density > water it sinks; if less it floats.`,`${rho.toFixed(1)} ${sink?'>':'<'} 1.0 → ${sink?'sinks':'floats'}`,['漂浮','下沉']);},
+ ()=>mkChoice(`1 g/cm³ is equal to how many kg/m³?`,`1 g/cm³ 等于多少 kg/m³？`,['1000','1','100','10000'],0,
+   `1 g/cm³ = 1000 kg/m³.`,`1 g/cm³ = 1000 kg/m³`,['1000','1','100','10000']),
+ ()=>mkChoice(`A ___ lens converges (brings together) parallel light rays.`,`____透镜会把平行光线会聚（收拢）起来。`,['convex','concave'],0,
+   `A convex (converging) lens bulges outward.`,`Convex = converging`,['凸','凹']),
+ ()=>mkChoice(`A ___ lens diverges (spreads out) parallel light rays.`,`____透镜会把平行光线发散（散开）开。`,['concave','convex'],0,
+   `A concave (diverging) lens is thinner in the middle.`,`Concave = diverging`,['凹','凸']),
+ ()=>{const f=ri(5,30);return mkNum(`A converging lens has focal length ${f} cm. Parallel rays meet at the focal point — how far from the lens (cm)?`,`一个会聚透镜焦距 ${f} cm。平行光线会聚在焦点上——离透镜多远（cm）？`,f,
+   `The focal length is the distance from the lens to the focal point.`,`distance = focal length = ${f} cm`);},
+ ()=>mkChoice(`Nearsightedness (myopia) is corrected with a ___ lens.`,`近视用____透镜矫正。`,['concave','convex'],0,
+   `Myopia: the eye focuses in front of the retina → a diverging (concave) lens helps.`,`Myopia → concave lens`,['凹','凸']),
+ ()=>mkChoice(`Farsightedness (hyperopia) is corrected with a ___ lens.`,`远视用____透镜矫正。`,['convex','concave'],0,
+   `Hyperopia: the eye focuses behind the retina → a converging (convex) lens helps.`,`Hyperopia → convex lens`,['凸','凹']),
+ ()=>{const ho=ri(1,6),M=ri(2,5),hi=ho*M;return mkNum(`An object is ${ho} cm tall and its image is ${hi} cm tall. What is the magnification?`,`一个物体高 ${ho} cm，像高 ${hi} cm，放大倍数是多少？`,M,
+   `magnification = image height ÷ object height.`,`M = ${hi} ÷ ${ho} = ${M}`);},
+ ()=>mkChoice(`An object placed INSIDE the focal length of a convex lens forms a ___ image.`,`把物体放在凸透镜的焦点以内，会成____像。`,['virtual and magnified','real and inverted','real and same size','virtual and smaller'],0,
+   `Inside the focal length, a convex lens acts like a magnifying glass.`,`Inside f → virtual, upright, magnified`,['正立放大的虚','倒立实','等大实','正立缩小虚']),
+ ()=>mkChoice(`An image that can be caught on a screen is a ___ image.`,`能被屏幕接住（投射）的像是____像。`,['real','virtual'],0,
+   `Only real images can be projected on a screen.`,`Screen-catching → real image`,['实','虚']),
+];
+
+/* ================= Unit definitions ================= */
+const UNITS=[
+ {id:'u1',n:'Level 1',en:'Motion & Sound',cz:'运动与声',G:G1,q:10,color:'#0891b2',why:'Speed, distance–time, echoes, and how sound travels, pitches and loudness'},
+ {id:'u2',n:'Level 2',en:'Matter & Light',cz:'物态变化与光',G:G2,q:10,color:'#db2777',why:'Melting and boiling, phase change, reflection, refraction and dispersion'},
+ {id:'u3',n:'Level 3',en:'Lenses & Density',cz:'透镜与密度',G:G3,q:10,color:'#16a34a',why:'Density calculations, floating and sinking, lenses, magnification and eye correction'},
+ {id:'fin',n:'Final challenge',en:'All six chapters',cz:'全部六章',G:null,q:12,color:'#2563eb',why:'A mix of questions from every chapter — like a final exam run-through'},
+];
+
+function buildQ(u){
+ let pool;
+ if(u.id==='fin'){pool=[];[G1,G2,G3].forEach(G=>{shuffle(G).slice(0,4).forEach(f=>pool.push(f));});}
+ else{const G=u.G;pool=shuffle(G).slice(0,Math.min(u.q,G.length));
+   while(pool.length<u.q)pool.push(pick(G));}
+ return shuffle(pool).map(f=>f());
+}
+
+/* ================= State (phys8_ prefix, shared with home.html) ================= */
+const KEY='phys8_unit_state',WKEY='phys8_wrong';
+function US(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return {};}}
+function saveUS(o){try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+function WB(){try{return JSON.parse(localStorage.getItem(WKEY))||[];}catch(e){return [];}}
+function saveWB(a){try{localStorage.setItem(WKEY,JSON.stringify(a));}catch(e){}}
+const KP={ch01:4,ch02:5,ch03:5,ch04:5,ch05:5,ch06:4};
+function chState(k){try{return JSON.parse(localStorage.getItem('phys8_'+k+'_state'))||{};}catch(e){return {};}}
+function lvl(s){if(!s)return 0;const p=s.prac||{};if(s.done)return 4;if(p.tot>=5&&p.ok/p.tot>=0.8)return 3;if(p.tot>0)return 2;if(Object.keys(s.vid||{}).length)return 1;if(s.diag!==null&&s.diag!==undefined)return 1;return 0;}
+function chPct(k){const S=chState(k);const ids=Object.keys(S).filter(x=>x!=='test');if(!ids.length)return 0;let sum=0;ids.forEach(id=>{const s=S[id]||{};sum+=lvl(s);});return sum/(KP[k]*4);}
+function readyPct(u){
+ if(u.id==='fin'){const ks=['ch01','ch02','ch03','ch04','ch05','ch06'];return ks.reduce((a,k)=>a+chPct(k),0)/6;}
+ if(u.id==='u1')return (chPct('ch01')+chPct('ch02'))/2;
+ if(u.id==='u2')return (chPct('ch03')+chPct('ch04'))/2;
+ if(u.id==='u3')return (chPct('ch05')+chPct('ch06'))/2;
+ return 0;
+}
+
+/* ================= Render ================= */
+let cur=UNITS[0].id;
+function renderNav(){
+ const U=US(),W=WB().filter(w=>w.due<=Date.now()).length;
+ let h=UNITS.map(u=>{const st=U[u.id];
+  const badge=st?`<span class="st">${st.ok}/${st.tot}</span>`:'';
+  return `<div class="nav-i ${cur===u.id?'on':''}" data-u="${u.id}"><span><b>${u.n}</b> · <span class="en">${u.en}</span><span class="zh">${u.cz}</span></span>${badge}</div>`;}).join('');
+ h+=`<div class="nav-i ${cur==='wrong'?'on':''}" data-u="wrong"><span><span class="en">Review list</span><span class="zh">复习清单</span></span>${W?`<span class="st">${W}</span>`:''}</div>`;
+ const nav=document.getElementById('nav');nav.innerHTML=h;
+ nav.querySelectorAll('[data-u]').forEach(n=>n.onclick=()=>{cur=n.dataset.u;render();});
+}
+
+function intro(el,u){
+ const U=US(),st=U[u.id],rp=readyPct(u);
+ const hist=(st&&st.history)?st.history.slice(-5).reverse():[];
+ el.innerHTML=`
+  <div class="step" style="background:${u.color}"><span class="en">${u.n} · ${u.en}</span><span class="zh">${u.n} · ${u.cz}</span></div>
+  <div class="box"><h3><span class="en">What this covers</span><span class="zh">这一关考什么</span></h3>
+   <p style="font-size:14px">${u.why}</p>
+   <p style="font-size:13px;color:var(--muted);margin-top:6px"><span class="en">${u.q} questions · miss once and you get a hint, miss twice and you get the full solution</span><span class="zh">${u.q} 道题 · 错一次给提示，错两次给完整解法</span></p>
+  </div>
+  <div class="box"><h3><span class="en">How ready you are</span><span class="zh">你准备得怎么样</span></h3>
+   <div class="progress"><div style="width:${Math.round(rp*100)}%;background:${u.color}"></div></div>
+   <p style="font-size:13px"><span class="en">Chapter progress ${Math.round(rp*100)}%</span><span class="zh">章节进度 ${Math.round(rp*100)}%</span>  ${rp>=0.6?'<span class="badge ok"><span class="en">Ready to try</span><span class="zh">可以来试试</span></span>':'<span class="badge warn"><span class="en">Finish the chapters first</span><span class="zh">先把章节学完</span></span>'}</p>
+  </div>
+  ${st?`<div class="box"><h3><span class="en">Last score</span><span class="zh">上次成绩</span></h3><table><tr><th><span class="en">Date</span><span class="zh">日期</span></th><th><span class="en">Score</span><span class="zh">得分</span></th><th><span class="en">Result</span><span class="zh">结果</span></th></tr>
+   ${hist.map(x=>`<tr><td>${x.date}</td><td>${x.ok}/${x.tot}</td><td>${x.ok/x.tot>=0.8?'<span class="badge ok"><span class="en">Excellent</span><span class="zh">全对</span></span>':(x.ok/x.tot>=0.6?'<span class="badge warn"><span class="en">Fair</span><span class="zh">还不错</span></span>':'<span class="badge lock"><span class="en">More practice</span><span class="zh">多练练</span></span>')}</td></tr>`).join('')}
+   <tr><td colspan="3" style="font-size:12px;color:var(--muted)"><span class="en">Best:</span><span class="zh">最佳：</span> ${st.best!=null?st.best+'/'+u.q:'—'}</td></tr></table></div>`:''}
+  <div style="margin-top:14px"><button id="start"><span class="en">▶ Start ${u.q} questions</span><span class="zh">▶ 开始 ${u.q} 道题</span></button></div>`;
+ el.querySelector('#start').onclick=()=>run(el,u);
+}
+
+function run(el,u){
+ const qs=buildQ(u);let i=0,ok=0,tries=0;
+ const draw=()=>{
+  if(i>=qs.length){finish(el,u,ok,qs.length);return;}
+  const qq=qs[i];
+  el.innerHTML=`<div class="step" style="background:${u.color}"><span class="en">${u.n} · ${u.en} · question ${i+1} / ${qs.length} · ${ok} correct</span><span class="zh">${u.n} · ${u.cz} · 第 ${i+1} / ${qs.length} 题 · 对了 ${ok} 道</span></div>
+   <div class="progress"><div style="width:${i/qs.length*100}%"></div></div>
+   <div class="q"><div class="q-text">${qq.q}</div><div class="q-cn">${qq.zhq}</div>
+    ${qq.type==='choice'
+      ?`<div id="cs">${shownChoices(qq).map((c,j)=>`<button class="choice" data-j="${j}">${String.fromCharCode(65+j)}. ${c}</button>`).join('')}</div>`
+      :`<div style="display:flex;gap:8px"><input type="text" id="ai" placeholder="answer"><button id="sb"><span class="en">Submit</span><span class="zh">提交</span></button></div>`}
+    <div class="hint" id="ht"></div><div class="feedback" id="fb"></div></div>`;
+  const fb=el.querySelector('#fb'),ht=el.querySelector('#ht');
+  tries=0;
+  const submit=(v)=>{
+   if(isRight(qq,v)){
+    fb.className='feedback show ok';fb.innerHTML='✓ <span class="en">Correct</span><span class="zh">答对</span>';
+    i++;setTimeout(draw,650);
+   }else if(tries===0){
+    tries++;ht.className='hint show';ht.innerHTML='<b><span class="en">Hint:</span><span class="zh">提示：</span></b>'+qq.hint;
+    fb.className='feedback show warn';fb.innerHTML='✗ <span class="en">Try again</span><span class="zh">再试一次</span>';
+   }else{
+    fb.className='feedback show err';
+    fb.innerHTML=`✗ <span class="en">The answer is</span><span class="zh">答案是</span> <b>${qq.ans}</b>`+(qq.sol?`<div class="sol">${qq.sol}</div>`:'');
+    addWrong(u,qq);
+    i++;setTimeout(draw,2600);
+   }
+  };
+  if(qq.type==='choice'){el.querySelectorAll('#cs button').forEach(b=>b.onclick=()=>{ok0(b.dataset.j);});
+   function ok0(j){el.querySelectorAll('#cs button').forEach(b=>b.disabled=true);submit(j);}}
+  else{const inp=el.querySelector('#ai');inp.focus();
+   el.querySelector('#sb').onclick=()=>submit(inp.value);inp.onkeydown=e=>{if(e.key==='Enter')submit(inp.value);};}
+ };
+ draw();
+}
+
+function finish(el,u,ok,tot){
+ const U=US();const prev=U[u.id]||{best:0,history:[]};
+ const today=new Date().toISOString().slice(0,10);
+ const best=Math.max(prev.best||0,ok);
+ const hist=(prev.history||[]).concat([{ok:ok,tot:tot,date:today}]).slice(-5);
+ U[u.id]={ok:ok,tot:tot,date:today,best:best,history:hist};saveUS(U);
+ const p=ok/tot;
+ const lvl=p>=0.8?['Excellent — all correct!','var(--ok)','全对！']:(p>=0.6?['Solid — go over the misses once more.','var(--warn)','还不错，把错的再过一遍']:['More practice — go back to the chapters and drill those topics.','var(--err)','多练练，回章节把那些知识点刷熟练']);
+ el.innerHTML=`<div class="step" style="background:${lvl[1]}"><span class="en">Score · ${ok} / ${tot}</span><span class="zh">得分 · ${ok} / ${tot}</span></div>
+  <div class="box"><h3 style="color:${lvl[1]}"><span class="en">${lvl[0]}</span><span class="zh">${lvl[2]}</span></h3>
+   <p style="font-size:14px"><span class="en">Accuracy ${Math.round(p*100)}% · best ever ${best}/${tot}</span><span class="zh">正确率 ${Math.round(p*100)}% · 最佳 ${best}/${tot}</span></p>
+  </div>
+  ${p<0.8?`<div class="note"><strong><span class="en">Next:</span><span class="zh">下一步：</span></strong> <span class="en">misses go into your Review list automatically — click "Review list" on the left, or go back to the chapters and drill those topics.</span><span class="zh">错题会自动进复习清单——点左边的「复习清单」，或者回章节把那些知识点刷熟练。</span></div>`:''}
+  <div style="margin-top:14px;display:flex;gap:8px"><button id="again"><span class="en">Practise again (new questions)</span><span class="zh">再练一次（新题）</span></button><button class="secondary" id="back"><span class="en">Back</span><span class="zh">返回</span></button></div>`;
+ el.querySelector('#again').onclick=()=>run(el,u);
+ el.querySelector('#back').onclick=()=>render();
+ renderNav();
+}
+
+/* ================= Review list ================= */
+function addWrong(u,qq){
+ const W=WB();
+ const exist=W.find(w=>w.q===qq.q);
+ if(exist){exist.ts=Date.now();exist.due=Date.now();exist.int=0;saveWB(W);return;}
+ W.push({u:u.id,un:u.n,q:qq.q,zhq:qq.zhq,ans:qq.ans,sol:qq.sol,type:qq.type,choices:qq.choices||null,choicesZh:qq.choicesZh||null,ci:qq.ci,
+  ts:Date.now(),due:Date.now(),int:0,rep:0});
+ saveWB(W);
+}
+function renderWrong(el){
+ const due=WB().filter(w=>w.due<=Date.now());
+ if(!due.length){
+  el.innerHTML=`<div class="step"><span class="en">Review list</span><span class="zh">复习清单</span></div>
+   <div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong><span class="en">Nothing to review right now.</span><span class="zh">暂时没有要复习的。</span></strong><br>
+   <span class="en">Questions you miss twice in the challenges land here. Get one right and it comes back in 1 day, then 2, then 4, then 8 before it is filed away.</span><span class="zh">闯关里错两次的题会进这里。答对一次，过 1 天、2 天、4 天、8 天再来，连对三次就归档。</span></div>
+   <div style="margin-top:12px"><button class="secondary" onclick="render()"><span class="en">Back</span><span class="zh">返回</span></button></div>`;
+  return;
+ }
+ let i=0;
+ const draw=()=>{
+  if(i>=due.length){el.innerHTML=`<div class="step"><span class="en">That is all ${due.length} of them for now</span><span class="zh">这 ${due.length} 道都复习完啦</span></div>
+    <div class="note" style="background:#dcfce7;border-color:var(--ok)"><strong><span class="en">Nice work!</span><span class="zh">真棒！</span></strong> <span class="en">Three correct and it is filed away.</span><span class="zh">连对三次就归档。</span></div>
+    <div style="margin-top:12px"><button class="secondary" id="b2"><span class="en">Back</span><span class="zh">返回</span></button></div>`;
+   el.querySelector('#b2').onclick=()=>render();renderNav();return;}
+  const w=due[i];const u=UNITS.find(x=>x.id===w.u)||UNITS[0];
+  const qq={type:w.type,q:w.q,zhq:w.zhq,ans:w.ans,choices:w.choices,choicesZh:w.choicesZh||null,ci:w.ci,sol:w.sol,hint:''};
+  let tries=0;
+  el.innerHTML=`<div class="step"><span class="en">Review · ${i+1} / ${due.length} · from ${u.n}</span><span class="zh">复习 · 第 ${i+1} / ${due.length} 题 · 来自 ${u.n}</span></div>
+   <div class="q"><div class="q-text">${w.q}</div><div class="q-cn">${w.zhq}</div>
+    ${w.type==='choice'?`<div id="cs">${((getLang()==='zh'&&w.choicesZh)?w.choicesZh:(w.choices||[])).map((c,j)=>`<button class="choice" data-j="${j}">${String.fromCharCode(65+j)}. ${c}</button>`).join('')}</div>`
+     :`<div style="display:flex;gap:8px"><input type="text" id="ai"><button id="sb"><span class="en">Submit</span><span class="zh">提交</span></button></div>`}
+    <div class="feedback" id="fb"></div></div>`;
+  const fb=el.querySelector('#fb');
+  const submit=(v)=>{
+   if(isRight(qq,v)){
+    const W=WB();const t=W.find(x=>x.q===w.q&&x.ts===w.ts);
+    if(t){t.rep=(t.rep||0)+1;t.int=Math.max(1,(t.int||0)*2)||1;t.due=Date.now()+t.int*86400000;
+      if(t.int>=8)W.splice(W.indexOf(t),1);saveWB(W);}
+    fb.className='feedback show ok';fb.innerHTML=`✓ <span class="en">Correct — ${t&&t.int?('next review in '+t.int+' days'):'filed away'}</span><span class="zh">答对 — ${t&&t.int?('下次复习在 '+t.int+' 天后'):'已归档'}</span>`;
+    i++;setTimeout(draw,1200);
+   }else if(tries===0){tries++;fb.className='feedback show warn';fb.innerHTML='✗ <span class="en">Try again</span><span class="zh">再试一次</span>';}
+   else{
+    fb.className='feedback show err';fb.innerHTML=`✗ <span class="en">The answer is</span><span class="zh">答案是</span> <b>${w.ans}</b>`+(w.sol?`<div class="sol">${w.sol}</div>`:'');
+    const W=WB();const t=W.find(x=>x.q===w.q&&x.ts===w.ts);
+    if(t){t.int=0;t.due=Date.now();saveWB(W);}
+    i++;setTimeout(draw,2600);
+   }
+  };
+  if(w.type==='choice'){el.querySelectorAll('#cs button').forEach(b=>b.onclick=()=>{el.querySelectorAll('#cs button').forEach(x=>x.disabled=true);submit(b.dataset.j);});}
+  else{const inp=el.querySelector('#ai');inp.focus();el.querySelector('#sb').onclick=()=>submit(inp.value);
+   inp.onkeydown=e=>{if(e.key==='Enter')submit(inp.value);};}
+ };
+ draw();
+}
+
+/* ================= Main render ================= */
+function render(){
+ const main=document.getElementById('main');renderNav();
+ if(cur==='wrong'){renderWrong(main);return;}
+ intro(main,UNITS.find(u=>u.id===cur));
+}
+render();
+
+/* deep link support: ?u=u2 from home.html */
+(function(){const g=new URLSearchParams(location.search).get('u');
+ if(g&&UNITS.some(u=>u.id===g)){cur=g;render();}})();
+
+/* ================= Language tier (en / mix / zh) ================= */
+const LKEY='phys8_lang';
+function getLang(){return localStorage.getItem(LKEY)||'en';}
+function setLang(l){localStorage.setItem(LKEY,l);applyLang();}
+function applyLang(){
+ const l=getLang();
+ document.body.className=(' '+document.body.className+' ').replace(/\s+lang-(en|mix|zh)\b/g,' ').trim();
+ if(l==='mix'||l==='zh')document.body.classList.add('lang-'+l);
+ document.querySelectorAll('.langseg button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===l);});
+}
+applyLang();
+</script>
+<script>
+var TKEY='phys8_theme';
+function getTheme(){try{return localStorage.getItem(TKEY)||'auto';}catch(e){return 'auto';}}
+function setTheme(t){try{localStorage.setItem(TKEY,t);}catch(e){}applyTheme();}
+function applyTheme(){
+ var t=getTheme();
+ document.documentElement.setAttribute('data-theme',t);
+ var bs=document.querySelectorAll('.themseg button');
+ for(var i=0;i<bs.length;i++){
+  var on=(bs[i].getAttribute('data-theme')===t);
+  if(on){bs[i].classList.add('on');}else{bs[i].classList.remove('on');}
+ }
+}
+applyTheme();
+try{var mq=window.matchMedia('(prefers-color-scheme: dark)');if(mq&&mq.addEventListener){mq.addEventListener('change',function(){if(getTheme()==='auto'){applyTheme();}});}}catch(e){}
+</script>
+</body>
+</html>

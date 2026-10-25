@@ -193,6 +193,12 @@ html[data-theme="dark"] table th{color:var(--muted)}
 .themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
 .themseg button.on{background:var(--accent);color:#fff}
 @media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+.bridge{background:#eef2ff;border-left:3px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.bridge strong{color:var(--accent)}
+.bridge .bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+html[data-theme="dark"] .bridge,html[data-theme="dark"] .bridge *{color:#1f2937}
+html[data-theme="dark"] .bridge strong,html[data-theme="dark"] .bridge b{color:#3730a3!important}
+html[data-theme="dark"] .bridge .bl{color:#3730a3!important}
 </style>
 <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
 </head>
@@ -352,6 +358,11 @@ function microK4(el){
   <div class="box">
    <h3><span class="en">A real danger</span><span class="zh">真实的危险</span></h3>
    <p><span class="en">A swimming pool that "looks waist-deep" can be much deeper. Always check the real depth before you jump.</span><span class="zh">看着「只到腰」的泳池，实际可能深得多。跳水前一定要确认真实深度。</span></p>
+  </div>
+  <div class="bridge">
+   <div class="bl"><span class="en">Bridge</span><span class="zh">衔接补全</span></div>
+   <h3><span class="en">Why light bends: one side slows first</span><span class="zh">光为什么弯：先到的一边先慢下来</span></h3>
+   <p><span class="en">Think of a row of marching feet crossing from a fast road into mud at an angle. The foot that steps into the mud first slows first, so the whole row pivots and the direction turns. Light does the same: it slows in the second material, so the ray swings toward the normal. That swing is refraction.</span><span class="zh">想象一排齐步走的脚，斜着从快路面踩进泥地。先踩进泥地的那只脚先慢下来，整排就跟着转向。光也一样：它在第二种物质里变慢，于是光线向法线那边拐。这个拐弯就是折射。</span></p>
   </div>`;
 }
 

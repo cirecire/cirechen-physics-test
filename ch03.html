@@ -193,6 +193,12 @@ html[data-theme="dark"] table th{color:var(--muted)}
 .themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
 .themseg button.on{background:var(--accent);color:#fff}
 @media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+.bridge{background:#eef2ff;border-left:3px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.bridge strong{color:var(--accent)}
+.bridge .bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+html[data-theme="dark"] .bridge,html[data-theme="dark"] .bridge *{color:#1f2937}
+html[data-theme="dark"] .bridge strong,html[data-theme="dark"] .bridge b{color:#3730a3!important}
+html[data-theme="dark"] .bridge .bl{color:#3730a3!important}
 </style>
 <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
 </head>
@@ -314,6 +320,11 @@ function microK2(el){
   <div class="box">
    <h3><span class="en">Freezing — liquid to solid</span><span class="zh">凝固——液变固</span></h3>
    <p><span class="en">Cool water below 0 °C and it turns back to ice. That is freezing, at the same temperature (the freezing point). While it melts or freezes, the temperature stays put — it does not rise or fall.</span><span class="zh">把水降到 0 °C 以下，它变回冰，这叫凝固，温度同样是 0 °C（凝固点）。熔化或凝固时，温度保持不变，不升也不降。</span></p>
+  </div>
+  <div class="bridge">
+   <div class="bl"><span class="en">Bridge</span><span class="zh">衔接补全</span></div>
+   <h3><span class="en">Why the temperature pauses during melting or boiling</span><span class="zh">为什么熔化或沸腾时温度会「停住」</span></h3>
+   <p><span class="en">The heat you keep adding is not making the particles move faster (that is what raises temperature). It is being spent pulling the solid apart into a liquid, or the liquid apart into a gas. Until that change is finished, the temperature sits still. This "hidden" heat is called latent heat.</span><span class="zh">你持续加热，并没有让粒子运动得更快（那才是升温），而是用来把固体拆成液体、或把液体拆成气体。这一变化没完成之前，温度就一直停着。这份「藏起来」的热量叫潜热。</span></p>
   </div>`;
 }
 

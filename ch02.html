@@ -197,6 +197,12 @@ html[data-theme="dark"] table th{color:var(--muted)}
 .themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
 .themseg button.on{background:var(--accent);color:#fff}
 @media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+.bridge{background:#eef2ff;border-left:3px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.bridge strong{color:var(--accent)}
+.bridge .bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+html[data-theme="dark"] .bridge,html[data-theme="dark"] .bridge *{color:#1f2937}
+html[data-theme="dark"] .bridge strong,html[data-theme="dark"] .bridge b{color:#3730a3!important}
+html[data-theme="dark"] .bridge .bl{color:#3730a3!important}
 </style>
 <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
 </head>
@@ -333,6 +339,11 @@ function microK3(el){
   <div class="box">
    <h3><span class="en">Ultrasound and infrasound</span><span class="zh">超声与次声</span></h3>
    <p><span class="en">Sound above <b class="num">20 000 Hz</b> is ultrasound (beyond human hearing); below <b class="num">20 Hz</b> is infrasound.</span><span class="zh">频率高于 <b class="num">20 000 Hz</b> 是超声波（人耳听不到）；低于 <b class="num">20 Hz</b> 是次声波。</span></p>
+  </div>
+  <div class="bridge">
+   <div class="bl"><span class="en">Bridge</span><span class="zh">衔接补全</span></div>
+   <h3><span class="en">Echo distance: divide the time by two</span><span class="zh">回声测距：时间要先除以 2</span></h3>
+   <p><span class="en">Shout at a cliff and hear the echo after t seconds. The sound travelled to the cliff and back, so the one-way distance is d = v · t ÷ 2, not v · t. Forgetting the ÷2 is the most common slip in echo problems.</span><span class="zh">对着山崖喊一声，t 秒后听到回声——声音去了山崖又回来。单程距离是 d = v · t ÷ 2，不是 v · t。「忘了除以 2」是回声题里最常犯的错。</span></p>
   </div>`;
 }
 

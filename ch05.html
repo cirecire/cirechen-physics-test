@@ -193,6 +193,12 @@ html[data-theme="dark"] table th{color:var(--muted)}
 .themseg button{background:transparent;color:var(--text);border:none;padding:5px 9px;font-size:13px;cursor:pointer;font-family:inherit;border-radius:999px;line-height:1}
 .themseg button.on{background:var(--accent);color:#fff}
 @media(max-width:680px){.themebar{top:36px;right:6px}.themseg button{padding:4px 7px;font-size:12px}}
+.bridge{background:#eef2ff;border-left:3px solid var(--accent);padding:10px 14px;border-radius:6px;margin:10px 0;font-size:14px}
+.bridge strong{color:var(--accent)}
+.bridge .bl{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+html[data-theme="dark"] .bridge,html[data-theme="dark"] .bridge *{color:#1f2937}
+html[data-theme="dark"] .bridge strong,html[data-theme="dark"] .bridge b{color:#3730a3!important}
+html[data-theme="dark"] .bridge .bl{color:#3730a3!important}
 </style>
 <script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('phys8_theme')||'auto');}catch(e){}</script>
 </head>
@@ -308,6 +314,11 @@ function microK1(el){
   <div class="box">
    <h3><span class="en">Focal point and focal length</span><span class="zh">焦点与焦距</span></h3>
    <p><span class="en">The point where rays meet (for a convex lens) is the <b class="num">focal point</b>. The distance from the lens to that point is the <b class="num">focal length</b> (f). A stronger lens has a shorter focal length.</span><span class="zh">平行光会聚的点叫<b class="num">焦点</b>；透镜到焦点的距离叫<b class="num">焦距</b>（f）。透镜越强，焦距越短。</span></p>
+  </div>
+  <div class="bridge">
+   <div class="bl"><span class="en">Bridge</span><span class="zh">衔接补全</span></div>
+   <h3><span class="en">Why a lens bends light at all</span><span class="zh">透镜到底为什么会让光拐弯</span></h3>
+   <p><span class="en">A lens is just glass with a curved face. Light slows down entering the glass and speeds up leaving it. A flat window slows both sides equally, so the ray goes straight; a curved face slows the middle and the edges by different amounts, so the ray tilts and the parallel beams lean toward one point. That tilt is refraction at a curved surface.</span><span class="zh">透镜只是一块有曲面的玻璃。光进入玻璃时变慢、离开时变快。平面的窗两边减速一样多，光线照直走；曲面让中间和边缘减速程度不同，光线就歪向一边、平行光也跟着倒向同一点。这个歪斜就是「曲面上的折射」。</span></p>
   </div>`;
 }
 

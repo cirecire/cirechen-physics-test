@@ -5,7 +5,7 @@
    CSS variables + a few new ones, adapts to day/night + the
    en / mix / zh language tiers. No logic is touched.
    Per-subject colour is the headline fix: PHYSICS = cyan/teal, so
-   it never gets confused with MATH (violet).
+   it never gets confused with MATH (amber/orange).
    ============================================================ */
 
 :root{
@@ -41,6 +41,26 @@ html[data-theme="dark"]{
     --accent-soft:rgba(34,211,238,.16); --accent-soft2:rgba(34,211,238,.24);
     --card:#1e293b; --card2:#172033; --line:#334155;
   }
+}
+
+/* ---------- dark mode: force dark ink on cyan-background elements (contrast) ---------- */
+/* In dark mode --accent becomes light cyan (#22d3ee); white text on it is unreadable. */
+html[data-theme="dark"] button:not(.ghost),
+html[data-theme="dark"] .chip.on,
+html[data-theme="dark"] .nav-i.on,
+html[data-theme="dark"] .sel .num,
+html[data-theme="dark"] .langseg.on,
+html[data-theme="dark"] .themseg.on,
+html[data-theme="dark"] .step-no{ color:#0f172a; }
+
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) button:not(.ghost),
+  :root:not([data-theme="light"]) .chip.on,
+  :root:not([data-theme="light"]) .nav-i.on,
+  :root:not([data-theme="light"]) .sel .num,
+  :root:not([data-theme="light"]) .langseg.on,
+  :root:not([data-theme="light"]) .themseg.on,
+  :root:not([data-theme="light"]) .step-no{ color:#0f172a; }
 }
 
 /* ---------- base typography (Cambridge: confident hierarchy, calm body) ---------- */

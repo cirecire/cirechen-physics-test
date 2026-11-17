@@ -7,30 +7,30 @@
 <style>
 :root{
  --bg:#fafafa; --card:#fff; --line:#e5e7eb; --text:#1f2937; --muted:#5b6472;
- --accent:#7c3aed; --ok:#15803d; --err:#b91c1c; --warn:#b45309;
+ --accent:#0e7490; --ok:#15803d; --err:#b91c1c; --warn:#0e7490;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 .wrap{max-width:1180px;margin:0 auto;padding:18px}
-header{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;padding:24px 28px;border-radius:14px;margin-bottom:16px;box-shadow:0 6px 18px rgba(124,58,237,.18)}
+header{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:24px 28px;border-radius:14px;margin-bottom:16px;box-shadow:0 6px 18px rgba(124,58,237,.18)}
 header h1{font-size:20px;margin-bottom:4px}
 header .h1sub{font-size:22px;font-weight:700;letter-spacing:.06em;margin-bottom:10px;line-height:1.25}
 header p{opacity:.93;font-size:13px}
 .src{margin-top:10px;font-size:11px;opacity:.75}
-.welcome{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #ddd6fe;border-radius:14px;padding:20px 24px;margin-bottom:16px;position:relative}
+.welcome{background:linear-gradient(135deg,#ecfeff,#cffafe);border:1px solid #a5f3fc;border-radius:14px;padding:20px 24px;margin-bottom:16px;position:relative}
 .welcome-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:12px}
-.welcome .hi{font-size:20px;font-weight:700;color:#6d28d9;line-height:1.2}
+.welcome .hi{font-size:20px;font-weight:700;color:var(--accent);line-height:1.2}
 .welcome-close{background:transparent;color:#92400e;font-size:18px;padding:2px 8px;cursor:pointer;border:none;line-height:1;border-radius:6px}
 .welcome-close:hover{background:rgba(146,64,14,.12)}
-.welcome-lead{font-size:14px;color:#5b21b6;margin-bottom:14px;line-height:1.5}
+.welcome-lead{font-size:14px;color:#164e63;margin-bottom:14px;line-height:1.5}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .step-card{background:rgba(255,255,255,.65);border-radius:10px;padding:10px 12px;border:1px solid rgba(252,211,77,.5)}
-.step-no{width:24px;height:24px;background:#7c3aed;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:6px}
+.step-no{width:24px;height:24px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;margin-bottom:6px}
 .step-t{font-weight:600;font-size:13px;color:#1f2937;margin-bottom:3px}
 .step-d{font-size:12px;color:#5b6472;line-height:1.4}
 .welcome-cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-.welcome-cta .big{font-size:15px;padding:11px 20px;background:#7c3aed;color:#fff;border-radius:9px;border:none;cursor:pointer;font-weight:600;font-family:inherit}
-.welcome-cta .big:hover{background:#6d28d9}
+.welcome-cta .big{font-size:15px;padding:11px 20px;background:var(--accent);color:#fff;border-radius:9px;border:none;cursor:pointer;font-weight:600;font-family:inherit}
+.welcome-cta .big:hover{background:var(--accent-press)}
 .welcome-cta .skip{font-size:12px;color:#78350f;text-decoration:underline;cursor:pointer;background:transparent;border:none;padding:4px 6px;font-family:inherit}
 .show-guide{font-size:12px;color:#fff;opacity:.85;text-decoration:underline;margin-left:12px;cursor:pointer;background:transparent;border:none;padding:0;font-family:inherit;font-weight:400}
 .show-guide:hover{opacity:1}
@@ -53,8 +53,8 @@ h2 small{font-size:12px;color:var(--muted);font-weight:400}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:0 1px 3px rgba(124,58,237,.08)}
 .summary{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:8px}
 @media(max-width:680px){.summary{grid-template-columns:1fr}}
-.big-prog{height:14px;background:#ede9fe;border-radius:7px;overflow:hidden;margin:10px 0}
-.big-prog div{height:100%;background:linear-gradient(90deg,#7c3aed,#a855f7);transition:width .4s}
+.big-prog{height:14px;background:#cffafe;border-radius:7px;overflow:hidden;margin:10px 0}
+.big-prog div{height:100%;background:linear-gradient(90deg,#0e7490,#22d3ee);transition:width .4s}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat{background:#f9fafb;border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:0 1px 3px rgba(124,58,237,.06)}
 .stat .v{font-size:19px;font-weight:700;color:var(--accent)}
@@ -64,7 +64,7 @@ h2 small{font-size:12px;color:var(--muted);font-weight:400}
 .lvlegend span b{color:var(--text)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px}
 .ch{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(124,58,237,.08)}
-.ch .top{padding:12px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(135deg,#7c3aed,#a855f7)!important}
+.ch .top{padding:12px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2))!important}
 .ch .top .t{font-size:15px;font-weight:700}
 .ch .top .en{font-size:11px;opacity:.9}
 .ch .top .no{font-size:11px;opacity:.85;text-align:right;line-height:1.3}
@@ -74,7 +74,7 @@ h2 small{font-size:12px;color:var(--muted);font-weight:400}
 .klist{margin:10px 0;display:flex;flex-wrap:wrap;gap:5px}
 .kp{font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--muted);background:#fff}
 .kp.l1{background:#fef3c7;border-color:#fcd34d;color:#92400e}
-.kp.l2{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+.kp.l2{background:#cffafe;border-color:#22d3ee;color:var(--accent)}
 .kp.l3{background:#dcfce7;border-color:#86efac;color:#166534}
 .kp.l4{background:#dcfce7;border-color:#15803d;color:#14532d;font-weight:600}
 .kp.l4::before{content:"✓ "}
@@ -139,14 +139,14 @@ body.lang-mix .note .zh { font-size: inherit; }
   color-scheme:dark;
   --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
   --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
-  --accent:#a78bfa;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+  --accent:#22d3ee;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
  }
 }
 html[data-theme="dark"]{
  color-scheme:dark;
  --bg:#0f172a;--card:#1e293b;--card2:#172033;--line:#334155;
  --text:#e5e7eb;--muted:#94a3b8;--ink:#e5e7eb;--mute:#94a3b8;
- --accent:#a78bfa;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
+ --accent:#22d3ee;--ok:#4ade80;--err:#f87171;--warn:#fbbf24;--bad:#f87171;
 }
 html[data-theme="light"]{color-scheme:light}
 html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
@@ -185,15 +185,15 @@ html[data-theme="dark"] .sel .num{color:#0f172a!important}
 html[data-theme="dark"] .langseg button.on,
 html[data-theme="dark"] .themseg button.on{color:#0f172a!important}
 html[data-theme="dark"] .chip.on .rec{color:#0f172a!important}
-html[data-theme="dark"] .step{color:#1e1b4b!important}
-html[data-theme="dark"] .ltsw button{color:#93c5fd!important}
+html[data-theme="dark"] .step{color:#083344!important}
+html[data-theme="dark"] .ltsw button{color:#22d3ee!important}
 html[data-theme="dark"] .welcome-cta .big{color:#fff!important}
 html[data-theme="dark"] .fig,html[data-theme="dark"] .eqbox{color:#1f2937}
 html[data-theme="dark"] .fig *{color:#1f2937!important}
-html[data-theme="dark"] .eqbox .num{color:#6d3bdf!important}
+html[data-theme="dark"] .eqbox .num{color:#0e7490!important}
 html[data-theme="dark"] svg{background:#fff;border-radius:8px;padding:4px}
 html[data-theme="dark"] .note,html[data-theme="dark"] .note *{color:#1f2937}
-html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#b45309!important}
+html[data-theme="dark"] .note strong,html[data-theme="dark"] .note b{color:#0e7490!important}
 html[data-theme="dark"] .hint,html[data-theme="dark"] .hint *{color:#1f2937}
 html[data-theme="dark"] .parents{background:var(--card)!important;color:var(--text);border-color:var(--line)!important}
 html[data-theme="dark"] .parents .zh,html[data-theme="dark"] .parents .en,html[data-theme="dark"] .parents p,html[data-theme="dark"] .parents summary{color:var(--text)}
@@ -303,15 +303,17 @@ html[data-theme="dark"] table th{color:var(--muted)}
 
 <h2><span class="en">Level-up challenges</span><span class="zh">闯关挑战</span> <small><span class="en">mixes sections from one chapter — pass it to unlock the next</span><span class="zh">把一章的内容混在一起考——通过才能解锁下一关</span></small></h2>
 <div class="card">
+ <div class="ut-scroll">
  <table id="ut">
   <thead><tr><th><span class="en">Challenge</span><span class="zh">挑战</span></th><th><span class="en">Questions</span><span class="zh">题数</span></th><th><span class="en">Status</span><span class="zh">状态</span></th><th><span class="en">Last</span><span class="zh">上次</span></th><th><span class="en">Best</span><span class="zh">最佳</span></th><th></th></tr></thead>
   <tbody></tbody>
  </table>
+ </div>
 <div style="margin-top:12px"><button onclick="location.href='unittests.html'"><span class="en">Go to the challenges →</span><span class="zh">去闯关挑战 →</span></button></div>
 </div>
 
 <p style="margin:22px 0 40px;font-size:11px;color:var(--muted);text-align:center">
- <span class="en">Video content from Khan Academy · CC BY-NC-SA · this site is for personal study only · test site cirechen-physics-test</span><span class="zh">视频内容来自 Khan Academy · CC BY-NC-SA · 本站仅作个人学习用 · 测试站 cirechen-physics-test</span>
+ <span class="en">Video content from Khan Academy · CC BY-NC-SA · this site is for personal study only</span><span class="zh">视频内容来自 Khan Academy · CC BY-NC-SA · 本站仅作个人学习用</span>
 </p>
 </div>
 
@@ -319,15 +321,15 @@ html[data-theme="dark"] table th{color:var(--muted)}
 const CH=[
  {k:'ch01',cn:'Motion & Measurement',cz:'机械运动',en:'Motion & Measurement',p:4,c:'#0891b2',
   L:[['k1','Length & time'],['k2','Describing motion'],['k3','Speed'],['k4','Measuring speed']],v:12},
- {k:'ch02',cn:'Sound',cz:'声现象',en:'Sound',p:5,c:'#7c3aed',
+ {k:'ch02',cn:'Sound',cz:'声现象',en:'Sound',p:5,c:'#0e7490',
   L:[['k1','Sound production & travel'],['k2','Pitch, loudness, timbre'],['k3','Using sound'],['k4','Noise'],['ext','Make a soundproof room (project)']],v:16},
- {k:'ch03',cn:'States of Matter',cz:'物态变化',en:'States of Matter',p:4,c:'#db2777',
+ {k:'ch03',cn:'States of Matter',cz:'物态变化',en:'States of Matter',p:4,c:'#155e75',
   L:[['k1','Temperature'],['k2','Melting & freezing'],['k3','Vaporisation & liquefaction'],['k4','Sublimation & deposition'],['ext','Cross-subject project']],v:18},
- {k:'ch04',cn:'Light',cz:'光现象',en:'Light',p:5,c:'#ea580c',
+ {k:'ch04',cn:'Light',cz:'光现象',en:'Light',p:5,c:'#164e63',
   L:[['k1','Straight-line travel'],['k2','Reflection'],['k3','Plane-mirror images'],['k4','Refraction'],['k5','Dispersion']],v:16},
- {k:'ch05',cn:'Lenses',cz:'透镜及其应用',en:'Lenses',p:5,c:'#16a34a',
+ {k:'ch05',cn:'Lenses',cz:'透镜及其应用',en:'Lenses',p:5,c:'#0891b2',
   L:[['k1','What a lens does'],['k2','Lenses in daily life'],['k3','Images by a convex lens'],['k4','Eye & glasses'],['k5','Microscope & telescope']],v:18},
- {k:'ch06',cn:'Mass & Density',cz:'质量与密度',en:'Mass & Density',p:4,c:'#2563eb',
+ {k:'ch06',cn:'Mass & Density',cz:'质量与密度',en:'Mass & Density',p:4,c:'#0e7490',
   L:[['k1','Mass'],['k2','Density'],['k3','Measuring density'],['k4','Density in daily life']],v:14},
 ];
 
@@ -341,7 +343,7 @@ const UNITS=[
  {id:'fin',n:'Final challenge',cn:'All six chapters mixed',ch:['ch01','ch02','ch03','ch04','ch05','ch06'],q:12},
 ];
 
-const LVC=['#e5e7eb','#fcd34d','#60a5fa','#34d399','#15803d'];
+const LVC=['#e5e7eb','#fcd34d','#22d3ee','#34d399','#15803d'];
 const LVN=['Not started','Attempted','Familiar','Proficient','Mastered'];
 const LVN_ZH=['还没开始','接触过','比较熟','很熟练','已掌握'];
 const VTOTAL=CH.reduce((a,c)=>a+c.v,0);

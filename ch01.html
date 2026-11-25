@@ -255,6 +255,13 @@ let cur='intro';
 function st(id){return S[id]||(S[id]={diag:null,prac:{ok:0,tot:0},vid:{},done:false});}
 function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
 function pick(a){return a[ri(0,a.length-1)];}
+// Numeric answer matching for physics: lots of real answers are not integers
+// (20 s = 0.333… min, 90 m / 8 s = 11.25 m/s), so parseInt equality silently
+// rejects every correct answer. Accept any parse and allow rounding to 2 dp.
+function num(a){var t=String(a).replace(/[^0-9.\-]/g,'');if(!t)return NaN;return parseFloat(t);}
+function numOk(a,target){var v=num(a);if(!isFinite(v))return false;return Math.abs(v-target)<=Math.max(0.005,Math.abs(target)*0.002);}
+// Round for display: 11.25 stays, 0.3333… becomes 0.33 — never a 16-digit float.
+function fnum(x){var r=Math.round(x*1000)/1000;return String(r);}
 function L(a,b){ return '<span class="en">'+a+'</span><span class="zh">'+(b==null?a:b)+'</span>'; }
 
 /* ===== Video list (Khan Academy · embedded via YouTube; yt filled in mapping pass) ===== */
@@ -416,17 +423,16 @@ k1:()=>{ // length & time units
   const m=ri(1,9);
   return {q:`How many centimetres are in ${m} metre${m>1?'s':''}?`,
    zhq:`${m} 米等于多少厘米？`,
-   check:a=>parseInt(a)===m*100,ans:String(m*100),hint:'1 m = 100 cm.',zhh:'1 m = 100 cm。'};
- } else if(type===2){
+   check:a=>numOk(a,m*100),ans:fnum(m*100),hint:'1 m = 100 cm.',zhh:'1 m = 100 cm。'}; } else if(type===2){
   const mm=ri(2,9)*10;
   return {q:`Convert ${mm} mm to centimetres.`,
    zhq:`把 ${mm} mm 换算成厘米。`,
-   check:a=>parseInt(a)===mm/10,ans:String(mm/10),hint:'10 mm = 1 cm.',zhh:'10 mm = 1 cm。'};
+   check:a=>numOk(a,mm/10),ans:fnum(mm/10),hint:'10 mm = 1 cm.',zhh:'10 mm = 1 cm。'};
  } else {
   const s=ri(2,9)*10;
   return {q:`A stopwatch reads ${s} seconds. How many minutes is that?`,
    zhq:`秒表显示 ${s} 秒，等于多少分钟？`,
-   check:a=>parseInt(a)===s/60,ans:String(s/60),hint:'60 s = 1 min.',zhh:'60 s = 1 min。'};
+   check:a=>numOk(a,s/60),ans:fnum(s/60),hint:'60 s = 1 min.',zhh:'60 s = 1 min。'};
  }
 },
 k2:()=>{ // reference frame
@@ -443,24 +449,24 @@ k3:()=>{ // speed v=s/t
   const s=ri(2,9)*10,t=ri(2,9);
   return {q:`An object travels ${s} m in ${t} s. What is its speed in m/s?`,
    zhq:`一个物体 ${t} 秒内走了 ${s} m，速度是多少 m/s？`,
-   check:a=>parseInt(a)===s/t,ans:String(s/t),hint:'v = s / t.',zhh:'v = s / t。'};
+   check:a=>numOk(a,s/t),ans:fnum(s/t),hint:'v = s / t.',zhh:'v = s / t。'};
  } else if(type===2){
   const v=ri(2,9),t=ri(2,9);
   return {q:`A runner moves at ${v} m/s for ${t} s. How far does it go (m)?`,
    zhq:`跑步者以 ${v} m/s 的速度跑 ${t} 秒，走了多少米？`,
-   check:a=>parseInt(a)===v*t,ans:String(v*t),hint:'s = v × t.',zhh:'s = v × t。'};
+   check:a=>numOk(a,v*t),ans:fnum(v*t),hint:'s = v × t.',zhh:'s = v × t。'};
  } else {
   const kmh=[36,72,108][ri(0,2)];
   return {q:`Convert ${kmh} km/h to m/s.`,
    zhq:`把 ${kmh} km/h 换算成 m/s。`,
-   check:a=>parseInt(a)===kmh/3.6,ans:String(kmh/3.6),hint:'1 m/s = 3.6 km/h, so divide by 3.6.',zhh:'1 m/s = 3.6 km/h，除以 3.6。'};
+   check:a=>numOk(a,kmh/3.6),ans:fnum(kmh/3.6),hint:'1 m/s = 3.6 km/h, so divide by 3.6.',zhh:'1 m/s = 3.6 km/h，除以 3.6。'};
  }
 },
 k4:()=>{ // measuring speed
  const s=ri(2,9)*10,t=ri(2,9);
  return {q:`You measure a distance of ${s} m and a time of ${t} s. What is the average speed (m/s)?`,
   zhq:`你量得距离 ${s} m、时间 ${t} s，平均速度是多少 m/s？`,
-  check:a=>parseInt(a)===s/t,ans:String(s/t),hint:'average speed = distance ÷ time.',zhh:'平均速度 = 距离 ÷ 时间。'};
+  check:a=>numOk(a,s/t),ans:fnum(s/t),hint:'average speed = distance ÷ time.',zhh:'平均速度 = 距离 ÷ 时间。'};
 },
 };
 
@@ -560,7 +566,7 @@ function practice(el,lessonId){
      streak=0;s.prac.tot++;syncTop();
      if(diff>1)diff--;
      fb.className='feedback show err';
-     fb.innerHTML=L('The answer is <b>'+q.ans+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+q.ans+'</b>'+(q.zhs?('。'+q.zhs):'。'));
+     fb.innerHTML=L('The answer is <b>'+(isNaN(num(q.ans))?q.ans:fnum(num(q.ans)))+'</b>'+(q.sol?('. '+q.sol):'. '), '答案是 <b>'+(isNaN(num(q.ans))?q.ans:fnum(num(q.ans)))+'</b>'+(q.zhs?('。'+q.zhs):'。'));
      inp.disabled=true;save();renderNav();
      setTimeout(()=>{q=gen();tries=0;update();},2400);
     }
